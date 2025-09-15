@@ -30,7 +30,7 @@ class Migration_Create_posts extends CI_Migration
             ],
             'description' => [
                 'type' => 'TEXT',
-                'null' => TRUE,
+                'null' => FALSE,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -53,7 +53,15 @@ class Migration_Create_posts extends CI_Migration
             'COLLATE'         => 'utf8mb4_unicode_ci',
         ]);
 
+        $this->db->query("
+            ALTER TABLE posts
+                MODIFY created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                MODIFY updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                MODIFY deleted_at DATETIME NULL DEFAULT NULL
+        ");
+
         $this->db->query('CREATE INDEX idx_posts_deleted_at ON posts(deleted_at)');
+        $this->db->query('CREATE INDEX idx_posts_created_at ON posts(created_at)');
     }
 
     /**
