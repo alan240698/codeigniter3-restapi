@@ -6,7 +6,10 @@
     <div class="card fade-in">
         <div class="card-header d-flex justify-content-between align-items-center">
             <div>
-                <h4><i class="fas fa-file-alt me-2"></i>CRUD REST API in CodeIgniter3</h4>
+                <h4><i class="fas fa-file-alt me-2"></i>CRUD REST API</h4>
+                <a href="https://github.com/alan240698/codeigniter3-restapi" target="_blank" class="text-white-50 text-decoration-none small">
+                    <i class="fab fa-github me-1"></i>View on GitHub
+                </a>
             </div>
             <button class="btn btn-light btn-sm" id="btnNew">
                 <i class="fas fa-plus me-1"></i>New Post
@@ -27,7 +30,7 @@
                 <table class="table table-hover mb-0" id="postsTable">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>ID</th>
                             <th>Title</th>
                             <th>Description</th>
                             <th class="text-center">Actions</th>
@@ -44,7 +47,7 @@
                 <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
                 <h5 class="text-muted">No posts found</h5>
                 <p class="text-muted">Start by adding your first post</p>
-                <button class="btn btn-primary" onclick="openPostModal()">
+                <button class="btn btn-primary" id="btnNewBody">
                     <i class="fas fa-plus me-1"></i>Add Post
                 </button>
             </div>
@@ -61,4 +64,5 @@
     </div>
 </div>
 
+<!-- Modals -->
 <?php $this->load->view('posts/modals'); ?>
