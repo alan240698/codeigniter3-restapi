@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-cookie-name" content="<?= $this->config->item('csrf_cookie_name') ?>">
     <title><?php echo isset($title) ? $title : 'Posts Management'; ?></title>
 
     <!-- Bootstrap CSS -->
@@ -20,11 +21,13 @@
         .container {
             margin-top: 2rem;
             max-width: 1200px;
+            padding: 0 15px;
         }
 
         .card {
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             border: 1px solid rgba(0, 0, 0, 0.125);
+            border-radius: 10px;
         }
 
         .card-header {
@@ -32,6 +35,7 @@
             color: white;
             border-bottom: none;
             padding: 1rem 1.5rem;
+            border-radius: 10px 10px 0 0;
         }
 
         .card-header h4 {
@@ -49,6 +53,7 @@
             font-weight: 600;
             color: #495057;
             padding: 1rem 0.75rem;
+            white-space: nowrap;
         }
 
         .table td {
@@ -59,6 +64,8 @@
         .btn-group-actions {
             display: flex;
             gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn-sm {
@@ -162,21 +169,6 @@
             border-color: #667eea;
         }
 
-        @media (max-width: 768px) {
-            .btn-group-actions {
-                flex-direction: column;
-            }
-
-            .table-responsive {
-                border: none;
-            }
-
-            .container {
-                margin-top: 1rem;
-                padding: 0 1rem;
-            }
-        }
-
         .fade-in {
             animation: fadeIn 0.3s ease-in;
         }
@@ -209,6 +201,225 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        /* Mobile Responsive - Tablet */
+        @media (max-width: 992px) {
+            .container {
+                margin-top: 1rem;
+                padding: 0 10px;
+            }
+
+            .title-preview,
+            .description-preview {
+                max-width: 150px;
+            }
+        }
+
+        /* Mobile Responsive - Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+                margin-top: 0.5rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-header .d-flex {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start !important;
+            }
+
+            .btn-group-actions {
+                flex-direction: column;
+                gap: 0.25rem;
+                width: 100%;
+            }
+
+            .btn-sm {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.6rem;
+                width: 100%;
+            }
+
+            .table-responsive {
+                border: none;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.5rem 0.3rem;
+                font-size: 0.85rem;
+            }
+
+            .title-preview,
+            .description-preview {
+                max-width: 120px;
+            }
+
+            .pagination {
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            }
+
+            /* Hide description column on mobile */
+            .table th:nth-child(3),
+            .table td:nth-child(3) {
+                display: none;
+            }
+
+            /* Responsive modal */
+            .modal-dialog {
+                max-height: 80vh;
+            }
+
+            .modal-body {
+                max-height: 60vh;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 5px;
+            }
+
+            .card-header h4 {
+                font-size: 1.1rem;
+            }
+
+            .btn-group-actions {
+                justify-content: center;
+            }
+
+            .title-preview {
+                max-width: 100px;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.4rem 0.2rem;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 480px) {
+            .card-header .d-flex {
+                text-align: center;
+                align-items: center !important;
+            }
+
+            .table th:first-child,
+            .table td:first-child {
+                width: 40px;
+                padding: 0.4rem 0.1rem;
+            }
+
+            .btn-group-actions .btn {
+                padding: 0.25rem 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            /* Responsive modal */
+            .modal-dialog {
+                max-height: 75vh;
+            }
+
+            .modal-body {
+                max-height: 50vh;
+            }
+        }
+
+        #viewPostTitle {
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: auto;
+        }
+
+        #viewPostDescription {
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: auto;
+        }
+
+        /* Modal dialog */
+        .modal-dialog {
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* CSS cho pagination */
+        .pagination {
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .page-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            text-decoration: none;
+        }
+
+        .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,123,255,0.25);
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .pagination-gap-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 576px) {
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .page-item {
+                margin: 2px;
+            }
+
+            .page-link {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .page-link i {
+                margin: 0 2px;
+            }
         }
     </style>
 </head>
