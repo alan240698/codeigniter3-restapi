@@ -1,4 +1,4 @@
-<!-- Post Modal -->
+<!-- Create/Edit Post Modal -->
 <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -43,7 +43,7 @@
     </div>
 </div>
 
-<!-- View Post Modal -->
+<!-- Show Post Modal -->
 <div class="modal fade" id="viewPostModal" tabindex="-1" aria-labelledby="viewPostModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
