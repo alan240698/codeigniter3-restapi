@@ -1,0 +1,545 @@
+:root {
+    --primary: #055E63;
+    --primary-dark: #044a4e;
+    --secondary: #20b2aa;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: dimgray;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.dashboard-header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+    transition: all 0.5s ease;
+}
+
+.dashboard-container.has-active .dashboard-header {
+    margin-bottom: 20px;
+}
+
+.dashboard-container.has-active .dashboard-header h1 {
+    font-size: 1.8rem;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.5s ease;
+}
+
+.dashboard-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Navigation pills - hidden by default */
+.category-nav {
+    display: none;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.dashboard-container.has-active .category-nav {
+    display: flex;
+}
+
+.nav-pill {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.nav-pill:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.nav-pill.active {
+    background: white;
+    color: #667eea;
+    border-color: white;
+}
+
+.nav-pill i {
+    font-size: 1.1rem;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    transition: all 0.5s ease;
+}
+
+.dashboard-container.has-active .cards-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.category-card {
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.category-card:hover:not(.expanded) {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+/* When card is expanded */
+.category-card.expanded {
+    cursor: default;
+    position: relative;
+    z-index: 10;
+}
+
+/* When other cards are not expanded */
+.dashboard-container.has-active .category-card:not(.expanded) {
+    display: none;
+}
+
+.card-header {
+    padding: 32px 24px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    transition: all 0.5s ease;
+}
+
+.category-card.expanded .card-header {
+    padding: 20px 24px;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.card-header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.card-header i {
+    font-size: 3rem;
+    transition: all 0.5s ease;
+}
+
+.category-card.expanded .card-header i {
+    font-size: 1.8rem;
+}
+
+.card-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    transition: all 0.5s ease;
+}
+
+.category-card.expanded .card-header h3 {
+    font-size: 1.2rem;
+}
+
+.close-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.category-card.expanded .close-btn {
+    display: flex;
+}
+
+.close-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
+
+.card-description {
+    text-align: center;
+    color: white;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    padding: 0 20px 20px;
+    transition: all 0.5s ease;
+}
+
+.category-card.expanded .card-description {
+    display: none;
+}
+
+.card-body {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.category-card.expanded .card-body {
+    padding: 32px;
+    max-height: 2000px;
+    opacity: 1;
+}
+
+/* Form layout when expanded */
+.ticket-form {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(5, 94, 99, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    border: 2px dashed #e5e7eb;
+    border-radius: 12px;
+    padding: 32px 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    background: #fafafa;
+}
+
+.file-upload-wrapper:hover {
+    border-color: var(--primary);
+    background: #f0f9ff;
+}
+
+.file-upload-wrapper.dragover {
+    border-color: var(--primary);
+    background: #e0f2fe;
+    border-style: solid;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+    color: #9ca3af;
+    margin-bottom: 12px;
+}
+
+.upload-text {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.upload-text strong {
+    color: var(--primary);
+}
+
+.file-list {
+    margin-top: 16px;
+    display: grid;
+    gap: 10px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.file-icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.file-details {
+    flex: 1;
+}
+
+.file-name {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.file-size {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.file-remove {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.file-remove:hover {
+    background: #fecaca;
+}
+
+.file-limit-text {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Nhóm Network: xanh lam dịu */
+.network { 
+    background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%); 
+}
+
+/* Nhóm User Computer: hồng tím nhẹ */
+.user-computer { 
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); 
+}
+
+/* Nhóm Group Application: xanh dương nhẹ, kiểu "air" */
+.group-app { 
+    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); 
+}
+
+/* Nhóm Cyber Security: xanh ngọc pastel */
+.cyber-security { 
+    background: linear-gradient(135deg, #96fbc4 0%, #f9f586 100%); 
+}
+
+/* Nút submit cùng tông nhưng đậm hơn một chút để nổi bật */
+.network .submit-btn { 
+    background: linear-gradient(135deg, #819ff7 0%, #5a67d8 100%); 
+}
+.user-computer .submit-btn { 
+    background: linear-gradient(135deg, #f5b5f0 0%, #c084fc 100%); 
+}
+.group-app .submit-btn { 
+    background: linear-gradient(135deg, #7ed6df 0%, #22a6b3 100%); 
+}
+.cyber-security .submit-btn { 
+    background: linear-gradient(135deg, #9ae6b4 0%, #68d391 100%); 
+}
+
+.timestamp {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    margin: 16px 0;
+}
+
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast.success { border-left: 4px solid var(--success); }
+.toast.error { border-left: 4px solid var(--danger); }
+.toast.warning { border-left: 4px solid var(--warning); }
+
+.toast i {
+    font-size: 1.5rem;
+}
+
+.toast.success i { color: var(--success); }
+.toast.error i { color: var(--danger); }
+.toast.warning i { color: var(--warning); }
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+
+    .category-card.expanded .card-body {
+        padding: 20px;
+    }
+
+    .nav-pill {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+}
