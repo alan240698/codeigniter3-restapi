@@ -1,18 +1,15 @@
 <?php
-    $status_items = [
-        'pending'    => ['icon' => 'fa-clock',          'label' => 'Pending'],
-        'processing' => ['icon' => 'fa-spinner',        'label' => 'Processing'],
-        'solved'     => ['icon' => 'fa-check-circle',   'label' => 'Solved'],
-        'closed'     => ['icon' => 'fa-archive',        'label' => 'Closed']
-    ];
+$status_items = [
+    'pending'    => ['icon' => 'fa-clock', 'label' => 'Pending'],
+    'processing' => ['icon' => 'fa-spinner', 'label' => 'Processing'],
+    'solved'     => ['icon' => 'fa-check-circle', 'label' => 'Solved'],
+    'closed'     => ['icon' => 'fa-archive', 'label' => 'Closed']
+];
 ?>
 
 <div class="stats-section">
     <div class="section-header">
-        <h2>
-            <i class="fas fa-chart-line"></i>
-            Ticket Tracking
-        </h2>
+        <h2><i class="fas fa-chart-line"></i> Ticket Tracking</h2>
         <p>Monitor your requests</p>
     </div>
 
@@ -32,8 +29,7 @@
         <?php endforeach; ?>
 
         <button class="view-all-btn" onclick="TicketModal.showAll()">
-            <i class="fas fa-list"></i>
-            View All Tickets
+            <i class="fas fa-list"></i> View All Tickets
         </button>
     </div>
 </div>

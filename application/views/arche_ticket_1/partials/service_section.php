@@ -30,7 +30,7 @@
                         'slug'        => $slug,
                         'title'       => ucwords(str_replace('-', ' ', $slug)),
                         'description' => $data['description'] ?? '',
-                        'icon'        => 'fa-folder-open',
+                        'icon'        => $data['icon'] ?? 'fa-folder-open',
                         'fields'      => $data[$slug] ?? []
                     ];
                     $this->load->view('arche_ticket/partials/dynamic_main_form', $form_config);

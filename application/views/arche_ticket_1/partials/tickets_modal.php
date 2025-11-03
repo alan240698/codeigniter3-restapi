@@ -10,4 +10,4 @@
             <!-- Tickets loaded dynamically -->
         </div>
     </div>
-</div
+</div>

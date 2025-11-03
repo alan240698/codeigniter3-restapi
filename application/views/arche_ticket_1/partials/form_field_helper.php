@@ -16,11 +16,11 @@ function build_category_path_map($options, $parent_path = [])
     foreach ($options as $key => $option) {
         $label = (string)($option['label'] ?? $key);
         $value = (string)($option['value'] ?? $key);
-
+        
         // Build full path
         $current_path = array_merge($parent_path, [$label]);
         $full_path = implode(' > ', $current_path);
-
+        
         // Store mapping: value => full_path
         $map[$value] = $full_path;
 
@@ -97,15 +97,15 @@ function render_form_field($field_name, $field_config, $category = '')
             // Build path mapping for JavaScript
             $path_map = build_category_path_map($field_config['options']);
             $path_map_json = json_encode($path_map);
-
+            
             $select_id = 'select_' . uniqid();
-
+            
             $html .= '<div class="form-group full-width">';
             $html .= '<label><i class="fas fa-list"></i> ' . $label . '</label>';
-
+            
             // Hidden input to store full path
             $html .= '<input type="hidden" name="' . $field_name . '" id="hidden_' . $select_id . '">';
-
+            
             // Visible select with custom display
             $html .= '<div class="category-select-wrapper">';
             $html .= '<select class="form-select category-select" id="' . $select_id . '" ' . $required . '>';
@@ -114,7 +114,7 @@ function render_form_field($field_name, $field_config, $category = '')
             $html .= '</select>';
             $html .= '<div class="selected-path" id="path_' . $select_id . '" style="display:none;"></div>';
             $html .= '</div>';
-
+            
             // Add JavaScript for handling selection
             $html .= '<script>';
             $html .= 'const pathMap_' . $select_id . ' = ' . $path_map_json . ';';
@@ -139,7 +139,7 @@ function render_form_field($field_name, $field_config, $category = '')
                             }
                             
                             pathDisplay.innerHTML = "<i class=\"fas fa-check-circle\"></i> " + displayText;
-                            pathDisplay.title = fullPath;
+                            pathDisplay.title = fullPath; // Full text on hover
                             pathDisplay.style.display = "block";
                             select.style.display = "none";
                         } else {
@@ -158,7 +158,7 @@ function render_form_field($field_name, $field_config, $category = '')
                 })();
             ';
             $html .= '</script>';
-
+            
             // Add inline styles
             $html .= '<style>
                 .category-select-wrapper {
@@ -185,7 +185,7 @@ function render_form_field($field_name, $field_config, $category = '')
                     color: #4ade80;
                 }
             </style>';
-
+            
             $html .= '</div>';
             break;
 
@@ -194,16 +194,16 @@ function render_form_field($field_name, $field_config, $category = '')
             $max_size_mb = ($field_config['max_size'] ?? 10485760) / 1048576;
 
             $html .= '<div class="form-group full-width">';
-            $html .= '<label><i class="fas fa-paperclip"></i> ' . $label . ' (option)</label>';
+            $html .= '<label><i class="fas fa-paperclip"></i> ' . $label . ' (tùy chọn)</label>';
             $html .= '<div class="file-upload-wrapper">';
             $html .= '<input type="file" name="attachments[]" multiple ';
             $html .= 'accept="' . str_replace('|', ',', $field_config['allowed_types']) . '">';
             $html .= '<div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>';
             $html .= '<div class="upload-text">';
-            $html .= '<strong>Click to select the file</strong> or drag and drop here';
+            $html .= '<strong>Click để chọn file</strong> hoặc kéo thả vào đây';
             $html .= '</div>';
             $html .= '<div class="file-limit-text">';
-            $html .= 'Max ' . $max_files . ' files, Each file is no more than ' . $max_size_mb . 'MB';
+            $html .= 'Tối đa ' . $max_files . ' files, mỗi file không quá ' . $max_size_mb . 'MB';
             $html .= '</div>';
             $html .= '</div>';
             $html .= '<div class="file-list"></div>';

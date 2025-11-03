@@ -3,7 +3,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Ticket extends CI_Controller
 {
-    private const MAX_FILES_DEFAULT     = 3;
+    private const ALLOWED_CATEGORIES = ['network', 'user-computer', 'group-app', 'cyber-security'];
+    private const MAX_FILES_DEFAULT = 3;
     private const MAX_FILE_SIZE_DEFAULT = 10485760;
 
     public function __construct()
@@ -12,23 +13,22 @@ class Ticket extends CI_Controller
 
         $this->load->config('glpi');
         $this->load->library(['form_validation', 'upload']);
-        $this->load->model('arche_ticket/glpi_api_model');
+        $this->load->model(['arche_ticket/glpi_api_model', 'arche_ticket/ticket_model']);
     }
 
     public function index()
     {
         try {
-            $cards              = $this->glpi_api_model->getEntities();
-            $categoryResults    = $this->getValidatedCategories($cards);
+            $cards = $this->glpi_api_model->getCards();
+            $categoryResults = $this->getValidatedCategories($cards);
 
             $data = [
+                'cards' => $cards,
                 'page_title' => 'IT Support Dashboard',
-                'cards'      => $cards,
-                'formData'   => $categoryResults
+                'formData' => $categoryResults
             ];
 
             $this->load->view('arche_ticket/index', $data);
-
         } catch (Exception $e) {
             log_message('error', 'Index page error: ' . $e->getMessage());
             show_error('Unable to load dashboard. Please contact administrator.');
@@ -37,21 +37,20 @@ class Ticket extends CI_Controller
 
     public function create()
     {
+        @ob_clean();
         $this->output->set_content_type('application/json');
 
         try {
-            // Get form data
-            $input      = $this->collectInput();
-
-            // Validate form data
+            $input = $this->collectInput();
             $validation = $this->validateInput($input);
+
             if (!$validation['success']) {
                 $this->sendJsonResponse($validation);
                 return;
             }
 
             $uploadResult = $this->handleFileUploads($input['category']);
-
+            
             if (!$uploadResult['success']) {
                 $this->sendJsonResponse($uploadResult);
                 return;
@@ -59,7 +58,7 @@ class Ticket extends CI_Controller
 
             $ticketData = $this->prepareTicketData($input);
 
-            $result = $this->glpi_api_model->createTicketWithAttachments(
+            $result = $this->glpi_api_model->create_ticket_with_attachments(
                 $ticketData, 
                 $uploadResult['files']
             );
@@ -69,18 +68,76 @@ class Ticket extends CI_Controller
         } catch (Exception $e) {
             log_message('error', 'Ticket creation error: ' . $e->getMessage());
             log_message('error', 'Stack trace: ' . $e->getTraceAsString());
-
+            
             $this->sendJsonResponse([
                 'success' => false,
-                'message' => 'An error occurred while creating the ticket. Please try again later.'
+                'message' => 'Có lỗi xảy ra khi tạo ticket. Vui lòng thử lại sau.'
             ]);
         }
+    }
+
+    public function get_form_fields()
+    {
+        $this->output->set_content_type('application/json');
+
+        $category = $this->input->get('category');
+        $formFields = $this->config->item('form_fields');
+
+        if (isset($formFields[$category])) {
+            $this->sendJsonResponse([
+                'success' => true,
+                'fields' => $formFields[$category]
+            ]);
+        } else {
+            $this->sendJsonResponse([
+                'success' => false,
+                'message' => 'Category không tồn tại'
+            ]);
+        }
+    }
+
+    public function history()
+    {
+        $this->output->set_content_type('application/json');
+
+        $userId = $this->session->userdata('user_id');
+        if (!$userId) {
+            $this->sendJsonResponse([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ]);
+            return;
+        }
+
+        $page = max(1, (int)$this->input->get('page') ?: 1);
+        $limit = max(1, min(100, (int)$this->input->get('limit') ?: 10));
+        $offset = ($page - 1) * $limit;
+
+        $filters = [
+            'category' => $this->input->get('category'),
+            'status' => $this->input->get('status'),
+            'user_id' => $userId
+        ];
+
+        $tickets = $this->ticket_model->get_logs($filters, $limit, $offset);
+        $totalCount = $this->ticket_model->count_logs($filters);
+
+        $this->sendJsonResponse([
+            'success' => true,
+            'data' => $tickets,
+            'pagination' => [
+                'page' => $page,
+                'limit' => $limit,
+                'total' => $totalCount,
+                'total_pages' => ceil($totalCount / $limit)
+            ]
+        ]);
     }
 
     private function collectInput(): array
     {
         return [
-            'category'    => trim($this->input->post('category')    ?? ''),
+            'category' => trim($this->input->post('category') ?? ''),
             'subcategory' => trim($this->input->post('subcategory') ?? ''),
             'description' => trim($this->input->post('description') ?? '')
         ];
@@ -91,15 +148,17 @@ class Ticket extends CI_Controller
         $errors = [];
 
         if (empty($input['category'])) {
-            $errors[] = 'Category cannot be empty';
+            $errors[] = 'Category không được để trống';
+        } elseif (!in_array($input['category'], self::ALLOWED_CATEGORIES)) {
+            $errors[] = 'Category không hợp lệ: ' . htmlspecialchars($input['category']);
         }
 
         if (empty($input['subcategory']) && empty($input['description'])) {
-            $errors[] = 'Please fill in at least Subcategory or Description';
+            $errors[] = 'Vui lòng điền ít nhất Subcategory hoặc Description';
         }
 
         if (!empty($input['description']) && mb_strlen($input['description']) < 10) {
-            $errors[] = 'Description must have at least 10 characters';
+            $errors[] = 'Description phải có ít nhất 10 ký tự';
         }
 
         if (!empty($errors)) {
@@ -122,15 +181,18 @@ class Ticket extends CI_Controller
             ];
         }
 
-        $maxFiles = self::MAX_FILES_DEFAULT;
-        $maxSize = self::MAX_FILE_SIZE_DEFAULT / 1024;
-        $allowedTypes = $this->config->item('upload_allowed_types');
+        $formFields = $this->config->item('form_fields');
+        $fileConfig = $formFields[$category]['attachments'] ?? [];
+
+        $maxFiles = $fileConfig['max_files'] ?? self::MAX_FILES_DEFAULT;
+        $maxSize = ($fileConfig['max_size'] ?? self::MAX_FILE_SIZE_DEFAULT) / 1024; // Convert to KB
+        $allowedTypes = $fileConfig['allowed_types'] ?? $this->config->item('upload_allowed_types');
 
         $filesCount = count($_FILES['attachments']['name']);
         if ($filesCount > $maxFiles) {
             return [
                 'success' => false,
-                'message' => "Only maximum uploads are allowed {$maxFiles} files"
+                'message' => "Chỉ được phép tải lên tối đa {$maxFiles} files"
             ];
         }
 
@@ -139,7 +201,7 @@ class Ticket extends CI_Controller
             if (!mkdir($uploadPath, 0755, true)) {
                 return [
                     'success' => false,
-                    'message' => 'Unable to create upload folder'
+                    'message' => 'Không thể tạo thư mục upload'
                 ];
             }
         }
@@ -197,7 +259,6 @@ class Ticket extends CI_Controller
             'subcategory' => $input['subcategory'],
             'description' => $input['description']
         ];
-
 
         return $this->glpi_api_model->prepare_ticket_data($input['category'], $formData);
     }

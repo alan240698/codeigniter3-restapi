@@ -1,4 +1,3 @@
-
 <div class="empty-state">
     <i class="fas fa-inbox"></i>
     <h3>No categories available</h3>
