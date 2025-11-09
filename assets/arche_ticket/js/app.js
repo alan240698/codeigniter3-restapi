@@ -1,12 +1,12 @@
-import StatisticsManager from './managers/StatisticsManager.js';
-import FormManager from './managers/FormManager.js';
+import StatisticsManager from './managers/statistics/index.js';
+import FormManager from './managers/forms/index.js';
 import CardExpansion from './components/CardExpansion.js';
 import Timestamp from './components/Timestamp.js';
 import EventBus from './core/EventBus.js';
 import Logger from './utils/logger.js';
-import FileUploadHandler from './managers/FileUploadHandler.js';
-import TicketModalManager from './managers/TicketModalManager.js';
-import StorageService from './services/StorageService.js';
+import FileUploadManager from './managers/upload/index.js';
+import TicketModalManager from './managers/tickets/index.js';
+import StorageService from './services/storage/index.js';
 import './styles/validation-inject.js';
 
 class TicketApp {
@@ -123,7 +123,7 @@ class TicketApp {
         const componentsToInit = [
             { name: 'CardExpansion', instance: CardExpansion, critical: true },
             { name: 'FormManager', instance: FormManager, critical: true },
-            { name: 'FileUploadHandler', instance: FileUploadHandler, critical: true },
+            { name: 'FileUploadManager', instance: FileUploadManager, critical: true },
             { name: 'Timestamp', instance: Timestamp, critical: false },
             { name: 'TicketModalManager', instance: TicketModalManager, critical: false }
         ];
@@ -567,7 +567,7 @@ class TicketApp {
         });
 
         // Clear storage
-        FileUploadHandler.destroy?.();
+        FileUploadManager.destroy?.();
 
         // Reset state
         this.initialized = false;

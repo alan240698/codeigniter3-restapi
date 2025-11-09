@@ -7,8 +7,8 @@ class Toast {
     }
 
     show(message, type = 'success') {
+        const formattedMessage = (message).replace(/\n/g, '<br>');
         const icon = TOAST_ICONS[type] || TOAST_ICONS.info;
-        const formattedMessage = message.replace(/\n/g, '<br>');
 
         const html = `
             <div class="toast toast-${type}">

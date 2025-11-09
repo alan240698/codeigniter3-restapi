@@ -12,7 +12,7 @@ class Ticket extends CI_Controller
 
         $this->load->config('glpi');
         $this->load->library(['form_validation', 'upload']);
-        $this->load->model('arche_ticket/glpi_api_model');
+        $this->load->model('arche_ticket/glpi/glpi_api_model');
     }
 
     public function index()
