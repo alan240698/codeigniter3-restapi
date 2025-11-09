@@ -43,13 +43,11 @@
     <!-- TOAST NOTIFICATIONS -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT STATICTIC -->
-    <!-- <?php $this->load->view('arche_ticket/partials/scripts'); ?> -->
-
-       <script>
+    <!-- NEW MODULES ARCHE_TICKET -->
+    <script>
         window.BASE_URL = '<?= base_url() ?>';
     </script>
-<script type="module" src="<?= base_url('assets/arche_ticket/js/app.js') ?>"></script>
+    <script type="module" src="<?= base_url('/assets/arche_ticket/js/app.js') ?>"></script>
 </body>
 
 </html>

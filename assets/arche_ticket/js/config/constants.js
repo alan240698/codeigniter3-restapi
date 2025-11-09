@@ -1,11 +1,16 @@
+const BASE_URL = window.BASE_URL || '';
+
 export const CONFIG = {
-    BASE_URL: window.BASE_URL || '',
+    BASE_URL,
     ENDPOINTS: {
-        CREATE: `${window.BASE_URL || ''}arche_ticket/ticket/create`,
-        LIST: `${window.BASE_URL || ''}arche_ticket/ticket/list`,
-        VIEW: `${window.BASE_URL || ''}arche_ticket/ticket/view/`
+        CREATE: `${BASE_URL}arche_ticket/ticket/create`,
+        LIST: `${BASE_URL}arche_ticket/ticket/list`,
+        VIEW: `${BASE_URL}arche_ticket/ticket/view/`,
+        REOPEN: `${BASE_URL}arche_ticket/ticket/reopen/`,
+        DOWNLOAD_DOCUMENT_TICKET: `${BASE_URL}arche_ticket/ticket/downloadTicketDocument/`
     },
     STATUS: {
+        new: { icon: 'fa-certificate', label: 'New Tickets' },
         pending: { icon: 'fa-clock', label: 'Pending Tickets' },
         processing: { icon: 'fa-spinner', label: 'Processing Tickets' },
         solved: { icon: 'fa-check-circle', label: 'Solved Tickets' },
@@ -13,7 +18,7 @@ export const CONFIG = {
     },
     FILE: {
         MAX_FILES: 3,
-        MAX_SIZE: 10 * 1024 * 1024, // 10MB
+        MAX_SIZE: 10 * 1024 * 1024,
         ALLOWED_EXTENSIONS: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jpg', 'jpeg', 'png', 'gif'],
         IMAGE_EXTENSIONS: ['jpg', 'jpeg', 'png', 'gif']
     },

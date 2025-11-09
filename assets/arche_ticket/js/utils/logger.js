@@ -7,6 +7,14 @@ class Logger {
         if (this.enabled) console.log(...args);
     }
 
+    info(...args) {
+        if (this.enabled) console.info(...args);
+    }
+
+    debug(...args) {
+        if (this.enabled) console.debug(...args);
+    }
+
     error(...args) {
         if (this.enabled) console.error(...args);
     }

@@ -18,6 +18,7 @@ class Glpi_api
         $this->CI = &get_instance();
         $this->CI->load->config('glpi');
         $this->CI->load->library('glpi_api_validation');
+        $this->CI->load->library('session');
 
         $this->api_url     = $this->CI->config->item('glpi_api_url');
         $this->app_token   = $this->CI->config->item('glpi_app_token');
@@ -148,8 +149,97 @@ class Glpi_api
 
         $response = $this->_curl_request('Ticket', 'POST', $payload);
 
+        if (!isset($response['data']['id'])) {
+            return $response;
+        }
+
+        $this->add_requester_ticket($response);
+
         return $response;
     }
+
+    public function reopen_ticket_by_id($id)
+    {
+        if (!$this->session_token) {
+            return [
+                'success' => false,
+                'message' => 'Session not initialized'
+            ];
+        }
+
+        $payload = [
+            'input' => [
+                "status" => 2 // Status new
+            ]
+        ];
+
+        $response = $this->_curl_request("Ticket/$id", 'PUT', $payload);
+
+        return $response;
+    }
+
+
+
+    public function add_requester_ticket($response)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $ticket_id = $response['data']['id'];
+
+        $requester_email = $_SESSION['user_sso_glpi']['email'] ?? 'thong.dh@archetype-group.com';
+
+        if ($requester_email) {
+            $this->_curl_request("Ticket/$ticket_id/Ticket_User", "POST", [
+                "input" => [
+                    "tickets_id"        => $ticket_id,
+                    "type"              => 1,
+                    "use_notification"  => 1,
+                    "alternative_email" => $requester_email
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * Create a new ticket
+     * 
+     * @param array $ticket_data
+     * @param bool $auto_validate (default: true)
+     * @return array
+     */
+    public function get_ticket_by_post()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $requester_email = $_SESSION['user_sso_glpi']['email'] ?? 'thong.dh@archetype-group.com';
+
+        $payload = [
+            'criteria' => [
+                [
+                    'field'      => 34,
+                    'searchtype' => 'contains',
+                    'value'      => $requester_email
+                ]
+            ]
+        ];
+
+        $response = $this->_curl_request('search/Ticket', 'POST', $payload);
+
+        // echo '<pre>';print_r($response['data']['data']);die;
+
+        if (isset($response['success']) && $response['success'] && isset($response['data']['data'])) {
+            return $response['data']['data'];
+        }
+
+        log_message('error', 'GLPI API error: ' . print_r($response, true));
+        return false;
+    }
+
+    
 
     /**
      * Upload document to ticket
@@ -258,34 +348,145 @@ class Glpi_api
         return $response;
     }
 
-    /**
-     * Get ticket by ID
-     * 
-     * @param int $ticket_id
-     * @return array
-     */
-    public function get_ticket($ticket_id)
-    {
-        if (!$this->session_token) {
-            return [
-                'success' => false,
-                'message' => 'Session not initialized'
-            ];
-        }
-
-        if (!$this->CI->glpi_api_validation->_validate_field('ticket_id', $ticket_id, ['required', 'integer', 'min:1'])) {
-            return [
-                'success'           => false,
-                'message'           => $this->get_first_error(),
-                'errors'            => $this->get_errors(),
-                'validation_failed' => true
-            ];
-        }
-
-        $response = $this->_curl_request("Ticket/{$ticket_id}", 'GET');
-
-        return $response;
+/**
+ * Get ticket with attachments
+ * 
+ * @param int $ticket_id
+ * @return array
+ */
+public function get_ticket_with_attachments($ticket_id)
+{
+    if (!$this->session_token) {
+        return [
+            'success' => false,
+            'message' => 'Session not initialized'
+        ];
     }
+
+    if (!$this->CI->glpi_api_validation->_validate_field('ticket_id', $ticket_id, ['required', 'integer', 'min:1'])) {
+        return [
+            'success'           => false,
+            'message'           => $this->get_first_error(),
+            'errors'            => $this->get_errors(),
+            'validation_failed' => true
+        ];
+    }
+
+    // 1. Lấy thông tin ticket
+    $ticket_response = $this->_curl_request("Ticket/{$ticket_id}", 'GET');
+    
+    if (!$ticket_response['success']) {
+        return $ticket_response;
+    }
+
+    $ticket_data = $ticket_response['data'];
+    
+    // 2. Lấy attachments từ Document_Item link
+    $attachments = [];
+    if (isset($ticket_data['links']) && is_array($ticket_data['links'])) {
+        foreach ($ticket_data['links'] as $link) {
+            if (isset($link['rel']) && $link['rel'] === 'Document_Item' && isset($link['href'])) {
+                // Parse URL để lấy endpoint
+                $parsed_url = parse_url($link['href']);
+                $path = $parsed_url['path'];
+                
+                // Extract endpoint: /api.php/v1/Ticket/5/Document_Item/ -> Ticket/5/Document_Item
+                if (preg_match('#/api\.php/(v\d+/)?(.+)$#', $path, $matches)) {
+                    $endpoint = rtrim($matches[2], '/');
+                    
+                    // Gọi API lấy Document_Item
+                    $doc_items_response = $this->_curl_request($endpoint, 'GET');
+                    
+                    if ($doc_items_response['success'] && isset($doc_items_response['data'])) {
+                        // Lấy chi tiết từng document
+                        foreach ($doc_items_response['data'] as $doc_item) {
+                            if (isset($doc_item['documents_id'])) {
+                                $doc_id = $doc_item['documents_id'];
+                                $doc_response = $this->_curl_request("Document/{$doc_id}", 'GET');
+                                
+                                if ($doc_response['success'] && isset($doc_response['data'])) {
+                                    $doc = $doc_response['data'];
+                                    $attachments[] = [
+                                        'id'            => $doc['id'] ?? null,
+                                        'name'          => $doc['name'] ?? 'Unknown',
+                                        'filename'      => $doc['filename'] ?? '',
+                                        'filepath'      => $doc['filepath'] ?? '',
+                                        'mime'          => $doc['mime'] ?? 'application/octet-stream',
+                                        'size'          => $doc['size'] ?? 0,
+                                        'date_creation' => $doc['date_creation'] ?? '',
+                                        'comment'       => $doc['comment'] ?? '',
+                                        'tag'           => $doc['tag'] ?? ''
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+                break; // Chỉ cần xử lý 1 link Document_Item
+            }
+        }
+    }
+
+    // 3. Thêm attachments vào ticket data
+    $ticket_data['attachments'] = $attachments;
+
+    return [
+        'success' => true,
+        'data'    => $ticket_data
+    ];
+}
+
+public function download_document($document_id)
+{
+    // 1. Lấy metadata document
+    $meta = $this->_curl_request("Document/$document_id", "GET");
+    if (!isset($meta['filepath'])) {
+        return ['success' => false, 'message' => 'Document not found'];
+    }
+
+    // 2. Build đường dẫn file
+    $filePath = "/var/www/html/glpi/files/" . $meta['filepath'];
+
+    if (!file_exists($filePath)) {
+        return ['success' => false, 'message' => 'File not found on server'];
+    }
+
+    // 3. Trả file
+    return [
+        'success'  => true,
+        'filename' => $meta['filename'],
+        'mime'     => $meta['mime'],
+        'path'     => $filePath
+    ];
+}
+
+
+
+// /**
+//  * Get ticket by ID (giữ nguyên function cũ)
+//  */
+// public function get_ticket_by_id($ticket_id)
+// {
+//     if (!$this->session_token) {
+//         return [
+//             'success' => false,
+//             'message' => 'Session not initialized'
+//         ];
+//     }
+
+//     if (!$this->CI->glpi_api_validation->_validate_field('ticket_id', $ticket_id, ['required', 'integer', 'min:1'])) {
+//         return [
+//             'success'           => false,
+//             'message'           => $this->get_first_error(),
+//             'errors'            => $this->get_errors(),
+//             'validation_failed' => true
+//         ];
+//     }
+
+//     $response = $this->_curl_request("Ticket/{$ticket_id}", 'GET');
+
+//     return $response;
+// }
 
     /**
      * Sanitize data

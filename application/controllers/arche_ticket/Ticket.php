@@ -19,6 +19,7 @@ class Ticket extends CI_Controller
     {
         try {
             $cards              = $this->glpi_api_model->getEntities();
+
             $categoryResults    = $this->getValidatedCategories($cards);
 
             $data = [
@@ -33,6 +34,21 @@ class Ticket extends CI_Controller
             log_message('error', 'Index page error: ' . $e->getMessage());
             show_error('Unable to load dashboard. Please contact administrator.');
         }
+    }
+
+    public function downloadTicketDocument($id)
+    {
+        return $this->glpi_api_model->downloadDocument($id);
+    }
+
+    public function view($id)
+    {
+        return $this->glpi_api_model->getTicketById($id);
+    }
+
+    public function reopen($id)
+    {
+        return $this->glpi_api_model->reopenTicketById($id);
     }
 
     public function create()
@@ -111,6 +127,13 @@ class Ticket extends CI_Controller
         }
 
         return ['success' => true];
+    }
+
+    public function list()
+    {
+           return $this->glpi_api_model->getList();
+
+
     }
 
     private function handleFileUploads(string $category): array

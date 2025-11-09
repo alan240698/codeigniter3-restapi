@@ -247,7 +247,7 @@ class Glpi_api_validation
     private function _rule_required($field, $value, $params, $all_data)
     {
         if ($value === null || $value === '' || (is_array($value) && empty($value))) {
-            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' là bắt buộc');
+            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' is required');
             return false;
         }
         return true;
@@ -256,7 +256,7 @@ class Glpi_api_validation
     private function _rule_string($field, $value, $params, $all_data)
     {
         if ($value !== null && !is_string($value)) {
-            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' phải là chuỗi ký tự');
+            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' must be a character string');
             return false;
         }
         return true;
@@ -265,7 +265,7 @@ class Glpi_api_validation
     private function _rule_integer($field, $value, $params, $all_data)
     {
         if ($value !== null && !is_numeric($value) && !filter_var($value, FILTER_VALIDATE_INT)) {
-            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' phải là số nguyên');
+            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' must be an integer');
             return false;
         }
         return true;

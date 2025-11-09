@@ -64,6 +64,55 @@ class Glpi_api_model extends CI_Model
         return $entities;
     }
 
+    public function getList()
+    {
+        
+        if (!$this->glpi_api->initSession()) {
+            log_message('error', 'GLPI: Cannot initialize session for getCategories');
+            return [];
+        }
+
+
+        $data = $this->glpi_api->get_ticket_by_post();
+        $statusMap = [
+        1 => 'New',
+        2 => 'Processing', 
+        3 => 'Planned',
+        4 => 'Pending',
+        5 => 'Solved',
+        6 => 'Closed'
+    ];
+    
+    $tickets = array_map(function($ticket) use ($statusMap) {
+        $statusId = $ticket[12] ?? 1;
+        $title = $ticket[1] ?? 'No Title';
+        
+        return [
+            'id' => $ticket[2] ?? 0,
+            'title' => $title,
+            'name' => $title,
+            'entity' => $ticket[80] ?? '',
+            'status' => $statusMap[$statusId] ?? 'Unknown',
+            'status_id' => $statusId,
+            'created_date' => $ticket[19] ?? '',
+            'updated_date' => $ticket[15] ?? '',
+            'priority' => $ticket[3] ?? null,
+            'category' => strpos($title, '>') !== false 
+                ? trim(explode('>', $title)[0]) 
+                : $title,
+            'description' => $ticket[7] ?? '',
+            'solution' => $ticket[18] ?? ''
+        ];
+    }, $data);
+     header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => true,
+        'data' => $tickets
+    ]);
+        $this->glpi_api->killSession();
+
+    }
+
     /**
      * Get categories
      * 
@@ -133,6 +182,57 @@ class Glpi_api_model extends CI_Model
         }
 
         return $result;
+    }
+
+public function getTicketById($id)
+{
+    if (!$this->glpi_api->initSession()) {
+        return $this->glpi_api_validation->errorResponse('Unable to connect to GLPI API');
+    }
+
+    // Sử dụng function mới để lấy ticket kèm attachments
+    $data = $this->glpi_api->get_ticket_with_attachments($id);
+    
+    if (!$data['success']) {
+        $this->glpi_api->killSession();
+        return $this->glpi_api_validation->errorResponse($data['message'] ?? 'Failed to get ticket');
+    }
+
+    $statusMap = [
+        1 => 'new',
+        2 => 'processing', 
+        3 => 'planned',
+        4 => 'pending',
+        5 => 'solved',
+        6 => 'closed'
+    ];
+    
+    // Map status
+    if (isset($data['data']['status'])) {
+        $data['data']['status'] = $statusMap[$data['data']['status']] ?? 'unknown';
+    }
+
+    $this->glpi_api->killSession();
+
+    echo json_encode([
+        'success' => true,
+        'data'    => $data['data'] // Đã có attachments bên trong
+    ]);
+}
+    public function reopenTicketById($id)
+    {
+        $this->glpi_api->initSession();
+        $data =  $this->glpi_api->reopen_ticket_by_id($id);
+            echo json_encode([
+        'success' => true,
+        'data'    => $data // Đã có attachments bên trong
+    ]);
+        $this->glpi_api->killSession();
+    }
+
+    public function downloadDocument($id)
+    {
+        return $this->glpi_api->download_document($id);
     }
 
     /**

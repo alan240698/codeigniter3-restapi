@@ -109,7 +109,7 @@ function render_form_field($field_name, $field_config, $category = '')
             // Visible select with custom display
             $html .= '<div class="category-select-wrapper">';
             $html .= '<select class="form-select category-select" id="' . $select_id . '" ' . $required . '>';
-            $html .= '<option value="">Chọn ' . strtolower($label) . '...</option>';
+            $html .= '<option value="">Select ' . strtolower($label) . '...</option>';
             $html .= render_category_options_recursive($field_config['options']);
             $html .= '</select>';
             $html .= '<div class="selected-path" id="path_' . $select_id . '" style="display:none;"></div>';
@@ -166,7 +166,7 @@ function render_form_field($field_name, $field_config, $category = '')
                 }
                 .selected-path {
                     padding: 0.75rem 1rem;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    background: linear-gradient(135deg, #095c5f 0%, #ffff 100%);
                     color: white;
                     border-radius: 8px;
                     cursor: pointer;

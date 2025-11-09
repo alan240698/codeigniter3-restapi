@@ -52,9 +52,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['default_controller']  = 'arche_ticket/ticket';
-$route['arche_ticket']        = 'arche_ticket/ticket/index';
-$route['arche_ticket/create'] = 'arche_ticket/ticket/create';
+$route['default_controller']  = 'arche_ticket/ticket/index';
+// $route['arche_ticket']        = 'arche_ticket/ticket/index';
+// $route['arche_ticket/create'] = 'arche_ticket/ticket/create';
+
+$route['tickets'] = "arche_ticket/ticket/index";
+$route['tickets/list']       = "arche_ticket/ticket/list";
+$route['tickets/view/(:num)'] = "arche_ticket/ticket/view/$1";
+$route['tickets/reopen/(:num)'] = "arche_ticket/ticket/reopen/$1";
+$route['tickets/document/(:num)'] = "arche_ticket/ticket/downloadTicketDocument/$1";
 
 /*
 | API Routes - Posts

@@ -22,7 +22,7 @@ class Timestamp {
     update() {
         const timeString = formatTimestamp();
         $$('.timestamp').forEach(el => {
-            el.textContent = `Thời gian: ${timeString}`;
+            el.textContent = `Time: ${timeString}`;
         });
     }
 }

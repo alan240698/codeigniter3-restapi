@@ -1,5 +1,6 @@
 <?php
     $status_items = [
+        'new'        => ['icon' => 'fa-certificate',    'label' => 'New'],
         'pending'    => ['icon' => 'fa-clock',          'label' => 'Pending'],
         'processing' => ['icon' => 'fa-spinner',        'label' => 'Processing'],
         'solved'     => ['icon' => 'fa-check-circle',   'label' => 'Solved'],

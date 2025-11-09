@@ -30,21 +30,33 @@ body {
 
 .dashboard-header {
     text-align: center;
+    /* color: white; */
     color: white;
     margin-bottom: 40px;
     transition: all 0.5s ease;
+    background: linear-gradient(135deg, #0d7377 0%, #055E63 100%);
+    /* padding: 32px 24px; */
+    padding: 1.5rem;
+    /* border-radius: 10px; */
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid #d4e4e7;
 }
+
+/* .main-content {
+    background: white;
+} */
 
 .dashboard-container.has-active .dashboard-header {
     margin-bottom: 20px;
 }
 
-.dashboard-container.has-active .dashboard-header h1 {
+.dashboard-container.has-active .dashboard-header h2 {
     font-size: 1.8rem;
 }
 
-.dashboard-header h1 {
-    font-size: 2.5rem;
+.dashboard-header h2 {
+    font-size: 1.4rem;
     font-weight: 700;
     margin-bottom: 10px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -60,10 +72,12 @@ body {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 20px;
-    color: white;
+    background: linear-gradient(145deg, #ffffff, #f2f4f7);
+    border-radius: 16px;
+    border: 1px solid #e6e8ec;
+    color: #066166;
     margin-top: 30px;
+    transition: all .25s ease;
 }
 
 .empty-state i {
@@ -95,10 +109,13 @@ body {
 }
 
 .nav-pill {
-    background: rgba(255, 255, 255, 0.15);
+    /* background: rgba(255, 255, 255, 0.15); */
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    /* color: white; */
+    background: #e8f4f6;
+    color: #212529;
+    border-bottom: 1px solid #d4e4e7;
     padding: 12px 24px;
     border-radius: 50px;
     cursor: pointer;
@@ -117,9 +134,11 @@ body {
 }
 
 .nav-pill.active {
-    background: white;
-    color: #667eea;
+    /* background: white;
+    color: #667eea; */
     border-color: white;
+    background: linear-gradient(135deg, #0d7377 0%, #055E63 100%);
+    color: white;
 }
 
 .nav-pill i {
@@ -166,15 +185,21 @@ body {
 }
 
 .card-header {
-    padding: 32px 24px;
-    color: white;
+    /* padding: 32px 24px; */
+    padding: 1.2rem;
+    /* color: white; */
     display: flex;
-    align-items: center;
+    /* align-items: center; */
+    align-items: flex-start;
     justify-content: center;
     flex-direction: column;
     gap: 15px;
     text-align: center;
     transition: all 0.5s ease;
+    /* background: #e8f4f6; */
+    /* color: #212529; */
+    color: #0d7377;
+    border-bottom: 1px solid #d4e4e7;
 }
 
 .category-card.expanded .card-header {
@@ -191,7 +216,7 @@ body {
 }
 
 .card-header i {
-    font-size: 3rem;
+    font-size: 1.1rem;
     transition: all 0.5s ease;
 }
 
@@ -200,7 +225,7 @@ body {
 }
 
 .card-header h3 {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
     transition: all 0.5s ease;
@@ -213,7 +238,7 @@ body {
 .close-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: white;
+    color: #0d7377;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -453,41 +478,27 @@ textarea.form-control {
     transform: none;
 }
 
-/* Nhóm Network: xanh lam dịu */
-.network {
-    background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+body {
+    background: #e7f1f3;
 }
 
-/* Nhóm User Computer: hồng tím nhẹ */
-.user-computer {
-    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-}
-
-/* Nhóm Group Application: xanh dương nhẹ, kiểu "air" */
-.group-app {
-    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-}
-
-/* Nhóm Cyber Security: xanh ngọc pastel */
+.network,
+.user-computer,
+.group-app,
 .cyber-security {
-    background: linear-gradient(135deg, #96fbc4 0%, #f9f586 100%);
+    background: #ffffff;
+    color: #212529;
 }
 
-/* Nút submit cùng tông nhưng đậm hơn một chút để nổi bật */
-.network .submit-btn {
-    background: linear-gradient(135deg, #819ff7 0%, #5a67d8 100%);
+.submit-btn {
+    background: #0d7377;
+    color: #ffffff;
+    border: none;
 }
 
-.user-computer .submit-btn {
-    background: linear-gradient(135deg, #f5b5f0 0%, #c084fc 100%);
-}
-
-.group-app .submit-btn {
-    background: linear-gradient(135deg, #7ed6df 0%, #22a6b3 100%);
-}
-
-.cyber-security .submit-btn {
-    background: linear-gradient(135deg, #9ae6b4 0%, #68d391 100%);
+/* Hover cho nút */
+.submit-btn:hover {
+    background: linear-gradient(135deg, #0d7377 0%, #055E63 100%);
 }
 
 .timestamp {
@@ -579,7 +590,7 @@ textarea.form-control {
         grid-template-columns: 1fr;
     }
 
-    .dashboard-header h1 {
+    .dashboard-header h2 {
         font-size: 2rem;
     }
 
