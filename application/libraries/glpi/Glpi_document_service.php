@@ -7,28 +7,38 @@ class Glpi_document_service
     private $http_client;
     private $session_manager;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->CI = &get_instance();
+
         $this->CI->load->library('glpi/glpi_http_client');
         $this->CI->load->library('glpi/glpi_session_manager');
         $this->CI->load->library('glpi_api_validation');
-        
-        $this->http_client = $this->CI->glpi_http_client;
-        $this->session_manager = $this->CI->glpi_session_manager;
+
+        $this->http_client      = $this->CI->glpi_http_client;
+        $this->session_manager  = $this->CI->glpi_session_manager;
     }
 
+    /**
+     * Upload
+     */
     public function upload($ticket_id, $file_path, $file_name, $auto_validate = true)
     {
         if (!$this->session_manager->hasActiveSession()) {
-            return ['success' => false, 'message' => 'Session not initialized'];
+            return [
+                'success' => false,
+                'message' => 'Session not initialized'
+            ];
         }
 
         if ($auto_validate && !$this->validateUpload($ticket_id, $file_path, $file_name)) {
             return [
-                'success' => false,
-                'message' => $this->CI->glpi_api_validation->get_first_error(),
-                'errors' => $this->CI->glpi_api_validation->get_errors(),
+                'success'           => false,
+                'message'           => $this->CI->glpi_api_validation->get_first_error(),
+                'errors'            => $this->CI->glpi_api_validation->get_errors(),
                 'validation_failed' => true
             ];
         }
@@ -37,9 +47,9 @@ class Glpi_document_service
 
         if (!$response['success'] || empty($response['data']['id'])) {
             return [
-                'success' => false,
-                'message' => 'Upload document failed',
-                'data' => $response
+                'success'   => false,
+                'message'   => 'Upload document failed',
+                'data'      => $response
             ];
         }
 
@@ -49,36 +59,50 @@ class Glpi_document_service
             return [
                 'success' => false,
                 'message' => 'Document uploaded but linking to ticket failed',
-                'upload' => $response,
-                'link' => $link_response
+                'upload'  => $response,
+                'link'    => $link_response
             ];
         }
 
         return $response;
     }
 
-    public function download($document_id)
+    /**
+     * Download
+     */
+    public function download($document_id, $ticket_id)
     {
-        $meta = $this->http_client->request("Document/$document_id", "GET");
-        
-        if (!isset($meta['filepath'])) {
-            return ['success' => false, 'message' => 'Document not found'];
+
+        if (!$this->session_manager->hasActiveSession()) {
+            return [
+                'success' => false,
+                'message' => 'Session not initialized'
+            ];
         }
 
-        $filePath = "/var/www/html/glpi/files/" . $meta['filepath'];
+        $ticket_with_doc = $this->http_client->request("Ticket/{$ticket_id}/Document/$document_id", 'GET');
 
-        if (!file_exists($filePath)) {
-            return ['success' => false, 'message' => 'File not found on server'];
+        if ($ticket_with_doc['success']) {
+            $domainUrl = $this->CI->config->item('glpi_domain_url');
+            $fileUrl = $domainUrl . "/front/document.send.php?docid={$document_id}&tickets_id={$ticket_id}";
+
+            return [
+                'success' => true,
+                'download_url' => $fileUrl
+            ];
         }
+
 
         return [
-            'success' => true,
-            'filename' => $meta['filename'],
-            'mime' => $meta['mime'],
-            'path' => $filePath
+            'success' => false,
+            'download_url' => ''
         ];
     }
 
+
+    /**
+     * Validate upload
+     */
     private function validateUpload($ticket_id, $file_path, $file_name)
     {
         $document_data = [
@@ -97,32 +121,38 @@ class Glpi_document_service
         return true;
     }
 
+    /**
+     * Upload file
+     */
     private function uploadFile($file_path, $file_name)
     {
         $manifest = json_encode([
             'input' => [
-                'name' => $file_name,
-                '_filename' => [$file_name],
+                'name'          => $file_name,
+                '_filename'     => [$file_name],
                 '_tag_filename' => [$file_name]
             ]
         ]);
 
         $post_fields = [
             'uploadManifest' => $manifest,
-            'filename[0]' => new CURLFile($file_path, mime_content_type($file_path), $file_name)
+            'filename[0]'    => new CURLFile($file_path, mime_content_type($file_path), $file_name)
         ];
 
         return $this->http_client->request("Document", 'POST', $post_fields, [], false, true);
     }
 
+    /**
+     * Link to ticket
+     */
     private function linkToTicket($document_id, $ticket_id)
     {
         $payload = [
             'input' => [
                 [
-                    'documents_id' => $document_id,
-                    'itemtype' => 'Ticket',
-                    'items_id' => $ticket_id
+                    'documents_id'  => $document_id,
+                    'itemtype'      => 'Ticket',
+                    'items_id'      => $ticket_id
                 ]
             ]
         ];

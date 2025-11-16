@@ -79,7 +79,7 @@ class FieldValidator {
             const form = field.closest('form');
             const name = field.name;
             const isChecked = form?.querySelector(`[name="${name}"]:checked`);
-            
+
             if (!isChecked) {
                 return { 
                     valid: false, 
@@ -234,7 +234,7 @@ class FieldValidator {
             if (result === true || result.valid === true) {
                 return { valid: true };
             }
-            
+
             return { 
                 valid: false, 
                 message: result.message || result || 'Validation failed' 

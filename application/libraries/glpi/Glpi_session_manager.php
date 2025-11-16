@@ -12,10 +12,14 @@ class Glpi_session_manager
     {
         $this->CI = &get_instance();
         $this->CI->load->library('glpi/glpi_http_client');
+
         $this->http_client = $this->CI->glpi_http_client;
-        $this->user_token = $this->CI->config->item('glpi_user_token');
+        $this->user_token  = $this->CI->config->item('glpi_user_token');
     }
 
+    /**
+     * Init
+     */
     public function init()
     {
         $response = $this->http_client->request(
@@ -34,6 +38,9 @@ class Glpi_session_manager
         return false;
     }
 
+    /**
+     * Kill
+     */
     public function kill()
     {
         if (!$this->session_token) {
@@ -47,11 +54,17 @@ class Glpi_session_manager
         return $response['success'];
     }
 
+    /**
+     * Get session token
+     */
     public function getSessionToken()
     {
         return $this->session_token;
     }
 
+    /**
+     * Has active session
+     */
     public function hasActiveSession()
     {
         return !is_null($this->session_token);

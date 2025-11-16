@@ -12,11 +12,11 @@ import TicketConfirmManager from './TicketConfirmManager.js';
 class TicketModalManager {
     constructor() {
         this.filterManager = new TicketFilterManager();
-        this.paginationManager = new TicketPaginationManager(2);
+        this.paginationManager = new TicketPaginationManager(5);
         this.listManager = new TicketListManager();
         this.detailManager = new TicketDetailManager();
         this.confirmManager = new TicketConfirmManager();
-        
+
         this._bindGlobalEvents();
     }
 
@@ -138,7 +138,7 @@ class TicketModalManager {
         Logger.info('Reloading tickets...');
         
         this.filterManager.setAllTickets([]);
-        
+
         const currentFilters = this.filterManager.getCurrentFilters();
         if (currentFilters && currentFilters.status) {
             await this.showByStatus(currentFilters.status);
@@ -153,7 +153,7 @@ class TicketModalManager {
     goToPage(page) {
         const filteredTickets = this.filterManager.getFilteredTickets();
         const success = this.paginationManager.goToPage(page, filteredTickets.length);
-        
+
         if (success) {
             this._render();
             this.listManager.scrollToTop();

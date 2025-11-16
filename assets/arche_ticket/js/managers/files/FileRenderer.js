@@ -1,6 +1,6 @@
-import { formatFileSize, getFileIcon } from '../../utils/format.js';
-import { createElement } from '../../utils/dom.js';
-import Logger from '../../utils/logger.js';
+import { formatFileSize, getFileIcon }  from '../../utils/format.js';
+import { createElement }                from '../../utils/dom.js';
+import Logger                           from '../../utils/logger.js';
 
 /**
  * Handles file UI rendering
@@ -19,7 +19,7 @@ class FileRenderer {
 
         try {
             const fileItem = createElement(html);
-            
+
             // Add remove handler
             this._attachRemoveHandler(fileItem, file.name, onRemove);
 

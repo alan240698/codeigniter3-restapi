@@ -1,7 +1,7 @@
-import { CONFIG } from '../../../config/constants.js';
-import { formatDate } from '../../../utils/format.js';
-import { escapeHtml } from '../../../utils/dom.js';
-import Logger from '../../../utils/logger.js';
+import { CONFIG, PRIORITY_GLPI }            from '../../../config/constants.js';
+import { formatDate }                       from '../../../utils/format.js';
+import { escapeHtml }                       from '../../../utils/dom.js';
+import Logger                               from '../../../utils/logger.js';
 
 class TicketItemRenderer {
     /**
@@ -27,7 +27,7 @@ class TicketItemRenderer {
         const title = escapeHtml(ticket.title || ticket.name || 'Untitled');
         const category = escapeHtml(ticket.category || 'General');
         const createdDate = formatDate(ticket.created_date || ticket.created_at);
-        const priority = ticket.priority ? escapeHtml(ticket.priority) : null;
+        const priority = ticket.priority ? PRIORITY_GLPI[escapeHtml(ticket.priority)] : null;
 
         const showReopenBtn = ['closed', 'resolved', 'cancelled'].includes(status);
 
@@ -39,6 +39,10 @@ class TicketItemRenderer {
                         <h4 class="ticket-title">${title}</h4>
                     </div>
                     <div class="ticket-meta">
+                        <div class="ticket-meta-item">
+                            <i class="fas ${statusIcon}"></i>
+                            <span>${statusLabel}</span>
+                        </div>
                         <div class="ticket-meta-item">
                             <i class="fas fa-folder"></i>
                             <span>${category}</span>

@@ -3,6 +3,23 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Glpi_api_validation
 {
+    private $errors = [];
+
+    private $validation_rules = [
+        'ticket' => [
+            'name'      => ['required', 'string', 'min:3', 'max:255'],
+            'content'   => ['required', 'string', 'min:10'],
+            'type'      => ['integer',  'in:1,2'],
+        ],
+        'document' => [
+            'file_path' => ['required', 'file_exists', 'file_size:10240'],
+            'file_name' => ['required', 'string', 'max:255'],
+        ],
+        'entity' => [
+            'id'        => ['required', 'integer', 'min:0'],
+        ],
+    ];
+
     /**
      * Validate ticket data
      * 
@@ -27,23 +44,6 @@ class Glpi_api_validation
         return true;
     }
 
-    private $errors = [];
-
-    private $validation_rules = [
-        'ticket' => [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
-            'content' => ['required', 'string', 'min:10'],
-            'type' => ['integer',  'in:1,2'],
-        ],
-        'document' => [
-            'file_path' => ['required', 'file_exists', 'file_size:10240'],
-            'file_name' => ['required', 'string', 'max:255'],
-        ],
-        'entity' => [
-            'id' => ['required', 'integer', 'min:0'],
-        ],
-    ];
-
     /**
      * Validate data against rules
      * 
@@ -56,7 +56,7 @@ class Glpi_api_validation
         $this->errors = [];
 
         if (!isset($this->validation_rules[$type])) {
-            return true; // No rules defined
+            return true;
         }
 
         $rules = $this->validation_rules[$type];
@@ -92,7 +92,7 @@ class Glpi_api_validation
 
             if (method_exists($this, $method)) {
                 if (!$this->$method($field, $value, $params, $all_data)) {
-                    return false; // Stop on first error
+                    return false;
                 }
             }
         }
@@ -208,7 +208,7 @@ class Glpi_api_validation
                 'label' => 'Attach documents/images',
                 'required' => false,
                 'max_files' => 5,
-                'max_size' => 10485760, // 10MB in bytes
+                'max_size' => 10485760,
                 'allowed_types' => 'jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|txt'
             ]
         ];

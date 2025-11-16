@@ -2,11 +2,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
+ * GLPI domain
+ */
+$config['glpi_domain_url']    = 'http://localhost'; 
+
+/**
  * GLPI API Configuration
  */
-$config['glpi_api_url']    = 'http://localhost/api.php/v1';
-$config['glpi_app_token']  = 'BnPzerdFaRjsSsLhDy5AoPtCRDsInaSoDBDxKryv';
-$config['glpi_user_token'] = 'user_token XVN426XCBtZ8qrHQkxYmaHViFR932eF6X570XLSg';
+$config['glpi_api_url']    = 'http://localhost/api.php/v1'; 
+$config['glpi_app_token']  = 'dqamt66cruGzkAggv3S0unmvPle5SOFpZ5yjiRue';
+$config['glpi_user_token'] = 'user_token hg7Tu8QDKJ1H8aa4HtLbaxRdRMIQdMtdGY8JQYdF';
 
 /**
  * Upload configuration

@@ -14,9 +14,9 @@ class FileStorageManager {
 
         const current = this.fileDataMap.get(formId) || [];
         const updated = [...current, ...files];
-        
+
         this.fileDataMap.set(formId, updated);
-        
+
         const newFilesSize = files.reduce((sum, file) => sum + file.size, 0);
         Logger.info(`Added ${files.length} file(s) to ${formId}`, {
             total: updated.length,
@@ -144,11 +144,11 @@ class FileStorageManager {
 
     _formatBytes(bytes) {
         if (bytes === 0) return '0 Bytes';
-        
+
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
+
         return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
     }
 }

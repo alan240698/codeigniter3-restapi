@@ -37,7 +37,7 @@ class TicketApiService {
     async update(id, data) {
         this._validateId(id);
         const endpoint = CONFIG.ENDPOINTS.REOPEN || CONFIG.ENDPOINTS.VIEW;
-        return this.request.put(`${endpoint}${id}`, data);
+        return this.request.post(`${endpoint}${id}`, data);
     }
 
     /**
@@ -62,6 +62,34 @@ class TicketApiService {
 
         const endpoint = CONFIG.ENDPOINTS.UPLOAD || '/api/upload';
         return this.request.post(endpoint, formData);
+    }
+    
+    /**
+     * Download ticket document via backend CI3
+     * @param {number} documentId 
+     * @param {number} ticketId 
+     * @returns {Promise<{ blob: Blob, filename: string }>}
+     */
+    async downloadTicketDocument(documentId, ticketId) {
+        if (!documentId || !ticketId) {
+            throw new Error('Invalid document or ticket ID');
+        }
+
+        const url = `${CONFIG.ENDPOINTS.DOWNLOAD_DOCUMENT_TICKET}${documentId}?ticket_id=${ticketId}`;
+
+        try {
+
+            const response = await this.request.get(url);
+
+            if (!response.success || !response.download_url) {
+                throw new Error('Download URL not available from backend');
+            }
+
+            window.open(response.download_url, '_blank');
+
+        } catch (error) {
+            Logger.error('Failed to download document:', error);
+        }
     }
 
     _validateId(id) {

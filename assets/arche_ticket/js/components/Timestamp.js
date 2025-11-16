@@ -1,6 +1,6 @@
-import { CONFIG } from '../config/constants.js';
-import { formatTimestamp } from '../utils/format.js';
-import { $$ } from '../utils/dom.js';
+import { CONFIG }           from '../config/constants.js';
+import { formatTimestamp }  from '../utils/format.js';
+import { $$ }               from '../utils/dom.js';
 
 class Timestamp {
     constructor() {

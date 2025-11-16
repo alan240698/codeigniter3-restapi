@@ -14,7 +14,7 @@ class EventBus {
     off(event, callback) {
         if (!this.events[event]) return;
         this.events[event] = this.events[event].filter(cb => cb !== callback);
-        
+
         // Cleanup empty arrays
         if (this.events[event].length === 0) {
             delete this.events[event];
@@ -23,7 +23,7 @@ class EventBus {
 
     emit(event, data) {
         if (!this.events[event]) return;
-        
+
         // Clone array to prevent issues if listeners modify the array
         const listeners = [...this.events[event]];
         listeners.forEach(callback => {

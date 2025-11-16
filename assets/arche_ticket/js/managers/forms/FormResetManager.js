@@ -1,5 +1,5 @@
-import FileManager from '../files/index.js';
-import Logger from '../../utils/logger.js';
+import FileManager  from '../files/index.js';
+import Logger       from '../../utils/logger.js';
 
 class FormResetManager {
     constructor(validationManager) {
@@ -12,12 +12,12 @@ class FormResetManager {
     resetForm(form, category) {
         form.reset();
         this.validationManager.clearFormErrors(form);
-        
+
         this._clearFileList(form);
         this._clearStoredFiles(category);
         this._resetFileInput(form);
         this._resetCustomSelects(form);
-        
+
         Logger.info('Form reset', { category });
     }
 
@@ -26,12 +26,12 @@ class FormResetManager {
      */
     resetFormOnSwitch(form, category) {
         form.reset();
-        
+
         this.validationManager.clearFormErrors(form);
         this._clearFileList(form);
         this._clearStoredFiles(category);
         this._resetFileInput(form);
-        
+
         Logger.info('Form reset on switch', { category });
     }
 

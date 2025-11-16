@@ -1,7 +1,7 @@
 <div class="dashboard-header">
     <h2>
         <i class="fas fa-headset"></i>
-        Archetype Group Ticket
+        Request IT/IS Support
     </h2>
-    <p>Select category and create your support ticket</p>
+    <p>Please select a category below to create your support ticket</p>
 </div>

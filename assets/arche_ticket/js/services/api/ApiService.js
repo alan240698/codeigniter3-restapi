@@ -1,6 +1,6 @@
-import { CONFIG } from '../../config/constants.js';
-import ApiRequestHandler from './ApiRequestHandler.js';
-import TicketApiService from './TicketApiService.js';
+import { CONFIG }           from '../../config/constants.js';
+import ApiRequestHandler    from './ApiRequestHandler.js';
+import TicketApiService     from './TicketApiService.js';
 
 class ApiService {
     constructor() {
@@ -53,7 +53,7 @@ class ApiService {
         return this;
     }
 
-    // Backward compatibility - expose ticket methods at root level
+    // Backward compatibility
     createTicket(formData) {
         return this.tickets.create(formData);
     }
@@ -77,6 +77,10 @@ class ApiService {
     uploadAttachment(file) {
         return this.tickets.uploadAttachment(file);
     }
+
+    downloadAttachment(docId, ticketId) {
+        return this.tickets.downloadTicketDocument(docId, ticketId);
+    } 
 }
 
 export default new ApiService();

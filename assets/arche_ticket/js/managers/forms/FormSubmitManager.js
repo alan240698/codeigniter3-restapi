@@ -1,7 +1,7 @@
-import ApiService from '../../services/api/index.js';
-import Toast from '../../components/Toast.js';
-import EventBus from '../../core/EventBus.js';
-import Logger from '../../utils/logger.js';
+import ApiService           from '../../services/api/index.js';
+import Toast                from '../../components/Toast.js';
+import EventBus             from '../../core/EventBus.js';
+import Logger               from '../../utils/logger.js';
 
 class FormSubmitManager {
     constructor(stateManager, validationManager, dataCollector, resetManager) {
@@ -11,75 +11,74 @@ class FormSubmitManager {
         this.resetManager = resetManager;
     }
 
-    /**
-     * Submit form with validation and file upload
-     */
-    async submit(form) {
-        const category = form.dataset.category;
-        
-        // Prevent double submission
-        if (this.stateManager.isFormSubmitting(category)) {
-            Logger.warn('Form already submitting', { category });
-            return;
-        }
-
-        const btn = form.querySelector('.submit-btn');
-        const btnText = btn?.querySelector('span');
-        
-        if (!btn || !btnText) {
-            Logger.error('Submit button or text not found');
-            Toast.error('Form configuration error');
-            return;
-        }
-
-        const originalText = btnText.textContent;
-
-        // Clear previous errors
-        this.validationManager.clearFormErrors(form);
-
-        // Validate form
-        const validation = this.validationManager.validateForm(form);
-        if (!validation.valid) {
-            return;
-        }
-
-        // Mark as submitting
-        this.stateManager.setSubmitting(category, true);
-
-        // Update button state
-        this._updateButtonState(btn, btnText, true);
-
-        try {
-            const formData = this.dataCollector.collectFormData(form, category);
-            const result = await ApiService.createTicket(formData);
-
-            if (result.success) {
-                this._handleSuccess(form, category, result);
-            } else {
-                this.validationManager.handleServerErrors(form, result);
-            }
-        } catch (error) {
-            Logger.error('Form submit error:', error);
-            const errorMsg = error.message || 'An error occurred. Please try again!';
-            Toast.error(errorMsg);
-        } finally {
-            // Reset button state
-            this.stateManager.setSubmitting(category, false);
-            this._updateButtonState(btn, btnText, false, originalText);
-        }
+async submit(form) {
+    const category = form.dataset.category;
+    
+    // Prevent double submission
+    if (this.stateManager.isFormSubmitting(category)) {
+        Logger.warn('Form already submitting', { category });
+        return;
     }
+
+    // ✅ SET NGAY LẬP TỨC để block các click tiếp theo
+    this.stateManager.setSubmitting(category, true);
+
+    const btn = form.querySelector('.submit-btn');
+    const btnText = btn?.querySelector('span');
+    
+    if (!btn || !btnText) {
+        Logger.error('Submit button or text not found');
+        Toast.error('Form configuration error');
+        this.stateManager.setSubmitting(category, false); // ✅ Reset nếu có lỗi
+        return;
+    }
+
+    const originalText = btnText.textContent;
+
+    // Clear previous errors
+    this.validationManager.clearFormErrors(form);
+
+    // Validate form
+    const validation = this.validationManager.validateForm(form);
+    if (!validation.valid) {
+        this.stateManager.setSubmitting(category, false); // ✅ Reset nếu validation fail
+        return;
+    }
+
+    // Update button state
+    this._updateButtonState(btn, btnText, true);
+
+    try {
+        const formData = this.dataCollector.collectFormData(form, category);
+        const result = await ApiService.createTicket(formData);
+
+        if (result.success) {
+            this._handleSuccess(form, category, result);
+        } else {
+            this.validationManager.handleServerErrors(form, result);
+        }
+    } catch (error) {
+        Logger.error('Form submit error:', error);
+        const errorMsg = error.message || 'An error occurred. Please try again!';
+        Toast.error(errorMsg);
+    } finally {
+        // Reset button state
+        this.stateManager.setSubmitting(category, false);
+        this._updateButtonState(btn, btnText, false, originalText);
+    }
+}
 
     /**
      * Handle successful form submission
      */
     _handleSuccess(form, category, result) {
         const ticketId = result.ticket_id || 'N/A';
-        Toast.success(`Ticket #${ticketId} created successfully!`);
+        Toast.success(`Ticket #${ticketId} has been created and assigned.<br/>You'll receive an email soon.`);
 
         this.resetManager.resetForm(form, category);
-        
+
         EventBus.emit('ticket:created', result);
-        
+
         // Collapse card after delay
         setTimeout(() => {
             EventBus.emit('card:collapse');

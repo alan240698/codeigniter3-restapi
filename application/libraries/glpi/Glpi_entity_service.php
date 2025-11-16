@@ -6,16 +6,22 @@ class Glpi_entity_service
     private $CI;
     private $http_client;
 
+    /***
+     * Constructor
+     */
     public function __construct()
     {
         $this->CI = &get_instance();
         $this->CI->load->library('glpi/glpi_http_client');
         $this->CI->load->library('glpi_api_validation');
-        
+
         $this->http_client = $this->CI->glpi_http_client;
-        $this->user_token = $this->CI->config->item('glpi_user_token');
+        $this->user_token  = $this->CI->config->item('glpi_user_token');
     }
 
+    /**
+     * Get entities
+     */
     public function getEntities()
     {
         $response = $this->http_client->request(
@@ -28,6 +34,9 @@ class Glpi_entity_service
         return $response['data'];
     }
 
+    /**
+     * Get categories by entity
+     */
     public function getCategoriesByEntity($id)
     {
         if (!$this->CI->glpi_api_validation->_validate_field('id', $id, ['required', 'integer', 'min:0'])) {
@@ -37,9 +46,9 @@ class Glpi_entity_service
         $payload = [
             'criteria' => [
                 [
-                    'field' => 80,
+                    'field'      => 80,
                     'searchtype' => 'equals',
-                    'value' => $id
+                    'value'      => $id
                 ]
             ]
         ];
@@ -54,6 +63,9 @@ class Glpi_entity_service
         return false;
     }
 
+    /**
+     * Get category id
+     */
     public function getCategoryId($category, $subcategory)
     {
         $categories = $this->CI->config->item('glpi_categories');

@@ -1,5 +1,5 @@
-import Logger from '../../utils/logger.js';
-import EventBus from '../../core/EventBus.js';
+import Logger       from '../../utils/logger.js';
+import EventBus     from '../../core/EventBus.js';
 
 class FormStateManager {
     constructor() {

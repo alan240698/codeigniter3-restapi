@@ -1,9 +1,9 @@
-import StorageService from '../../services/storage/index.js';
-import FileValidator from './FileValidator.js';
-import FileRenderer from './FileRenderer.js';
-import FileRemover from './FileRemover.js';
-import EventBus from '../../core/EventBus.js';
-import Logger from '../../utils/logger.js';
+import StorageService       from '../../services/storage/index.js';
+import FileValidator        from './FileValidator.js';
+import FileRenderer         from './FileRenderer.js';
+import FileRemover          from './FileRemover.js';
+import EventBus             from '../../core/EventBus.js';
+import Logger               from '../../utils/logger.js';
 
 /**
  * Main file manager - coordinates file operations

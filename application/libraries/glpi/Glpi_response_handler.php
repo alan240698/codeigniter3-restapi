@@ -3,6 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Glpi_response_handler
 {
+    /**
+     * Handle
+     */
     public function handle($response, $http_code, $curl_error)
     {
         if ($curl_error) {
@@ -22,21 +25,27 @@ class Glpi_response_handler
         );
     }
 
+    /**
+     * Success response
+     */
     private function successResponse($data, $http_code)
     {
         return [
-            'success' => true,
-            'data' => $data,
+            'success'   => true,
+            'data'      => $data,
             'http_code' => $http_code
         ];
     }
 
+    /**
+     * Error response
+     */
     private function errorResponse($message, $http_code, $data = null)
     {
         return [
-            'success' => false,
-            'message' => $message,
-            'data' => $data,
+            'success'   => false,
+            'message'   => $message,
+            'data'      => $data,
             'http_code' => $http_code
         ];
     }

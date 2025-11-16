@@ -75,11 +75,12 @@ function render_form_field($field_name, $field_config, $category = '')
     $html = '';
     $required = $field_config['required'] ? 'required' : '';
     $label = $field_config['label'];
+    $required_mark = $field_config['required'] ? ' <span class="required-mark">*</span>' : '';
 
     switch ($field_config['type']) {
         case 'text':
             $html .= '<div class="form-group">';
-            $html .= '<label><i class="fas fa-heading"></i> ' . $label . '</label>';
+            $html .= '<label><i class="fas fa-heading"></i> ' . $label . $required_mark . '</label>';
             $html .= '<input type="text" class="form-control" name="' . $field_name . '" ';
             $html .= 'placeholder="' . ($field_config['placeholder'] ?? '') . '" ' . $required . '>';
             $html .= '</div>';
@@ -87,7 +88,7 @@ function render_form_field($field_name, $field_config, $category = '')
 
         case 'textarea':
             $html .= '<div class="form-group full-width">';
-            $html .= '<label><i class="fas fa-align-left"></i> ' . $label . '</label>';
+            $html .= '<label><i class="fas fa-align-left"></i> ' . $label . $required_mark . '</label>';
             $html .= '<textarea class="form-control" name="' . $field_name . '" ';
             $html .= 'placeholder="' . ($field_config['placeholder'] ?? '') . '" ' . $required . '></textarea>';
             $html .= '</div>';
@@ -101,7 +102,7 @@ function render_form_field($field_name, $field_config, $category = '')
             $select_id = 'select_' . uniqid();
 
             $html .= '<div class="form-group full-width">';
-            $html .= '<label><i class="fas fa-list"></i> ' . $label . '</label>';
+            $html .= '<label><i class="fas fa-list"></i> ' . $label . $required_mark . '</label>';
 
             // Hidden input to store full path
             $html .= '<input type="hidden" name="' . $field_name . '" id="hidden_' . $select_id . '">';
@@ -123,21 +124,21 @@ function render_form_field($field_name, $field_config, $category = '')
                     const select = document.getElementById("' . $select_id . '");
                     const hiddenInput = document.getElementById("hidden_' . $select_id . '");
                     const pathDisplay = document.getElementById("path_' . $select_id . '");
-                    
+
                     select.addEventListener("change", function() {
                         const value = this.value;
                         
                         if (value) {
                             const fullPath = pathMap_' . $select_id . '[value];
                             hiddenInput.value = fullPath;
-                            
+
                             // Truncate if too long
                             const maxLength = 50;
                             let displayText = fullPath;
                             if (fullPath.length > maxLength) {
                                 displayText = fullPath.substring(0, maxLength) + "...";
                             }
-                            
+
                             pathDisplay.innerHTML = "<i class=\"fas fa-check-circle\"></i> " + displayText;
                             pathDisplay.title = fullPath;
                             pathDisplay.style.display = "block";
@@ -148,13 +149,24 @@ function render_form_field($field_name, $field_config, $category = '')
                             select.style.display = "block";
                         }
                     });
-                    
+
                     // Click on path to change selection
                     pathDisplay.addEventListener("click", function() {
                         pathDisplay.style.display = "none";
                         select.style.display = "block";
                         select.focus();
                     });
+
+                    const form = select.closest("form");
+                    if (form) {
+                        form.addEventListener("reset", function() {
+                            select.value = "";
+                            select.style.display = "block";
+                            hiddenInput.value = "";
+                            pathDisplay.style.display = "none";
+                            pathDisplay.innerHTML = "";
+                        });
+                    }
                 })();
             ';
             $html .= '</script>';
@@ -184,6 +196,11 @@ function render_form_field($field_name, $field_config, $category = '')
                 .selected-path i {
                     color: #4ade80;
                 }
+                .required-mark {
+                    color: #ef4444;
+                    font-weight: bold;
+                    margin-left: 2px;
+                }
             </style>';
 
             $html .= '</div>';
@@ -194,7 +211,7 @@ function render_form_field($field_name, $field_config, $category = '')
             $max_size_mb = ($field_config['max_size'] ?? 10485760) / 1048576;
 
             $html .= '<div class="form-group full-width">';
-            $html .= '<label><i class="fas fa-paperclip"></i> ' . $label . ' (option)</label>';
+            $html .= '<label><i class="fas fa-paperclip"></i> ' . $label . ' (optional)' . '</label>';
             $html .= '<div class="file-upload-wrapper">';
             $html .= '<input type="file" name="attachments[]" multiple ';
             $html .= 'accept="' . str_replace('|', ',', $field_config['allowed_types']) . '">';

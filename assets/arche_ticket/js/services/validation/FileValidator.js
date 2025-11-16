@@ -1,4 +1,4 @@
-import { CONFIG } from '../../config/constants.js';
+import { CONFIG }                           from '../../config/constants.js';
 import { formatFileSize, getFileExtension } from '../../utils/format.js';
 
 class FileValidator {

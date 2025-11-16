@@ -8,6 +8,9 @@ class Glpi_ticket_service
     private $session_manager;
     private $data_sanitizer;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->CI = &get_instance();
@@ -15,32 +18,38 @@ class Glpi_ticket_service
         $this->CI->load->library('glpi/glpi_session_manager');
         $this->CI->load->library('glpi/glpi_data_sanitizer');
         $this->CI->load->library('glpi_api_validation');
-        
-        $this->http_client = $this->CI->glpi_http_client;
-        $this->session_manager = $this->CI->glpi_session_manager;
-        $this->data_sanitizer = $this->CI->glpi_data_sanitizer;
+
+        $this->http_client      = $this->CI->glpi_http_client;
+        $this->session_manager  = $this->CI->glpi_session_manager;
+        $this->data_sanitizer   = $this->CI->glpi_data_sanitizer;
     }
 
-    public function create($ticket_data, $auto_validate = true)
+    /**
+     * Create ticket
+     */
+    public function create($ticket_data, $autoValidate = true)
     {
         if (!$this->session_manager->hasActiveSession()) {
-            return ['success' => false, 'message' => 'Session not initialized'];
+            return [
+                'success' => false,
+                'message' => 'Session not initialized'
+            ];
         }
 
-        if ($auto_validate) {
+        if ($autoValidate) {
             $ticket_data = $this->data_sanitizer->sanitize($ticket_data);
 
             if (!$this->CI->glpi_api_validation->_validate_data($ticket_data, 'ticket')) {
                 return [
-                    'success' => false,
-                    'message' => $this->CI->glpi_api_validation->get_first_error(),
-                    'errors' => $this->CI->glpi_api_validation->get_errors(),
+                    'success'           => false,
+                    'message'           => $this->CI->glpi_api_validation->get_first_error(),
+                    'errors'            => $this->CI->glpi_api_validation->get_errors(),
                     'validation_failed' => true
                 ];
             }
         }
 
-        $payload = ['input' => $ticket_data];
+        $payload  = ['input' => $ticket_data];
         $response = $this->http_client->request('Ticket', 'POST', $payload);
 
         if (isset($response['data']['id'])) {
@@ -50,35 +59,44 @@ class Glpi_ticket_service
         return $response;
     }
 
+    /**
+     * Reopen
+     */
     public function reopen($id)
     {
         if (!$this->session_manager->hasActiveSession()) {
-            return ['success' => false, 'message' => 'Session not initialized'];
+            return [
+                'success' => false,
+                'message' => 'Session not initialized'
+            ];
         }
 
         $payload = ['input' => ['status' => 2]];
         return $this->http_client->request("Ticket/$id", 'PUT', $payload);
     }
 
+    /**
+     * Get by requester
+     */
     public function getByRequester()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        $requester_email = $_SESSION['user_sso_glpi']['email'] ?? 'thong.dh@archetype-group.com';
+        $requesterEmail = $_SESSION['auser'] ?? 'thong.dh@archetype-group.com';   
 
         $payload = [
             'criteria' => [
                 [
-                    'field' => 34,
+                    'field'      => 34,
                     'searchtype' => 'contains',
-                    'value' => $requester_email
+                    'value'      => $requesterEmail
                 ]
             ]
         ];
 
-        $response = $this->http_client->request('search/Ticket', 'POST', $payload);
+        $response = $this->http_client->request('search/Ticket?range=0-999&sort=2&order=DESC', 'POST', $payload);
 
         if (isset($response['success']) && $response['success'] && isset($response['data']['data'])) {
             return $response['data']['data'];
@@ -88,74 +106,135 @@ class Glpi_ticket_service
         return false;
     }
 
-    public function getWithAttachments($ticket_id)
+    /**
+     * Get with attachments
+     */
+    public function getWithAttachments($ticketId)
     {
         if (!$this->session_manager->hasActiveSession()) {
-            return ['success' => false, 'message' => 'Session not initialized'];
-        }
-
-        if (!$this->CI->glpi_api_validation->_validate_field('ticket_id', $ticket_id, ['required', 'integer', 'min:1'])) {
             return [
                 'success' => false,
-                'message' => $this->CI->glpi_api_validation->get_first_error(),
-                'errors' => $this->CI->glpi_api_validation->get_errors(),
+                'message' => 'Session not initialized'
+            ];
+        }
+
+        if (!$this->CI->glpi_api_validation->_validate_field('ticket_id', $ticketId, ['required', 'integer', 'min:1'])) {
+            return [
+                'success'           => false,
+                'message'           => $this->CI->glpi_api_validation->get_first_error(),
+                'errors'            => $this->CI->glpi_api_validation->get_errors(),
                 'validation_failed' => true
             ];
         }
 
-        $ticket_response = $this->http_client->request("Ticket/{$ticket_id}", 'GET');
-        
-        if (!$ticket_response['success']) {
-            return $ticket_response;
+        $ticketResponse = $this->http_client->request("Ticket/{$ticketId}", 'GET');
+        if (!$ticketResponse['success']) {
+            return $ticketResponse;
         }
 
-        $ticket_data = $ticket_response['data'];
-        $ticket_data['attachments'] = $this->getAttachments($ticket_data);
+        $ticketData = $ticketResponse['data'];
+        $ticketData['attachments'] = $this->getAttachments($ticketData);
 
         return [
             'success' => true,
-            'data' => $ticket_data
+            'data'    => $ticketData
         ];
     }
 
+    /**
+     * Get supporter ticket
+     */
+    public function getSupporterTicket($ticketId)
+    {
+        if (!$this->session_manager->hasActiveSession()) {
+            return [
+                'success' => false,
+                'message' => 'Session not initialized'
+            ];
+        }
+
+        if (!$this->CI->glpi_api_validation->_validate_field('ticket_id', $ticketId, ['required', 'integer', 'min:1'])) {
+            return [
+                'success'           => false,
+                'message'           => $this->CI->glpi_api_validation->get_first_error(),
+                'errors'            => $this->CI->glpi_api_validation->get_errors(),
+                'validation_failed' => true
+            ];
+        }
+
+        $ticket_supporter_response = $this->http_client->request("Ticket/{$ticketId}/Ticket_User/", 'GET');
+        
+        if (!$ticket_supporter_response['success']) {
+            return $ticket_supporter_response;
+        }
+
+        $ticket_data = $ticket_supporter_response['data'];
+
+        $dataTmp = [];
+        foreach($ticket_data as $index => $item)
+        {
+            $userId = $item['users_id'];
+            if (empty($userId)) {
+                continue;
+            }
+
+            $res = $this->http_client->request("User/{$userId}", 'GET');
+            if($res['success']  == 1) {
+                $dataTmp[] = $res['data'];
+            }
+
+        }
+
+        return [
+            'success' => true,
+            'data'    => $dataTmp
+        ];
+    }
+
+    /**
+     * Add requester
+     */
     public function addRequester($response)
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        $ticket_id = $response['data']['id'];
-        $requester_email = $_SESSION['user_sso_glpi']['email'] ?? 'thong.dh@archetype-group.com';
+        $ticketId        = $response['data']['id'];
+        $requester_email = $_SESSION['auser'] ?? 'thong.dh@archetype-group.com';
 
         if ($requester_email) {
-            $this->http_client->request("Ticket/$ticket_id/Ticket_User", "POST", [
+            $this->http_client->request("Ticket/$ticketId/Ticket_User", "POST", [
                 "input" => [
-                    "tickets_id" => $ticket_id,
-                    "type" => 1,
-                    "use_notification" => 1,
+                    "tickets_id"        => $ticketId,
+                    "type"              => 1,
+                    "use_notification"  => 1,
                     "alternative_email" => $requester_email
                 ]
             ]);
         }
     }
 
-    private function getAttachments($ticket_data)
+    /**
+     * Get attachments
+     */
+    private function getAttachments($ticketData)
     {
         $attachments = [];
 
-        if (!isset($ticket_data['links']) || !is_array($ticket_data['links'])) {
+        if (!isset($ticketData['links']) || !is_array($ticketData['links'])) {
             return $attachments;
         }
 
-        foreach ($ticket_data['links'] as $link) {
+        foreach ($ticketData['links'] as $link) {
             if (isset($link['rel']) && $link['rel'] === 'Document_Item' && isset($link['href'])) {
                 $parsed_url = parse_url($link['href']);
-                $path = $parsed_url['path'];
-                
+                $path       = $parsed_url['path'];
+
                 if (preg_match('#/api\.php/(v\d+/)?(.+)$#', $path, $matches)) {
-                    $endpoint = rtrim($matches[2], '/');
+                    $endpoint           = rtrim($matches[2], '/');
                     $doc_items_response = $this->http_client->request($endpoint, 'GET');
-                    
+
                     if ($doc_items_response['success'] && isset($doc_items_response['data'])) {
                         foreach ($doc_items_response['data'] as $doc_item) {
                             if (isset($doc_item['documents_id'])) {
@@ -171,22 +250,25 @@ class Glpi_ticket_service
         return array_filter($attachments);
     }
 
-    private function getDocumentDetails($doc_id)
+    /**
+     * Get document details by id
+     */
+    private function getDocumentDetails($docId)
     {
-        $doc_response = $this->http_client->request("Document/{$doc_id}", 'GET');
-        
+        $doc_response = $this->http_client->request("Document/{$docId}", 'GET');
+
         if ($doc_response['success'] && isset($doc_response['data'])) {
             $doc = $doc_response['data'];
             return [
-                'id' => $doc['id'] ?? null,
-                'name' => $doc['name'] ?? 'Unknown',
-                'filename' => $doc['filename'] ?? '',
-                'filepath' => $doc['filepath'] ?? '',
-                'mime' => $doc['mime'] ?? 'application/octet-stream',
-                'size' => $doc['size'] ?? 0,
-                'date_creation' => $doc['date_creation'] ?? '',
-                'comment' => $doc['comment'] ?? '',
-                'tag' => $doc['tag'] ?? ''
+                'id'            => $doc['id']               ?? null,
+                'name'          => $doc['name']             ?? 'Unknown',
+                'filename'      => $doc['filename']         ?? '',
+                'filepath'      => $doc['filepath']         ?? '',
+                'mime'          => $doc['mime']             ?? 'application/octet-stream',
+                'size'          => $doc['size']             ?? 0,
+                'date_creation' => $doc['date_creation']    ?? '',
+                'comment'       => $doc['comment']          ?? '',
+                'tag'           => $doc['tag']              ?? ''
             ];
         }
 

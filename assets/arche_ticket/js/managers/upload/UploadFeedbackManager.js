@@ -1,5 +1,5 @@
-import Toast from '../../components/Toast.js';
-import { addClass, removeClass } from '../../utils/dom.js';
+import Toast                        from '../../components/Toast.js';
+import { addClass, removeClass }    from '../../utils/dom.js';
 
 class UploadFeedbackManager {
     showFeedback({ successCount, errors }, wrapper) {
@@ -20,11 +20,11 @@ class UploadFeedbackManager {
 
     _showErrors(errors, wrapper) {
         addClass(wrapper, 'error');
-        
+
         // Show only unique errors
         const uniqueErrors = [...new Set(errors)];
         Toast.error(uniqueErrors[0]);
-        
+
         // Auto-remove error state after 3s
         setTimeout(() => {
             removeClass(wrapper, 'error');

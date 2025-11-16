@@ -14,6 +14,7 @@ class TicketDetailManager {
 
         this._initElements();
         this._bindEvents();
+        this._bindAttachmentDownloadEvents();
     }
 
     /**
@@ -42,6 +43,20 @@ class TicketDetailManager {
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) {
                 this.close();
+            }
+        });
+    }
+
+    _bindAttachmentDownloadEvents() {
+        this.container.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-download');
+            if (!btn) return;
+
+            const docId = btn.dataset.docid;
+            const ticketId = btn.dataset.ticketid || this.currentTicket?.id;
+
+            if (docId && ticketId) {
+                this.viewAttachment(docId, ticketId);
             }
         });
     }
@@ -109,6 +124,21 @@ class TicketDetailManager {
         } catch (error) {
             Logger.error('Failed to load ticket detail:', error);
             this.container.innerHTML = TemplateRenderer.getErrorHtml(error.message);
+        }
+    }
+
+    async viewAttachment(docId, ticketId) {
+        if (!docId || !ticketId) {
+            Logger.error('Missing document ID or ticket ID for download');
+            return;
+        }
+
+        try {
+            const response = await ApiService.downloadAttachment(docId, ticketId);
+            Logger.info(`Document ${docId} downloaded successfully`);
+
+        } catch (err) {
+            Logger.error('Download failed:', err);
         }
     }
 

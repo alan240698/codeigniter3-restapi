@@ -11,7 +11,7 @@ class ValidationRuleManager {
         if (!this.rules.has(formId)) {
             this.rules.set(formId, new Map());
         }
-        
+
         this.rules.get(formId).set(fieldName, rule);
         
         Logger.debug(`Set validation rule for ${formId}.${fieldName}`, rule);
@@ -31,7 +31,7 @@ class ValidationRuleManager {
 
         const hasRules = this.rules.has(formId);
         this.rules.delete(formId);
-        
+
         if (hasRules) {
             Logger.info(`Cleared validation rules for ${formId}`);
         }
@@ -40,7 +40,7 @@ class ValidationRuleManager {
     clearAll() {
         const formCount = this.rules.size;
         this.rules.clear();
-        
+
         Logger.info(`Cleared validation rules from ${formCount} form(s)`);
     }
 

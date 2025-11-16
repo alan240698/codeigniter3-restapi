@@ -1,5 +1,5 @@
-import EventBus from '../../core/EventBus.js';
-import Logger from '../../utils/logger.js';
+import EventBus     from '../../core/EventBus.js';
+import Logger       from '../../utils/logger.js';
 
 class FormSwitchManager {
     constructor(stateManager, resetManager) {
@@ -26,14 +26,14 @@ class FormSwitchManager {
      */
     _handleFormSwitch(fromFormId, toFormId) {
         Logger.info('Form switching', { fromFormId, toFormId });
-        
+
         if (fromFormId && fromFormId !== toFormId) {
             const previousForm = document.querySelector(`form[data-category="${fromFormId}"]`);
             if (previousForm) {
                 this.resetManager.resetFormOnSwitch(previousForm, fromFormId);
             }
         }
-        
+
         this.stateManager.setActiveForm(toFormId);
     }
 
@@ -42,14 +42,14 @@ class FormSwitchManager {
      */
     _handleCardExpanded(category) {
         const currentActive = this.stateManager.getCurrentActiveForm();
-        
+
         if (currentActive && currentActive !== category) {
             const previousForm = document.querySelector(`form[data-category="${currentActive}"]`);
             if (previousForm) {
                 this.resetManager.resetFormOnSwitch(previousForm, currentActive);
             }
         }
-        
+
         this.stateManager.setActiveForm(category);
     }
 }

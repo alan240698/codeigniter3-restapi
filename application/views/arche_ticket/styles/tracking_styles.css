@@ -392,7 +392,7 @@
 
 /* Ticket item status variants */
 .ticket-item.new {
-    border-left: 5px solid #f5576c;
+    border-left: 5px solid #e9fa01;
 }
 
 .ticket-item.pending {
@@ -579,7 +579,6 @@
     align-items: center;
     gap: 0.375rem;
 }
-
 .ticket-detail-section {
     margin-bottom: 2rem;
 }
@@ -593,6 +592,8 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    overflow-wrap: anywhere;
 }
 
 .ticket-detail-content {
@@ -601,7 +602,19 @@
     border-radius: var(--radius-md);
     line-height: 1.7;
     color: #555;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    max-width: 100%;
 }
+
+.ticket-detail-content * {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
 
 /* ============================================================
    8. TICKET RESPONSES & ATTACHMENTS
@@ -967,39 +980,39 @@
 }
 
 .status-badge.new {
-    background: #fff3cd;
+    /* background: #fff3cd; */
     color: #856404;
 }
 
 .status-badge.open {
-    background: #e3f2fd;
+    /* background: #e3f2fd; */
     color: #1976d2;
 }
 
 .status-badge.pending {
-    background: #fed7d7;
+    /* background: #fed7d7; */
     color: #c53030;
 }
 
 .status-badge.processing,
 .status-badge.in_progress {
-    background: #bee3f8;
+    /* background: #bee3f8; */
     color: #2c5282;
 }
 
 .status-badge.solved,
 .status-badge.resolved {
-    background: #c6f6d5;
+    /* background: #c6f6d5; */
     color: #22543d;
 }
 
 .status-badge.closed {
-    background: #e9d8fd;
+    /* background: #e9d8fd; */
     color: #553c9a;
 }
 
 .status-badge.cancelled {
-    background: #ffebee;
+    /* background: #ffebee; */
     color: #d32f2f;
 }
 
@@ -1460,7 +1473,7 @@
 }
 
 /* ============================================================
-   ACCESSIBILITY IMPROVEMENTS
+    ACCESSIBILITY IMPROVEMENTS
    ============================================================ */
 
 /* Focus states */
@@ -1499,35 +1512,8 @@
     }
 }
 
-/* Dark mode support (optional) */
-@media (prefers-color-scheme: dark) {
-    /* Uncomment and customize if dark mode is needed */
-    /*
-    :root {
-        --bg-light: #1e1e1e;
-        --bg-lighter: #2d2d2d;
-        --text-primary: #e0e0e0;
-        --text-secondary: #b0b0b0;
-        --text-muted: #808080;
-        --border-color: #404040;
-    }
-
-    body {
-        background: #121212;
-        color: var(--text-primary);
-    }
-
-    .modal-content,
-    .stats-content,
-    .ticket-item {
-        background: #1e1e1e;
-        color: var(--text-primary);
-    }
-    */
-}
-
 /* ============================================================
-   SCROLLBAR STYLING
+    SCROLLBAR STYLING
    ============================================================ */
 .modal-body::-webkit-scrollbar,
 .ticket-detail-container::-webkit-scrollbar,
@@ -1572,9 +1558,9 @@
     animation: spin 1s linear infinite;
 }
 
-.fa-spinner {
+/* .fa-spinner {
     animation: spin 1s linear infinite;
-}
+} */
 
 /* ============================================================
    TICKET ITEM ROLE ATTRIBUTES
@@ -1945,3 +1931,5 @@
     background: rgba(245, 237, 237, 0.959);
     transform: rotate(90deg);
 }
+
+

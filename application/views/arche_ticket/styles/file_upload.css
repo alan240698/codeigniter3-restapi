@@ -242,7 +242,7 @@
 }
 
 /* Toast styles */
-#toastContainer {
+/* #toastContainer {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -290,7 +290,7 @@
 .toast div {
     flex: 1;
     line-height: 1.4;
-}
+} */
 
 @keyframes slideIn {
     from {

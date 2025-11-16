@@ -1,7 +1,7 @@
-import ValidationService from '../../services/validation/index.js';
-import Toast from '../../components/Toast.js';
-import Logger from '../../utils/logger.js';
-import { $$, addClass, removeClass } from '../../utils/dom.js';
+import ValidationService                from '../../services/validation/index.js';
+import Toast                            from '../../components/Toast.js';
+import Logger                           from '../../utils/logger.js';
+import { $$, addClass, removeClass }    from '../../utils/dom.js';
 
 class FormValidationManager {
     constructor() {

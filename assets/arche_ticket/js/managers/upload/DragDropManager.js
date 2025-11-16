@@ -43,7 +43,7 @@ class DragDropManager {
         const handler = () => {
             const count = this.dragCounter.get(wrapperId) || 0;
             this.dragCounter.set(wrapperId, count + 1);
-            
+
             if (count === 0) {
                 addClass(wrapper, 'dragover');
             }
@@ -56,7 +56,7 @@ class DragDropManager {
         const handler = () => {
             addClass(wrapper, 'dragover');
         };
-        
+
         this.eventManager.add(wrapper, 'dragover', handler);
     }
 
@@ -64,12 +64,12 @@ class DragDropManager {
         const handler = () => {
             const count = this.dragCounter.get(wrapperId) || 0;
             this.dragCounter.set(wrapperId, Math.max(0, count - 1));
-            
+
             if (count - 1 <= 0) {
                 removeClass(wrapper, 'dragover');
             }
         };
-        
+
         this.eventManager.add(wrapper, 'dragleave', handler);
     }
 
@@ -77,13 +77,13 @@ class DragDropManager {
         const handler = (e) => {
             this.dragCounter.set(wrapperId, 0);
             removeClass(wrapper, 'dragover');
-            
+
             const files = e.dataTransfer?.files;
             if (files && files.length > 0) {
                 onFilesDropped(files);
             }
         };
-        
+
         this.eventManager.add(wrapper, 'drop', handler);
     }
 }

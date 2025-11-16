@@ -10,11 +10,11 @@ class LocalStoragePersistence {
             const stored = localStorage.getItem(this.storageKey);
             if (stored) {
                 const data = JSON.parse(stored);
-                
+
                 if (data.validationRules) {
                     validationRuleManager.fromArray(data.validationRules);
                 }
-                
+
                 Logger.info('Restored storage from localStorage', data);
             }
         } catch (error) {

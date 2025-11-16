@@ -6,28 +6,37 @@ class Ticket extends CI_Controller
     private const MAX_FILES_DEFAULT     = 3;
     private const MAX_FILE_SIZE_DEFAULT = 10485760;
 
+    /**
+     * Contructor
+     */
     public function __construct()
     {
         parent::__construct();
 
+        // Load config
         $this->load->config('glpi');
+        // Load libraries
         $this->load->library(['form_validation', 'upload']);
+        // Load model
         $this->load->model('arche_ticket/glpi/glpi_api_model');
     }
 
+    /**
+     * Index page
+     */
     public function index()
     {
         try {
-            $cards              = $this->glpi_api_model->getEntities();
-
-            $categoryResults    = $this->getValidatedCategories($cards);
+            $cards           = $this->glpi_api_model->getEntities();
+            $categoryResults = $this->getValidatedCategories($cards);
 
             $data = [
-                'page_title' => 'IT Support Dashboard',
+                'page_title' => 'Request IT/IS Support',
                 'cards'      => $cards,
                 'formData'   => $categoryResults
             ];
 
+            // Send data to view
             $this->load->view('arche_ticket/index', $data);
 
         } catch (Exception $e) {
@@ -36,28 +45,69 @@ class Ticket extends CI_Controller
         }
     }
 
-    public function downloadTicketDocument($id)
+    /**
+     * Get list
+     */
+    public function list()
     {
-        return $this->glpi_api_model->downloadDocument($id);
+        return $this->glpi_api_model->getList();
     }
 
+    /**
+     * View detail ticket
+     */
     public function view($id)
     {
         return $this->glpi_api_model->getTicketById($id);
     }
 
+    /**
+     * Download ticket document
+     */
+    public function downloadTicketDocument($documentId)
+    {
+        $ticketId = $this->input->get('ticket_id');
+
+        if (!$documentId || !$ticketId) {
+            show_error('Missing document_id or ticket_id', 400);
+            return;
+        }
+
+        $result = $this->glpi_api_model->downloadDocument($documentId, $ticketId);
+
+        if (!$result) {
+            show_error('Document not found or not linked to ticket', 404);
+            return;
+        }
+
+        $response = [
+            'success'      => true,
+            'download_url' => $result['download_url'] ?? null,
+        ];
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    /**
+     * Reopen ticket
+     */
     public function reopen($id)
     {
         return $this->glpi_api_model->reopenTicketById($id);
     }
 
+    /**
+     * Create ticket
+     */
     public function create()
     {
         $this->output->set_content_type('application/json');
 
         try {
             // Get form data
-            $input      = $this->collectInput();
+            $input = $this->collectInput();
 
             // Validate form data
             $validation = $this->validateInput($input);
@@ -76,12 +126,11 @@ class Ticket extends CI_Controller
             $ticketData = $this->prepareTicketData($input);
 
             $result = $this->glpi_api_model->createTicketWithAttachments(
-                $ticketData, 
+                $ticketData,
                 $uploadResult['files']
             );
 
             $this->sendJsonResponse($result);
-
         } catch (Exception $e) {
             log_message('error', 'Ticket creation error: ' . $e->getMessage());
             log_message('error', 'Stack trace: ' . $e->getTraceAsString());
@@ -93,6 +142,9 @@ class Ticket extends CI_Controller
         }
     }
 
+    /**
+     * Collect input
+     */
     private function collectInput(): array
     {
         return [
@@ -102,6 +154,9 @@ class Ticket extends CI_Controller
         ];
     }
 
+    /**
+     * Validate input
+     */
     private function validateInput(array $input): array
     {
         $errors = [];
@@ -129,13 +184,9 @@ class Ticket extends CI_Controller
         return ['success' => true];
     }
 
-    public function list()
-    {
-           return $this->glpi_api_model->getList();
-
-
-    }
-
+    /**
+     * Handle file uploads
+     */
     private function handleFileUploads(string $category): array
     {
         if (empty($_FILES['attachments']['name'][0])) {
@@ -214,6 +265,9 @@ class Ticket extends CI_Controller
         ];
     }
 
+    /**
+     * Prepare ticket data
+     */
     private function prepareTicketData(array $input): array
     {
         $formData = [
@@ -222,14 +276,20 @@ class Ticket extends CI_Controller
         ];
 
 
-        return $this->glpi_api_model->prepare_ticket_data($input['category'], $formData);
+        return $this->glpi_api_model->prepareTicketData($input['category'], $formData);
     }
 
+    /**
+     * Send json response
+     */
     private function sendJsonResponse(array $data): void
     {
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * Validate categories
+     */
     private function validateCategories(array $categories): array
     {
         $errors = [];

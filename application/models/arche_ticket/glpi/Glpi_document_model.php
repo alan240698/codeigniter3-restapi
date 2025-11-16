@@ -3,18 +3,32 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Glpi_document_model extends CI_Model
 {
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
+
         $this->load->library('glpi/glpi_api');
         $this->load->library('glpi_api_validation');
     }
 
-    public function download($id)
+    /**
+     * Download
+     */
+    public function download($id, $ticketId)
     {
-        return $this->glpi_api->download_document($id);
+        if (!$this->glpi_api->initSession()) {
+            return $this->glpi_api_validation->errorResponse('Unable to connect to GLPI API');
+        }
+
+        return $this->glpi_api->download_document($id, $ticketId);
     }
 
+    /**
+     * Upload multiple
+     */
     public function uploadMultiple($ticket_id, $files)
     {
         $uploaded = [];
@@ -41,6 +55,9 @@ class Glpi_document_model extends CI_Model
         return $uploaded;
     }
 
+    /**
+     * Upload single
+     */
     public function uploadSingle($ticket_id, $file)
     {
         if (!$this->glpi_api_validation->isValidFile($file)) {

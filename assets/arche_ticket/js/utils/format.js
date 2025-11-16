@@ -1,3 +1,6 @@
+
+import { FILE_ICONS } from '../config/constants.js';
+
 export const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -33,14 +36,6 @@ export const formatTimestamp = () => {
 export const getFileExtension = (fileName) => {
     return fileName.split('.').pop().toLowerCase();
 };
-
-// export const getFileIcon = (fileName) => {
-//     const ext = getFileExtension(fileName);
-//     const { FILE_ICONS } = await import('../config/constants.js');
-//     return FILE_ICONS[ext] || 'fa-file';
-// };
-
-import { FILE_ICONS } from '../config/constants.js';
 
 export const getFileIcon = (fileName) => {
     const ext = getFileExtension(fileName);

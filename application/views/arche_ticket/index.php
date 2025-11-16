@@ -47,7 +47,7 @@
     <script>
         window.BASE_URL = '<?= base_url() ?>';
     </script>
-    <script type="module" src="<?= base_url('/assets/arche_ticket/js/app.js') ?>"></script>
+    <script type="module" src="<?= base_url('assets/arche_ticket/js/app.js') ?>"></script>
 </body>
 
 </html>

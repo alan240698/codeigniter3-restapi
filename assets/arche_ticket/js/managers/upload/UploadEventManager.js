@@ -7,14 +7,14 @@ class UploadEventManager {
         if (!this.listeners.has(element)) {
             this.listeners.set(element, []);
         }
-        
+
         this.listeners.get(element).push({ event, handler });
         element.addEventListener(event, handler);
     }
 
     remove(element, event, handler) {
         element.removeEventListener(event, handler);
-        
+
         const listeners = this.listeners.get(element);
         if (listeners) {
             const index = listeners.findIndex(

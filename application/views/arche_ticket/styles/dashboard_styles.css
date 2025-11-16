@@ -267,9 +267,9 @@ body {
     transition: all 0.5s ease;
 }
 
-.category-card.expanded .card-description {
+/* .category-card.expanded .card-description {
     display: none;
-}
+} */
 
 .card-body {
     padding: 0;
@@ -510,7 +510,7 @@ body {
 }
 
 /* Toast Notification */
-.toast-container {
+/* .toast-container {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -568,7 +568,7 @@ body {
 
 .toast.warning i {
     color: var(--warning);
-}
+} */
 
 .spinner {
     width: 18px;
@@ -601,5 +601,175 @@ body {
     .nav-pill {
         padding: 10px 16px;
         font-size: 0.85rem;
+    }
+}
+
+
+
+/* Placeholder Card Styles */
+.category-card.__placeholder__ {
+    min-height: 500px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px dashed #cbd5e0 !important;
+    opacity: 0.65;
+    pointer-events: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+/* ⭐ Ẩn placeholder khi có bất kỳ card nào khác expanded */
+.cards-grid:has(.category-card:not(.__placeholder__).expanded) .category-card.__placeholder__ {
+    display: none;
+}
+
+/* HOẶC nếu muốn fade out mượt mà */
+.cards-grid:has(.category-card:not(.__placeholder__).expanded) .category-card.__placeholder__ {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+    max-height: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none !important;
+    pointer-events: none;
+}
+
+/* Overlay với pattern sọc chéo */
+.category-card.__placeholder__::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 15px,
+            rgba(255, 255, 255, 0.4) 15px,
+            rgba(255, 255, 255, 0.4) 30px
+        );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Header mờ */
+.category-card.__placeholder__ .card-header {
+    background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
+    opacity: 0.7;
+    filter: grayscale(0.6);
+}
+
+.category-card.__placeholder__ .card-header-content i {
+    color: #868e96;
+    opacity: 0.5;
+}
+
+.category-card.__placeholder__ .card-header-content h3 {
+    color: #6c757d;
+    opacity: 0.6;
+}
+
+/* Ẩn nút close */
+.category-card.__placeholder__ .close-btn {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Description nổi bật */
+.category-card.__placeholder__ .card-description {
+    color: #495057;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 8rem 1rem 0;
+    border-radius: 8px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Body mờ hoàn toàn */
+.category-card.__placeholder__ .card-body {
+    opacity: 0.3;
+    filter: grayscale(0.9) blur(2px);
+}
+
+/* Ẩn form khi là placeholder */
+.category-card.__placeholder__ .ticket-form {
+    display: none;
+}
+
+/* Icon mũi tên chỉ lên */
+.category-card.__placeholder__::after {
+    content: '\f062'; /* Font Awesome arrow-up */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    font-size: 4rem;
+    color: #adb5bd;
+    z-index: 2;
+    animation: arrowBounce 2s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translate(-50%, -60px) rotate(0deg);
+        opacity: 0.4;
+    }
+}
+
+/* Pulsing effect nhẹ */
+.category-card.__placeholder__ {
+    animation: placeholderPulse 3s ease-in-out infinite;
+}
+
+@keyframes placeholderPulse {
+    0%, 100% {
+        opacity: 0.65;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.55;
+        transform: scale(0.998);
+    }
+}
+
+/* Box shadow nhẹ */
+.category-card.__placeholder__ {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Không có hover effect */
+.category-card.__placeholder__:hover {
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .category-card.__placeholder__ {
+        min-height: 400px;
+    }
+    
+    .category-card.__placeholder__::after {
+        font-size: 3rem;
+        top: 25%;
+    }
+    
+    .category-card.__placeholder__ .card-description {
+        font-size: 1rem;
+        margin-top: 6rem;
+        padding: 1.5rem 1rem;
     }
 }

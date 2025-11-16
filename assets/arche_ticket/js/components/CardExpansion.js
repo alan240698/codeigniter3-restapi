@@ -1,15 +1,16 @@
-import StateManager from '../core/StateManager.js';
-import EventBus from '../core/EventBus.js';
+import StateManager                     from '../core/StateManager.js';
+import EventBus                         from '../core/EventBus.js';
 import { $, $$, addClass, removeClass } from '../utils/dom.js';
-import Logger from '../utils/logger.js';
+import Logger                           from '../utils/logger.js';
+import { DEFAULT_ACTIVE_CATEGORY }      from '../config/constants.js';
 
 class CardExpansion {
     constructor() {
         this.container = null;
         this.cards = [];
         this.navPills = [];
-        this.currentActiveCard = null;
-        
+        this.currentActiveCard = '';
+
         this._initElements();
     }
 
@@ -47,6 +48,12 @@ class CardExpansion {
             if (card) {
                 this.expand(card);
             }
+        }
+
+        const defaultCard = $(`.category-card[data-category="${DEFAULT_ACTIVE_CATEGORY}"]`);
+        if (defaultCard) {
+            this.expand(defaultCard);
+            Logger.info('Default card set as active', { defaultCategory: DEFAULT_ACTIVE_CATEGORY });
         }
     }
 
@@ -106,31 +113,44 @@ class CardExpansion {
      * Collapse all cards
      */
     collapse() {
-        const previousCategory = this.currentActiveCard;
+        // const previousCategory = this.currentActiveCard;
 
-        // Collapse all cards
-        this.cards.forEach(card => removeClass(card, 'expanded'));
-        removeClass(this.container, 'has-active');
-        
-        // Reset nav pills
-        this.navPills.forEach(pill => removeClass(pill, 'active'));
-        
-        // Update state
-        StateManager.set('activeCard', null);
-        this.currentActiveCard = null;
+        // // const placeholder = document.querySelector('.category-card.__placeholder__');
+        // // if (placeholder) placeholder.style.display = 'none';
 
-        // Emit collapse event
-        EventBus.emit('card:collapsed', { previousCategory });
+        // // Collapse all cards
+        // this.cards.forEach(card => removeClass(card, 'expanded'));
+        // removeClass(this.container, 'has-active');
 
-        // Also emit form:switch to trigger reset of previous form
-        if (previousCategory) {
-            EventBus.emit('form:switch', { 
-                fromFormId: previousCategory, 
-                toFormId: null 
-            });
+        // // Reset nav pills
+        // this.navPills.forEach(pill => removeClass(pill, 'active'));
+
+        // // Update state
+        // StateManager.set('activeCard', null);
+        // this.currentActiveCard = null;
+
+        // // Emit collapse event
+        // EventBus.emit('card:collapsed', { previousCategory });
+
+        // // Also emit form:switch to trigger reset of previous form
+        // if (previousCategory) {
+        //     EventBus.emit('form:switch', {
+        //         fromFormId: previousCategory,
+        //         toFormId: null 
+        //     });
+        // }
+
+        // Logger.info('Card collapsed', { previousCategory });
+        this.isExpandedCardTemp();
+    }
+
+    isExpandedCardTemp()
+    {
+        const defaultCard = $(`.category-card[data-category="${DEFAULT_ACTIVE_CATEGORY}"]`);
+        if (defaultCard) {
+            this.expand(defaultCard);
+            Logger.info('Default card set as active', { defaultCategory: DEFAULT_ACTIVE_CATEGORY });
         }
-
-        Logger.info('Card collapsed', { previousCategory });
     }
 
     /**
@@ -164,10 +184,10 @@ class CardExpansion {
                     e.target.closest('form')) {
                     return;
                 }
-                
+
                 // Toggle expansion
                 if (card.classList.contains('expanded')) {
-                    this.collapse();
+                    this.isExpandedCardTemp();
                 } else {
                     this.expand(card);
                 }
@@ -178,7 +198,7 @@ class CardExpansion {
         $$('.close-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.collapse();
+                this.isExpandedCardTemp();
             });
         });
 
@@ -186,14 +206,14 @@ class CardExpansion {
         this.navPills.forEach(pill => {
             pill.addEventListener('click', (e) => {
                 e.preventDefault();
-                
+
                 const target = pill.dataset.target;
                 const targetCard = $(`.category-card[data-category="${target}"]`);
-                
+
                 if (targetCard) {
                     // If clicking on already active pill, collapse
                     if (this.currentActiveCard === target) {
-                        this.collapse();
+                        this.isExpandedCardTemp();
                     } else {
                         this.expand(targetCard);
                     }
@@ -203,13 +223,13 @@ class CardExpansion {
 
         // Listen to card:collapse event from other components
         EventBus.on('card:collapse', () => {
-            this.collapse();
+            this.isExpandedCardTemp();
         });
 
         // Listen to ESC key to collapse
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.currentActiveCard) {
-                this.collapse();
+                this.isExpandedCardTemp();
             }
         });
     }

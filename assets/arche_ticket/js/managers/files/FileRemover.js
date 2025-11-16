@@ -1,6 +1,6 @@
-import StorageService from '../../services/storage/index.js';
-import EventBus from '../../core/EventBus.js';
-import Logger from '../../utils/logger.js';
+import StorageService       from '../../services/storage/index.js';
+import EventBus             from '../../core/EventBus.js';
+import Logger               from '../../utils/logger.js';
 
 /**
  * Handles file removal operations
@@ -20,13 +20,13 @@ class FileRemover {
         try {
             // Remove from storage
             StorageService.removeFile(formId, fileName);
-            
+
             // Animate removal
             this._animateRemoval(fileItem);
 
             // Emit event
             EventBus.emit('file:removed', { formId, fileName });
-            
+
             // Show success toast
             this._showSuccessToast(fileName);
         } catch (error) {
@@ -42,7 +42,7 @@ class FileRemover {
     _animateRemoval(fileItem) {
         fileItem.style.opacity = '0';
         fileItem.style.transform = 'translateX(20px)';
-        
+
         setTimeout(() => {
             fileItem.remove();
         }, this.animationDuration);

@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Glpi_api_helper
 {
     /**
-     * Convert string thành slug (lowercase, no spaces)
+     * Convert string become slug (lowercase, no spaces)
      * 
      * @param string $str
      * @return string
@@ -37,8 +37,7 @@ class Glpi_api_helper
      */
     public function extractEntityName($fullPath)
     {
-        $cleaned = trim(str_replace('Root entity >', '', $fullPath));
+        $cleaned = trim(str_replace('root entity >', '', $fullPath));
         return strtolower($cleaned);
     }
-
 }

@@ -1,7 +1,7 @@
-import FieldValidator from './FieldValidator.js';
-import FormValidator from './FormValidator.js';
-import FileValidator from './FileValidator.js';
-import ValidationRuleManager from './ValidationRuleManager.js';
+import FieldValidator           from './FieldValidator.js';
+import FormValidator            from './FormValidator.js';
+import FileValidator            from './FileValidator.js';
+import ValidationRuleManager    from './ValidationRuleManager.js';
 import ValidationPatternManager from './ValidationPatternManager.js';
 import ValidationMessageManager from './ValidationMessageManager.js';
 
@@ -10,13 +10,13 @@ class ValidationService {
         this.ruleManager = new ValidationRuleManager();
         this.patternManager = new ValidationPatternManager();
         this.messageManager = new ValidationMessageManager();
-        
+
         this.fieldValidator = new FieldValidator(
             this.ruleManager,
             this.patternManager,
             this.messageManager
         );
-        
+
         this.formValidator = new FormValidator(this.fieldValidator);
         this.fileValidator = new FileValidator();
     }

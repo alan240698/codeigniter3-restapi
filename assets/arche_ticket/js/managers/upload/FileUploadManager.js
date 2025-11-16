@@ -1,10 +1,10 @@
-import { $$, removeClass } from '../../utils/dom.js';
-import Logger from '../../utils/logger.js';
-import FileManager from '../files/index.js';
-import UploadEventManager from './UploadEventManager.js';
-import DragDropManager from './DragDropManager.js';
-import UploadFeedbackManager from './UploadFeedbackManager.js';
-import UploadInteractionHandler from './UploadInteractionHandler.js';
+import { $$, removeClass }          from '../../utils/dom.js';
+import Logger                       from '../../utils/logger.js';
+import FileManager                  from '../files/index.js';
+import UploadEventManager           from './UploadEventManager.js';
+import DragDropManager              from './DragDropManager.js';
+import UploadFeedbackManager        from './UploadFeedbackManager.js';
+import UploadInteractionHandler     from './UploadInteractionHandler.js';
 
 class FileUploadManager {
     constructor() {
@@ -46,7 +46,7 @@ class FileUploadManager {
     _validateWrapper(wrapper) {
         const input = wrapper.querySelector('input[type="file"]');
         const form = wrapper.closest('form');
-        
+
         if (!form || !input) {
             Logger.warn('File upload wrapper missing form or input', { wrapper });
             return null;
@@ -66,13 +66,13 @@ class FileUploadManager {
     _setupFileInput(config) {
         const changeHandler = (e) => {
             this.handleFiles(e.target.files, config);
-            
+
             // Reset input to allow same file selection
             setTimeout(() => {
                 e.target.value = '';
             }, 100);
         };
-        
+
         this.eventManager.add(config.input, 'change', changeHandler);
     }
 
@@ -91,7 +91,7 @@ class FileUploadManager {
 
         filesArray.forEach(file => {
             const result = FileManager.addFile(file, formId, fileListContainer);
-            
+
             if (result.success) {
                 successCount++;
             } else {

@@ -1,5 +1,5 @@
-import { CONFIG, TOAST_ICONS } from '../config/constants.js';
-import { createElement } from '../utils/dom.js';
+import { CONFIG, TOAST_ICONS }  from '../config/constants.js';
+import { createElement }        from '../utils/dom.js';
 
 class Toast {
     constructor() {
@@ -21,14 +21,14 @@ class Toast {
         `;
 
         const toast = createElement(html);
-        
+
         // Close button handler
         toast.querySelector('.toast-close').addEventListener('click', () => {
             this._removeToast(toast);
         });
 
         this.container.appendChild(toast);
-        
+
         // Show animation
         setTimeout(() => toast.classList.add('show'), 10);
 
@@ -61,7 +61,7 @@ class Toast {
 
     _getOrCreateContainer() {
         let container = document.getElementById('toastContainer');
-        
+
         if (!container) {
             container = createElement('<div id="toastContainer" class="toast-container"></div>');
             document.body.appendChild(container);

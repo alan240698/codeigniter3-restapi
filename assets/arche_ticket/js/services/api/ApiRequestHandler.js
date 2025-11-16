@@ -9,7 +9,7 @@ class ApiRequestHandler {
         this.responseParser = new ApiResponseParser();
         this.errorHandler = new ApiErrorHandler();
         this.retryManager = new ApiRetryManager();
-        
+
         // Temporary config for fluent API
         this._customTimeout = null;
         this._disableRetry = false;
@@ -19,7 +19,7 @@ class ApiRequestHandler {
         const config = this._buildConfig(options);
 
         try {
-            Logger.group(`🌐 API Request: ${config.method} ${url}`);
+            Logger.group(`API Request: ${config.method} ${url}`);
             Logger.log('Config:', { 
                 method: config.method, 
                 headers: config.headers,
@@ -43,8 +43,7 @@ class ApiRequestHandler {
             Logger.groupEnd();
 
             // Check if should retry
-            const shouldRetry = !this._disableRetry && 
-                               this.retryManager.shouldRetry(error, retryCount);
+            const shouldRetry = !this._disableRetry && this.retryManager.shouldRetry(error, retryCount);
 
             if (shouldRetry) {
                 Logger.warn(`Retrying request (${retryCount + 1}/${this.retryManager.maxAttempts})...`);
@@ -95,7 +94,7 @@ class ApiRequestHandler {
         const cleanParams = this._cleanParams(params);
         const queryString = new URLSearchParams(cleanParams).toString();
         const fullUrl = queryString ? `${url}?${queryString}` : url;
-        
+
         return this.request(fullUrl, { method: 'GET' });
     }
 

@@ -6,17 +6,27 @@ class Glpi_category_model extends CI_Model
     private $transformer;
     private $category_mapping = [];
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
+
+        // Load libraries
         $this->load->library('glpi/glpi_api');
         $this->load->library('glpi_api_validation');
         $this->load->library('glpi_api_helper');
+
+        // Load model
         $this->load->model('arche_ticket/glpi/glpi_data_transformer');
-        
+
         $this->transformer = $this->glpi_data_transformer;
     }
 
+    /**
+     * Get categories
+     */
     public function getCategories($entity_id)
     {
         if (!$this->glpi_api_validation->isValidId($entity_id)) {
@@ -39,6 +49,9 @@ class Glpi_category_model extends CI_Model
         return $this->transformCategories($data);
     }
 
+    /**
+     * Transfrom categories
+     */
     private function transformCategories($data)
     {
         if (!$this->glpi_api_validation->isValidArray($data)) {
@@ -53,8 +66,8 @@ class Glpi_category_model extends CI_Model
                 continue;
             }
 
-            $entityName = $this->glpi_api_helper->extractEntityName($item[80]);
-            $entityKey = $this->glpi_api_helper->slugify($entityName);
+            $entityName = $this->glpi_api_helper->extractEntityName(strtolower(trim($item[80])));
+            $entityKey  = $this->glpi_api_helper->slugify($entityName);
 
             if (!isset($result[$entityKey])) {
                 $result[$entityKey] = $this->glpi_api_validation->getDefaultFormStructure();
@@ -76,11 +89,17 @@ class Glpi_category_model extends CI_Model
         return $result;
     }
 
+    /**
+     * Add category option
+     */
     public function addCategoryOption(&$entity_structure, $parts, $item)
     {
         $this->insertCategoryRecursive($entity_structure['subcategory']['options'], $parts, $item);
     }
 
+    /**
+     * Insert category recursive
+     */
     private function insertCategoryRecursive(&$options, $parts, $item)
     {
         if (empty($parts)) return;
@@ -90,9 +109,9 @@ class Glpi_category_model extends CI_Model
 
         if (!isset($options[$currentKey])) {
             $options[$currentKey] = [
-                'label' => $currentLabel,
-                'value' => $currentKey,
-                'children' => []
+                'label'     => $currentLabel,
+                'value'     => $currentKey,
+                'children'  => []
             ];
         }
 
@@ -103,6 +122,9 @@ class Glpi_category_model extends CI_Model
         }
     }
 
+    /**
+     * Get category mapping
+     */
     public function getCategoryMapping()
     {
         return $this->category_mapping;

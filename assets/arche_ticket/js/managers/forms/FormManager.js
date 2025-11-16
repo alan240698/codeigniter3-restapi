@@ -1,10 +1,10 @@
-import FormStateManager from './FormStateManager.js';
-import FormValidationManager from './FormValidationManager.js';
-import FormDataCollector from './FormDataCollector.js';
-import FormResetManager from './FormResetManager.js';
-import FormSubmitManager from './FormSubmitManager.js';
-import FormSwitchManager from './FormSwitchManager.js';
-import FormEventBinder from './FormEventBinder.js';
+import FormStateManager         from './FormStateManager.js';
+import FormValidationManager    from './FormValidationManager.js';
+import FormDataCollector        from './FormDataCollector.js';
+import FormResetManager         from './FormResetManager.js';
+import FormSubmitManager        from './FormSubmitManager.js';
+import FormSwitchManager        from './FormSwitchManager.js';
+import FormEventBinder          from './FormEventBinder.js';
 
 class FormManager {
     constructor() {

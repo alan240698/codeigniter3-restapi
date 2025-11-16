@@ -3,12 +3,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Glpi_ticket_builder extends CI_Model
 {
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
+
         $this->load->library('glpi_api_validation');
     }
 
+    /**
+     * Build
+     */
     public function build($category, $form_data)
     {
         if (!$this->glpi_api_validation->isValidString($category)) {
@@ -24,10 +31,8 @@ class Glpi_ticket_builder extends CI_Model
         $category_id = $category . ' > ' . ($form_data['subcategory'] ?? '');
 
         $ticket_data = [
-            'name' => $category_id,
-            'content' => $this->glpi_api_validation->sanitizeContent(
-                $form_data['description'] ?? ''
-            ),
+            'name'    => $category_id,
+            'content' => $this->glpi_api_validation->sanitizeContent($form_data['description'] ?? ''),
         ];
 
         if (isset($form_data['entity_id']) && 
@@ -38,6 +43,9 @@ class Glpi_ticket_builder extends CI_Model
         return $ticket_data;
     }
 
+    /**
+     * Build from array
+     */
     public function buildFromArray($data)
     {
         $required = ['name', 'content'];
@@ -50,14 +58,14 @@ class Glpi_ticket_builder extends CI_Model
         }
 
         return [
-            'name' => $data['name'],
-            'content' => $this->glpi_api_validation->sanitizeContent($data['content']),
-            'entities_id' => $data['entities_id'] ?? null,
-            'itilcategories_id' => $data['itilcategories_id'] ?? null,
-            'priority' => $data['priority'] ?? 3,
-            'urgency' => $data['urgency'] ?? 3,
-            'impact' => $data['impact'] ?? 3,
-            'type' => $data['type'] ?? 1 // 1 = Incident, 2 = Request
+            'name'              => $data['name'],
+            'content'           => $this->glpi_api_validation->sanitizeContent($data['content']),
+            'entities_id'       => $data['entities_id']         ?? null,
+            'itilcategories_id' => $data['itilcategories_id']   ?? null,
+            'priority'          => $data['priority']            ?? 3,
+            'urgency'           => $data['urgency']             ?? 3,
+            'impact'            => $data['impact']              ?? 3,
+            'type'              => $data['type']                ?? 1
         ];
     }
 }

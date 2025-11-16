@@ -1,5 +1,5 @@
-import FileManager from '../files/index.js';
-import Logger from '../../utils/logger.js';
+import FileManager  from '../files/index.js';
+import Logger       from '../../utils/logger.js';
 
 class FormDataCollector {
     /**
@@ -41,7 +41,7 @@ class FormDataCollector {
      */
     _appendFormFields(formData, form) {
         const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
-        
+
         inputs.forEach(input => {
             const name = input.name;
             
@@ -80,7 +80,7 @@ class FormDataCollector {
      * Log FormData contents
      */
     _logFormData(formData) {
-        Logger.group('📦 FormData Summary');
+        Logger.group('FormData Summary');
         
         let fieldCount = 0;
         let fileCount = 0;
@@ -95,7 +95,7 @@ class FormDataCollector {
             }
         }
         
-        Logger.log(`📊 Total: ${fieldCount} fields, ${fileCount} files`);
+        Logger.log(`Total: ${fieldCount} fields, ${fileCount} files`);
         Logger.groupEnd();
     }
 }

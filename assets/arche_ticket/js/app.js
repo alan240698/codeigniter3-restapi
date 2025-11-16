@@ -1,12 +1,13 @@
-import StatisticsManager from './managers/statistics/index.js';
-import FormManager from './managers/forms/index.js';
-import CardExpansion from './components/CardExpansion.js';
-import Timestamp from './components/Timestamp.js';
-import EventBus from './core/EventBus.js';
-import Logger from './utils/logger.js';
-import FileUploadManager from './managers/upload/index.js';
-import TicketModalManager from './managers/tickets/index.js';
-import StorageService from './services/storage/index.js';
+import StatisticsManager        from './managers/statistics/index.js';
+import FormManager              from './managers/forms/index.js';
+import CardExpansion            from './components/CardExpansion.js';
+import Timestamp                from './components/Timestamp.js';
+import EventBus                 from './core/EventBus.js';
+import Logger                   from './utils/logger.js';
+import FileUploadManager        from './managers/upload/index.js';
+import TicketModalManager       from './managers/tickets/index.js';
+import StorageService           from './services/storage/index.js';
+
 import './styles/validation-inject.js';
 
 class TicketApp {
@@ -16,7 +17,7 @@ class TicketApp {
         this.components = new Map();
         this.eventListeners = [];
         this.version = '1.0.0';
-        
+
         this.metrics = {
             startTime: null,
             initTime: null,
@@ -39,7 +40,7 @@ class TicketApp {
         this.metrics.startTime = performance.now();
 
         try {
-            Logger.group(`🚀 Initializing Ticket System v${this.version}`);
+            Logger.group(`Initializing Ticket System v${this.version}`);
             Logger.log('Environment:', {
                 userAgent: navigator.userAgent,
                 language: navigator.language,
@@ -133,11 +134,11 @@ class TicketApp {
                 if (component.instance && typeof component.instance.init === 'function') {
                     await component.instance.init();
                     this.components.set(component.name, component.instance);
-                    Logger.log(`✓ ${component.name} initialized`);
+                    Logger.log(`${component.name} initialized`);
                 } else if (component.instance && typeof component.instance.start === 'function') {
                     component.instance.start();
                     this.components.set(component.name, component.instance);
-                    Logger.log(`✓ ${component.name} started`);
+                    Logger.log(`${component.name} started`);
                 }
             } catch (error) {
                 Logger.error(`Failed to initialize ${component.name}:`, error);
@@ -167,7 +168,7 @@ class TicketApp {
                 timeout
             ]);
 
-            Logger.log('✓ Statistics loaded');
+            Logger.log('Statistics loaded');
         } catch (error) {
             Logger.error('Failed to load statistics:', error);
             // Don't throw, continue without statistics
@@ -240,7 +241,7 @@ class TicketApp {
             }
         });
 
-        Logger.log(`✓ ${this.eventListeners.length} event listeners registered`);
+        Logger.log(`${this.eventListeners.length} event listeners registered`);
     }
 
     /**
@@ -380,7 +381,7 @@ class TicketApp {
             if (savedState) {
                 const state = JSON.parse(savedState);
                 Logger.debug('Restoring state:', state);
-                
+
                 // Restore active card if any
                 if (state.activeCard) {
                     const card = document.querySelector(`[data-category="${state.activeCard}"]`);
@@ -494,7 +495,7 @@ class TicketApp {
                 appInit: this.metrics.initTime || 0
             };
 
-            Logger.group('📊 Performance Metrics');
+            Logger.group('Performance Metrics');
             
             if (metrics.domReady) {
                 Logger.log('DOM Ready:', `${metrics.domReady}ms`);
@@ -555,7 +556,7 @@ class TicketApp {
                 } else if (typeof component.stop === 'function') {
                     component.stop();
                 }
-                Logger.log(`✓ ${name} destroyed`);
+                Logger.log(`${name} destroyed`);
             } catch (error) {
                 Logger.error(`Failed to destroy ${name}:`, error);
             }

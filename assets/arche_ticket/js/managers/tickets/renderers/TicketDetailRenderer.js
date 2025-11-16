@@ -1,8 +1,8 @@
-import { CONFIG } from '../../../config/constants.js';
-import { formatDate } from '../../../utils/format.js';
-import { escapeHtml } from '../../../utils/dom.js';
-import Logger from '../../../utils/logger.js';
-import TemplateRenderer from './TemplateRenderer.js';
+import { CONFIG, PRIORITY_GLPI }            from '../../../config/constants.js';
+import { formatDate }                       from '../../../utils/format.js';
+import { escapeHtml }                       from '../../../utils/dom.js';
+import Logger                               from '../../../utils/logger.js';
+import TemplateRenderer                     from './TemplateRenderer.js';
 
 class TicketDetailRenderer {
     /**
@@ -20,94 +20,133 @@ class TicketDetailRenderer {
         const statusIcon = statusConfig?.icon || 'fa-circle';
         const statusLabel = statusConfig?.label || ticket.status || 'Unknown';
 
-        const title = escapeHtml(ticket.name || 'Untitled');
-        const category = escapeHtml(ticket.category || 'General');
-        const priority = ticket.priority ? escapeHtml(ticket.priority) : 'Normal';
+        const {category, content} = this.getCategoryName(escapeHtml(ticket.name || 'Untitled'));
+        const title = content;
+        const priority = ticket.priority ? this.getStringPriority(escapeHtml(ticket.priority)) : 'Normal';
         const description = escapeHtml(ticket.content || 'No description provided');
         const createdDate = ticket.date_creation ? formatDate(ticket.date_creation) : '';
         const updatedDate = ticket.date_mod ? formatDate(ticket.date_mod) : '';
 
         const showReopenBtn = ['closed', 'resolved', 'cancelled'].includes(status);
 
-        let html = `
-            <div class="ticket-detail">
-                <div class="ticket-detail-header">
-                    <div class="ticket-detail-title-section">
-                        <span class="ticket-id-badge">#${ticketId}</span>
-                        <h2 class="ticket-detail-title">${title}</h2>
-                    </div>
-                    <div class="ticket-detail-actions">
-                        ${showReopenBtn ? `
-                            <button 
-                                class="btn btn-success btn-reopen-detail" 
-                                onclick="TicketModalManager.reopenTicket(${ticketId}, event)"
-                            >
-                                <i class="fas fa-redo"></i> Reopen
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
+        let supporterHtml = '<span class="text-muted"><i class="fas fa-user-slash"></i> Unassigned</span>';
 
-                <div class="ticket-detail-meta">
-                    <div class="ticket-detail-meta-item">
-                        <label>Status:</label>
-                        <span class="status-badge ${status}">
-                            <i class="fas ${statusIcon}"></i> ${escapeHtml(statusLabel)}
-                        </span>
-                    </div>
-                    <div class="ticket-detail-meta-item">
-                        <label>Category:</label>
-                        <span><i class="fas fa-folder"></i> ${category}</span>
-                    </div>
-                    <div class="ticket-detail-meta-item">
-                        <label>Priority:</label>
-                        <span><i class="fas fa-exclamation-circle"></i> ${priority}</span>
-                    </div>
-                    <div class="ticket-detail-meta-item">
-                        <label>Created:</label>
-                        <span><i class="fas fa-calendar-plus"></i> ${createdDate}</span>
-                    </div>
-                    <div class="ticket-detail-meta-item">
-                        <label>Updated:</label>
-                        <span><i class="fas fa-calendar-check"></i> ${updatedDate}</span>
-                    </div>
-                </div>
+    if (ticket.supporter) {
+        if (Array.isArray(ticket.supporter) && ticket.supporter.length > 0) {
+            supporterHtml = ticket.supporter.map(supporter => {
+                const fullName = `${supporter.firstname || ''} ${supporter.realname || ''}`.trim();
+                const displayName = fullName || supporter.name || 'Unknown';
+                const email = supporter.email || '';
+                const phone = supporter.phone || supporter.mobile || '';
 
-                <div class="ticket-detail-section">
-                    <h3><i class="fas fa-align-left"></i> Description</h3>
-                    <div class="ticket-detail-content">
-                        ${description.replace(/\n/g, '<br>')}
+                return `
+                    <div class="supporter-info">
+                        <i class="fas fa-user-circle"></i>
+                        <strong>${escapeHtml(displayName)}</strong>
+                        ${email ? `<br><small><i class="fas fa-envelope"></i> ${escapeHtml(email)}</small>` : ''}
+                        ${phone ? `<br><small><i class="fas fa-phone"></i> ${escapeHtml(phone)}</small>` : ''}
                     </div>
-                </div>
-        `;
+                `;
+            }).join('');
+        } else if (typeof ticket.supporter === 'object') {
+            const fullName = `${ticket.supporter.firstname || ''} ${ticket.supporter.realname || ''}`.trim();
+            const displayName = fullName || ticket.supporter.name || 'Support will be available soon';
+            const email = ticket.supporter.email || '';
+            const phone = ticket.supporter.phone || ticket.supporter.mobile || '';
 
-        if (ticket.responses && Array.isArray(ticket.responses) && ticket.responses.length > 0) {
-            html += `
-                <div class="ticket-detail-section">
-                    <h3><i class="fas fa-comments"></i> Responses (${ticket.responses.length})</h3>
-                    <div class="ticket-responses">
-                        ${ticket.responses.map(response => this.renderResponse(response)).join('')}
-                    </div>
+            supporterHtml = `
+                <div class="supporter-info">
+                    <i class="fas fa-user-circle"></i>
+                    <strong>${escapeHtml(displayName)}</strong>
+                    ${email ? `<br><small><i class="fas fa-envelope"></i> ${escapeHtml(email)}</small>` : ''}
+                    ${phone ? `<br><small><i class="fas fa-phone"></i> ${escapeHtml(phone)}</small>` : ''}
                 </div>
             `;
         }
-
-        if (ticket.attachments && Array.isArray(ticket.attachments) && ticket.attachments.length > 0) {
-            html += `
-                <div class="ticket-detail-section">
-                    <h3><i class="fas fa-paperclip"></i> Attachments (${ticket.attachments.length})</h3>
-                    <div class="ticket-attachments">
-                        ${ticket.attachments.map(att => this.renderAttachment(att)).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        html += `</div>`;
-
-        return html;
     }
 
+    let html = `
+        <div class="ticket-detail">
+            <div class="ticket-detail-header">
+                <div class="ticket-detail-title-section">
+                    <span class="ticket-id-badge">#${ticketId}</span>
+                    <h2 class="ticket-detail-title">${title}</h2>
+                </div>
+                <div class="ticket-detail-actions">
+                    ${showReopenBtn ? `
+                        <button 
+                            class="btn btn-success btn-reopen-detail" 
+                            onclick="TicketModalManager.reopenTicket(${ticketId}, event)"
+                        >
+                            <i class="fas fa-redo"></i> Reopen
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+
+            <div class="ticket-detail-meta">
+                <div class="ticket-detail-meta-item">
+                    <label>Status:</label>
+                    <span class="status-badge ${status}">
+                        <i class="fas ${statusIcon}"></i> ${escapeHtml(statusLabel)}
+                    </span>
+                </div>
+                <div class="ticket-detail-meta-item">
+                    <label>Category:</label>
+                    <span><i class="fas fa-folder"></i> ${category}</span>
+                </div>
+                <div class="ticket-detail-meta-item">
+                    <label>Priority:</label>
+                    <span><i class="fas fa-exclamation-circle"></i> ${priority}</span>
+                </div>
+                <div class="ticket-detail-meta-item">
+                    <label>Assigned To:</label>
+                    <span>${supporterHtml}</span>
+                </div>
+                <div class="ticket-detail-meta-item">
+                    <label>Created:</label>
+                    <span><i class="fas fa-calendar-plus"></i> ${createdDate}</span>
+                </div>
+                <div class="ticket-detail-meta-item">
+                    <label>Updated:</label>
+                    <span><i class="fas fa-calendar-check"></i> ${updatedDate}</span>
+                </div>
+            </div>
+
+            <div class="ticket-detail-section">
+                <h3><i class="fas fa-align-left"></i> Description</h3>
+                <div class="ticket-detail-content">
+                    ${description.replace(/\n/g, '<br>')}
+                </div>
+            </div>
+    `;
+
+    if (ticket.responses && Array.isArray(ticket.responses) && ticket.responses.length > 0) {
+        html += `
+            <div class="ticket-detail-section">
+                <h3><i class="fas fa-comments"></i> Responses (${ticket.responses.length})</h3>
+                <div class="ticket-responses">
+                    ${ticket.responses.map(response => this.renderResponse(response)).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    if (ticket.attachments && Array.isArray(ticket.attachments) && ticket.attachments.length > 0) {
+        html += `
+            <div class="ticket-detail-section">
+                <h3><i class="fas fa-paperclip"></i> Attachments (${ticket.attachments.length})</h3>
+                <div class="ticket-attachments">
+                    ${ticket.attachments.map(att => this.renderAttachment(att, ticketId)).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    html += `</div>`;
+
+    return html;
+}
     /**
      * Render single response
      */
@@ -143,7 +182,7 @@ class TicketDetailRenderer {
     /**
      * Render single attachment
      */
-    static renderAttachment(attachment) {
+    static renderAttachment(attachment, ticketId) {
         if (!attachment || typeof attachment !== 'object') {
             return '';
         }
@@ -153,8 +192,6 @@ class TicketDetailRenderer {
         const mime = attachment.mime || 'application/octet-stream';
         const icon = this.getFileIcon(mime);
         const docId = attachment.id;
-
-        const downloadUrl = CONFIG.ENDPOINTS.DOWNLOAD_DOCUMENT_TICKET + docId;
 
         return `
             <div class="attachment-item">
@@ -171,14 +208,14 @@ class TicketDetailRenderer {
                     </div>
                 </div>
                 <div class="attachment-actions">
-                    <a 
-                        href="${downloadUrl}" 
-                        class="btn btn-sm btn-primary" 
-                        download
+                    <button 
+                        class="btn btn-sm btn-primary btn-download"
+                        data-docid="${docId}"
+                        data-ticketid="${ticketId}"
                         title="Download"
                     >
                         <i class="fas fa-download"></i>
-                    </a>
+                    </button>
                 </div>
             </div>
         `;
@@ -195,6 +232,21 @@ class TicketDetailRenderer {
         const i = Math.floor(Math.log(bytes) / Math.log(k));
 
         return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    static getCategoryName(message) {
+
+        const category = message.split('&gt;')[0].trim().toUpperCase();
+        const content = message.includes('&gt;') 
+            ? message.split('&gt;')[1].trim().toUpperCase()
+            : message;
+
+        return {category, content}
+    }
+
+    static getStringPriority(number)
+    {
+        return PRIORITY_GLPI[number]
     }
 
     /**

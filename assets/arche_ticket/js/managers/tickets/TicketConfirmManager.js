@@ -1,6 +1,6 @@
-import { addClass, removeClass } from '../../utils/dom.js';
-import Logger from '../../utils/logger.js';
-import EventBus from '../../core/EventBus.js';
+import { addClass, removeClass }    from '../../utils/dom.js';
+import Logger                       from '../../utils/logger.js';
+import EventBus                     from '../../core/EventBus.js';
 
 class TicketConfirmManager {
     constructor() {
@@ -30,7 +30,7 @@ class TicketConfirmManager {
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to reopen this ticket?</p>
-                        <p class="text-muted small">The ticket status will be changed to "Open".</p>
+                        <p class="text-muted small">The ticket status will be changed</p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" onclick="TicketModalManager.closeConfirm()">

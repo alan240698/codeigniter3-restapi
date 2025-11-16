@@ -31,6 +31,8 @@ export const CONFIG = {
     }
 };
 
+export const DEFAULT_ACTIVE_CATEGORY = '__placeholder__';
+
 export const FILE_ICONS = {
     pdf: 'fa-file-pdf',
     doc: 'fa-file-word',
@@ -49,4 +51,12 @@ export const TOAST_ICONS = {
     error: 'fa-exclamation-circle',
     warning: 'fa-exclamation-triangle',
     info: 'fa-info-circle'
+};
+
+export const PRIORITY_GLPI = {
+    1: 'Very high',
+    2: 'High',
+    3: 'Medium',
+    4: 'Low',
+    5: 'Very low',
 };

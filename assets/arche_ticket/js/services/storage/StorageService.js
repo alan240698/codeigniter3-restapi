@@ -1,10 +1,10 @@
-import Logger from '../../utils/logger.js';
-import EventBus from '../../core/EventBus.js';
-import FileStorageManager from './FileStorageManager.js';
-import ValidationRuleManager from './ValidationRuleManager.js';
-import KeyValueStorage from './KeyValueStorage.js';
-import LocalStoragePersistence from './LocalStoragePersistence.js';
-import StorageStatsCalculator from './StorageStatsCalculator.js';
+import Logger                   from '../../utils/logger.js';
+import EventBus                 from '../../core/EventBus.js';
+import FileStorageManager       from './FileStorageManager.js';
+import ValidationRuleManager    from './ValidationRuleManager.js';
+import KeyValueStorage          from './KeyValueStorage.js';
+import LocalStoragePersistence  from './LocalStoragePersistence.js';
+import StorageStatsCalculator   from './StorageStatsCalculator.js';
 
 class StorageService {
     constructor() {
@@ -22,7 +22,7 @@ class StorageService {
     }
 
     // ========================================
-    // File Storage Methods (Proxy to FileStorageManager)
+    // File Storage Methods
     // ========================================
 
     addFiles(formId, files) {
@@ -62,7 +62,7 @@ class StorageService {
     }
 
     // ========================================
-    // Validation Rules Methods (Proxy)
+    // Validation Rules Methods
     // ========================================
 
     setValidationRule(formId, fieldName, rule) {
@@ -85,7 +85,7 @@ class StorageService {
     }
 
     // ========================================
-    // Key-Value Storage Methods (Proxy)
+    // Key-Value Storage Methods
     // ========================================
 
     set(key, value) {
