@@ -49,9 +49,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'posts';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['default_controller']  = 'arche_ticket/ticket/index';
+// $route['arche_ticket']        = 'arche_ticket/ticket/index';
+// $route['arche_ticket/create'] = 'arche_ticket/ticket/create';
+
+// Arche ticket
+$route['tickets'] = "arche_ticket/ticket/index";
+$route['tickets/list']       = "arche_ticket/ticket/list";
+$route['tickets/view/(:num)'] = "arche_ticket/ticket/view/$1";
+$route['tickets/reopen/(:num)'] = "arche_ticket/ticket/reopen/$1";
 
 /*
 | API Routes - Posts
