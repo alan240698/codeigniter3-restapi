@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_data_transformer extends CI_Model
+class Glpi_data_transformer extends CI_Model
 {
     /**
      * Glpi status map

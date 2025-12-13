@@ -1,0 +1,1622 @@
+/* ===============================================================
+   IT TICKET SYSTEM - MAIN STYLESHEET
+   ===============================================================
+   Theme Color: #055E63 (Teal)
+   Version: 2.0
+   Author: IT Department
+   Last Updated: 2024
+   =============================================================== */
+
+/* ===============================================================
+   TABLE OF CONTENTS
+   ===============================================================
+   1. CSS VARIABLES
+   2. BASE STYLES
+   3. CARD COMPONENTS
+   4. FORM ELEMENTS
+   5. TABLE STYLES
+      5.1 Basic Table
+      5.2 Modern Table (Advanced)
+      5.3 Table Sorting
+      5.4 Table Badges
+   6. PAGINATION
+   7. STATUS BADGES
+   8. BUTTON STYLES
+   9. MODAL STYLES
+      9.1 Base Modal
+      9.2 Ticket Form Modal
+      9.3 Ticket Detail Modal
+   10. TICKET FORM COMPONENTS
+   11. ALERT STYLES
+   12. UTILITY CLASSES
+   13. LOADING & ANIMATIONS
+   14. CUSTOM SCROLLBAR
+   15. SWEETALERT2 CUSTOMIZATION
+   16. RESPONSIVE DESIGN
+   17. TOUCH OPTIMIZATION
+   18. PRINT STYLES
+   =============================================================== */
+
+
+/* ===============================================================
+   1. CSS VARIABLES
+   ================================================================
+   Global color and effect variables
+   =============================================================== */
+:root {
+    /* Primary Colors */
+    --primary-color: #055E63;
+    --primary-hover: #044a4e;
+    --primary-light: #e6f2f3;
+
+    /* Secondary Colors */
+    --secondary-color: #6c757d;
+
+    /* Status Colors */
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #055E63;
+
+    /* Background Colors */
+    --light-bg: #f8f9fa;
+    --border-color: #e9ecef;
+
+    /* Text Colors */
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+
+    /* Shadows */
+    --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075);
+    --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --transition: all 0.3s ease;
+}
+
+
+/* ===============================================================
+   2. BASE STYLES
+   ================================================================
+   Reset and base page styling
+   =============================================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans",
+        sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol", "Noto Color Emoji" !important;
+    background-color: var(--light-bg);
+    font-size: 13px !important;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+
+/* ===============================================================
+   3. CARD COMPONENTS
+   ================================================================
+   Card container styling
+   =============================================================== */
+
+/* Base card styling */
+.card {
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+/* Card header */
+.card-header {
+    border-bottom: 2px solid var(--border-color);
+    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.card-header h6 {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Card shadow effect */
+.shadow-sm {
+    box-shadow: var(--shadow-sm) !important;
+}
+
+
+/* ===============================================================
+   4. FORM ELEMENTS
+   ================================================================
+   Input, select, and textarea styling
+   =============================================================== */
+
+/* Form labels */
+.form-label {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-label.fw-semibold {
+    font-weight: 600;
+}
+
+/* Form inputs and selects */
+.form-control,
+.form-select {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    transition: border-color 0.2s ease;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Focus state for form controls */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(5, 94, 99, 0.25);
+    outline: none;
+}
+
+/* Placeholder styling */
+.form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Textarea specific */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Form helper text */
+.form-text {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+
+/* ===============================================================
+   5. TABLE STYLES
+   =============================================================== */
+
+/* ---------------------------------------------------------------
+   5.1 Basic Table - Base table styling
+   --------------------------------------------------------------- */
+
+/* Table header with primary background */
+.table-info {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.table-info th {
+    border-bottom: 2px solid var(--primary-hover);
+    font-weight: 600;
+    vertical-align: middle;
+    padding: 1rem;
+    white-space: nowrap;
+}
+
+/* Tickets table specific */
+#tickets-table {
+    font-size: 0.875rem;
+}
+
+#tickets-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Hover effect for table rows */
+#tickets-table tbody tr:hover {
+    background-color: var(--primary-light);
+}
+
+#tickets-table td {
+    vertical-align: middle;
+    padding: 0.875rem;
+}
+
+/* Table responsive wrapper */
+.table-responsive {
+    border-radius: 10px;
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ---------------------------------------------------------------
+   5.2 Modern Table - Advanced styling with gradients
+   --------------------------------------------------------------- */
+
+.modern-table {
+    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+}
+
+/* Header with purple gradient */
+.modern-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.modern-table thead th {
+    border: none;
+    padding: 16px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.modern-table thead th i {
+    opacity: 0.9;
+}
+
+/* Table body rows */
+.modern-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+/* Hover effect with slide and shadow */
+.modern-table tbody tr:hover {
+    background: linear-gradient(to right, #f8f9fa 0%, #ffffff 100%);
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.modern-table tbody td {
+    padding: 14px 12px;
+    vertical-align: middle;
+    font-size: 14px;
+    border: none;
+}
+
+.modern-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* ---------------------------------------------------------------
+   Column-specific styling
+   --------------------------------------------------------------- */
+
+/* Column 1: ID number */
+.modern-table tbody td:first-child {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Column 2: Ticket title */
+.modern-table tbody td:nth-child(2) {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+/* Column 3: Description (with truncate) */
+.modern-table tbody td:nth-child(3) {
+    color: #4a5568;
+    font-size: 13px;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Column 4: Category */
+.modern-table tbody td:nth-child(4) {
+    font-weight: 500;
+}
+
+/* Column 5: Created by */
+.modern-table tbody td:nth-child(5) {
+    color: #2d3748;
+    font-size: 13px;
+}
+
+/* Column 6: Assigned to */
+.modern-table tbody td:nth-child(6) {}
+
+/* Column 7: Created date */
+.modern-table tbody td:nth-child(7) {
+    color: #718096;
+    font-size: 13px;
+}
+
+/* Last column: Actions */
+.modern-table tbody td:last-child {}
+
+/* ---------------------------------------------------------------
+   5.3 Table Sorting - Column sorting effects
+   --------------------------------------------------------------- */
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+/* Sort icon */
+.sortable .sort-icon {
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.modern-table thead th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.modern-table thead th .sort-icon {
+    font-size: 11px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.modern-table thead th.sortable:hover .sort-icon {
+    opacity: 1;
+}
+
+/* ---------------------------------------------------------------
+   5.4 Table Badges - Badges displayed in table
+   --------------------------------------------------------------- */
+
+/* Assigned badge */
+.assigned-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    color: #2d3748;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.assigned-badge:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.assigned-badge i {
+    margin-right: 6px;
+    font-size: 11px;
+}
+
+/* Default assigned (unassigned) */
+.assigned-default {
+    background: transparent;
+    box-shadow: none;
+    color: #718096;
+}
+
+.assigned-default:hover {
+    box-shadow: none;
+}
+
+/* Category display with country code */
+.category-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.country-code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    min-width: 32px;
+}
+
+.category-name {
+    color: #2d3748;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Category badge - Simple style */
+.category-badge {
+    display: inline-block;
+    padding: 0;
+    background: transparent;
+    color: #2d3748;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+}
+
+/* Loading state */
+.modern-table tbody tr.loading {
+    opacity: 0.6;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Truncated text with tooltip */
+.truncated-text {
+    cursor: help;
+    position: relative;
+}
+
+.truncated-text:hover {
+    color: #667eea;
+}
+
+
+/* ===============================================================
+   6. PAGINATION
+   ================================================================
+   Page navigation styling
+   =============================================================== */
+
+.pagination {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+/* Page link styling */
+.page-link {
+    color: var(--primary-color);
+    border-color: var(--border-color);
+    padding: 0.5rem 0.75rem;
+    transition: var(--transition);
+}
+
+.page-link:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
+    color: var(--primary-hover);
+}
+
+/* Active page */
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Disabled page */
+.page-item.disabled .page-link {
+    color: var(--text-muted);
+    pointer-events: none;
+    background-color: #fff;
+    border-color: var(--border-color);
+}
+
+
+/* ===============================================================
+   7. STATUS BADGES
+   ================================================================
+   Status badges (Open, In Progress, Closed, etc.)
+   =============================================================== */
+
+/* Base badge styling */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+/* Enhanced badges in modern table */
+.modern-table .badge {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.modern-table .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modern-table .badge i {
+    font-size: 10px;
+}
+
+/* ---------------------------------------------------------------
+   Status Colors with gradients
+   --------------------------------------------------------------- */
+
+/* Success - Completed (green) */
+.badge.bg-success,
+.bg-success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+    color: white !important;
+}
+
+/* Warning - In Progress (orange) */
+.badge.bg-warning,
+.bg-warning {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%) !important;
+    color: white !important;
+}
+
+/* Danger - Urgent (red) */
+.badge.bg-danger,
+.bg-danger {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%) !important;
+    color: white !important;
+}
+
+/* Info - Information (blue) */
+.badge.bg-info,
+.bg-info {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%) !important;
+    color: white !important;
+}
+
+/* Primary - New (purple) */
+.badge.bg-primary,
+.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Secondary - Default (gray) */
+.badge.bg-secondary,
+.bg-secondary {
+    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%) !important;
+    color: white !important;
+}
+
+
+/* ===============================================================
+   8. BUTTON STYLES
+   ================================================================
+   Button component styling
+   =============================================================== */
+
+/* Base button styling */
+.btn {
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border: none;
+    white-space: nowrap;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+/* ---------------------------------------------------------------
+   Button Variants
+   --------------------------------------------------------------- */
+
+/* Info button (system primary color) */
+.btn-info {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-info:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(5, 94, 99, 0.3);
+    color: #fff;
+}
+
+/* Secondary button */
+.btn-secondary {
+    background-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Warning button */
+.btn-warning {
+    background-color: var(--warning-color);
+    color: var(--text-dark);
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+/* Small button */
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Action button in table */
+.btn-action {
+    padding: 0.375rem 0.75rem;
+    margin: 0 0.125rem;
+}
+
+/* View button with gradient */
+.btn-view {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    border: none;
+    box-shadow: 0 2px 4px rgba(66, 153, 225, 0.3);
+}
+
+.btn-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(66, 153, 225, 0.4);
+    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+}
+
+/* Outline buttons */
+.btn-outline-info {
+    border: 1.5px solid #17a2b8;
+    color: #17a2b8;
+}
+
+.btn-outline-info:hover {
+    background-color: #17a2b8;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
+}
+
+.btn-outline-secondary {
+    border: 1.5px solid #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+
+/* ===============================================================
+   9. MODAL STYLES
+   =============================================================== */
+
+/* ---------------------------------------------------------------
+   9.1 Base Modal
+   --------------------------------------------------------------- */
+
+/* Modal sizing */
+.modal-xl {
+    max-width: 1200px;
+}
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal header */
+.modal-header {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+}
+
+.modal-header.bg-info {
+    background-color: var(--primary-color) !important;
+}
+
+/* Modal body */
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Modal footer */
+.modal-footer {
+    border-top: 2px solid var(--border-color);
+    padding: 1rem 1.5rem;
+}
+
+.modal-footer.bg-light {
+    background-color: var(--light-bg);
+}
+
+/* Scrollable modal */
+.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+}
+
+/* Modal scrollbar */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* ---------------------------------------------------------------
+   9.2 Ticket Form Modal
+   --------------------------------------------------------------- */
+
+#ticketFormModal .modal-header {
+    padding: 1.5rem 2rem;
+    border: none;
+}
+
+#ticketFormModal .modal-body {
+    padding: 0 2rem 2rem 2rem;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+#ticketFormModal .modal-title {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+}
+
+/* Form controls in modal */
+#ticketFormModal .form-label {
+    margin-bottom: 0.5rem;
+    color: #4a4a4a;
+    font-size: 0.9rem;
+}
+
+#ticketFormModal .form-select,
+#ticketFormModal .form-control {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+#ticketFormModal .form-select:focus,
+#ticketFormModal .form-control:focus {
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+    outline: none;
+}
+
+#ticketFormModal .form-select:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Action buttons in modal */
+#ticketFormModal .btn-action {
+    padding: 0.65rem 1.75rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#ticketFormModal .btn-info {
+    background-color: #17a2b8;
+    border: none;
+}
+
+#ticketFormModal .btn-info:hover {
+    background-color: #138496;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+/* ---------------------------------------------------------------
+   9.3 Ticket Detail Modal
+   --------------------------------------------------------------- */
+
+#ticketDetailModal .modal-header {
+    padding: 1.5rem 2rem 1rem 2rem;
+    border: none;
+    background: white;
+}
+
+#ticketDetailModal .modal-body {
+    padding: 1rem 2rem 2rem 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#ticketDetailModal .modal-footer {
+    padding: 1rem 2rem;
+    border: none;
+    background: #f8f9fa;
+}
+
+/* Card in detail modal */
+#ticketDetailModal .card {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+#ticketDetailModal .card-header {
+    background-color: #f8f9fa !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+/* Table in detail modal */
+#ticketDetailModal .table {
+    font-size: 0.95rem;
+}
+
+#ticketDetailModal .table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+#ticketDetailModal .table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+#ticketDetailModal .table td {
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+#ticketDetailModal .table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ===============================================================
+   10. TICKET FORM COMPONENTS
+   ================================================================
+   Special components in ticket creation form
+   =============================================================== */
+
+/* ---------------------------------------------------------------
+   Steps Container
+   --------------------------------------------------------------- */
+
+.steps-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Step circle with number */
+.step-circle {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 50%;
+    background-color: #17a2b8;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.step-text p {
+    margin: 0;
+}
+
+/* ---------------------------------------------------------------
+   Instruction Card
+   --------------------------------------------------------------- */
+
+.instruction-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #e9ecef;
+}
+
+.instruction-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+}
+
+.instruction-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #4a4a4a;
+}
+
+.instruction-item:last-child {
+    margin-bottom: 0;
+}
+
+.instruction-item strong {
+    color: #1a1a1a;
+}
+
+/* ---------------------------------------------------------------
+   File Upload Box
+   --------------------------------------------------------------- */
+
+.file-upload-box {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.file-upload-box:hover {
+    border-color: #17a2b8;
+    background-color: #f0f9fa;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    margin: 0;
+    cursor: pointer;
+    padding: 1rem;
+}
+
+/* File list */
+#file-list .list-group-item {
+    border-radius: 6px;
+    margin-bottom: 6px;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #e9ecef;
+    background-color: #fff;
+}
+
+/* ---------------------------------------------------------------
+   Review Card
+   --------------------------------------------------------------- */
+
+.review-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.review-row {
+    display: flex;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.review-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.review-label {
+    flex: 0 0 140px;
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.review-value {
+    flex: 1;
+    color: #1a1a1a;
+    font-size: 0.9rem;
+}
+
+
+/* ===============================================================
+   11. ALERT STYLES
+   ================================================================
+   Notifications and alerts
+   =============================================================== */
+
+.alert {
+    border-radius: 6px;
+    border: none;
+    padding: 1rem;
+}
+
+/* Alert variants */
+.alert-info {
+    background-color: var(--primary-light);
+    color: var(--primary-hover);
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert i {
+    font-size: 1rem;
+}
+
+
+/* ===============================================================
+   12. UTILITY CLASSES
+   ================================================================
+   Common utility classes
+   =============================================================== */
+
+/* Text utilities */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.text-info {
+    color: var(--primary-color) !important;
+}
+
+.text-custom-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Background utilities */
+.bg-custom-primary {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Border utilities */
+.border-custom-primary {
+    border-color: var(--primary-color) !important;
+}
+
+/* Spinner */
+.spinner-border.text-custom-primary {
+    border-color: var(--primary-color);
+    border-right-color: transparent;
+}
+
+/* Close button */
+.btn-close-white {
+    filter: brightness(0) invert(1);
+}
+
+
+/* ===============================================================
+   13. LOADING & ANIMATIONS
+   ================================================================
+   Loading effects and animations
+   =============================================================== */
+
+/* Spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 3px;
+}
+
+.spinner-border.text-info {
+    color: var(--primary-color) !important;
+}
+
+/* Loading overlay - Full page loading screen */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* ---------------------------------------------------------------
+   Keyframe Animations
+   --------------------------------------------------------------- */
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Apply animations */
+.file-item {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.table tbody tr {
+    animation: slideIn 0.3s ease-in-out;
+}
+
+
+/* ===============================================================
+   14. CUSTOM SCROLLBAR
+   ================================================================
+   Custom scrollbar styling
+   =============================================================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+
+/* ===============================================================
+   15. SWEETALERT2 CUSTOMIZATION
+   ================================================================
+   SweetAlert2 popup customization
+   =============================================================== */
+
+.swal2-popup {
+    border-radius: 8px;
+}
+
+.swal2-confirm {
+    border-radius: 6px !important;
+    background-color: var(--primary-color) !important;
+}
+
+.swal2-confirm:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+
+/* ===============================================================
+   16. RESPONSIVE DESIGN
+   ================================================================
+   Responsive adjustments for different screen sizes
+   =============================================================== */
+
+/* ---------------------------------------------------------------
+   Tablet (768px - 991px)
+   --------------------------------------------------------------- */
+@media (max-width: 991px) {
+    .modal-xl {
+        max-width: 90%;
+    }
+
+    .table-responsive {
+        font-size: 0.8125rem;
+    }
+
+    #ticketFormModal .modal-body {
+        padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+
+    #ticketFormModal .modal-header {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .steps-container {
+        gap: 1.5rem;
+    }
+
+    .step-item {
+        min-width: 100%;
+    }
+
+    .step-circle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+    }
+
+    .review-label {
+        flex: 0 0 120px;
+    }
+
+    .modern-table thead th {
+        font-size: 11px;
+        padding: 12px 8px;
+    }
+
+    .modern-table tbody td {
+        font-size: 12px;
+        padding: 10px 8px;
+    }
+}
+
+/* ---------------------------------------------------------------
+   Mobile Large (577px - 767px)
+   --------------------------------------------------------------- */
+@media (max-width: 767px) {
+    body {
+        font-size: 13px;
+    }
+
+    .modal-xl {
+        max-width: 95%;
+        margin: 0.5rem auto;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 0.75rem;
+    }
+
+    #tickets-table td,
+    #tickets-table th {
+        padding: 0.5rem;
+    }
+
+    .btn-action {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 0.125rem;
+    }
+
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .badge {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .page-link {
+        padding: 0.375rem 0.625rem;
+        font-size: 0.875rem;
+    }
+
+    /* Full width buttons in footer */
+    .modal-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Ticket form modal */
+    #ticketFormModal .modal-xl {
+        margin: 0.5rem;
+    }
+
+    #ticketFormModal .modal-body {
+        padding: 0 1rem 1rem 1rem;
+    }
+
+    #ticketFormModal .modal-header {
+        padding: 1rem;
+    }
+
+    #ticketFormModal .modal-title {
+        font-size: 1.1rem;
+    }
+
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 0.9rem;
+    }
+
+    .step-text {
+        font-size: 0.85rem;
+    }
+
+    .instruction-card {
+        padding: 1rem;
+    }
+
+    .instruction-item {
+        font-size: 0.825rem;
+    }
+
+    .review-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .review-label {
+        flex: none;
+    }
+
+    #ticketFormModal .btn-action {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    /* Ticket detail modal */
+    #ticketDetailModal .modal-header,
+    #ticketDetailModal .modal-body,
+    #ticketDetailModal .modal-footer {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    #ticketDetailModal .table td {
+        padding: 0.75rem 1rem !important;
+    }
+
+    #ticketDetailModal .table td:first-child {
+        width: 140px !important;
+        font-size: 0.85rem;
+    }
+
+    #ticketDetailModal h4 {
+        font-size: 1.25rem;
+    }
+}
+
+/* ---------------------------------------------------------------
+   Mobile Small (max 576px)
+   --------------------------------------------------------------- */
+@media (max-width: 576px) {
+    body {
+        font-size: 12px;
+    }
+
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .card {
+        margin-bottom: 0.75rem;
+    }
+
+    .nav-tabs .nav-link {
+        font-size: 0.8125rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .btn {
+        font-size: 0.8125rem;
+        padding: 0.375rem 0.875rem;
+    }
+
+    /* Heading sizes */
+    h4,
+    .h4 {
+        font-size: 1.125rem;
+    }
+
+    h5,
+    .h5 {
+        font-size: 1rem;
+    }
+
+    h6,
+    .h6 {
+        font-size: 0.9rem;
+    }
+
+    .table-responsive {
+        font-size: 0.7rem;
+    }
+
+    #tickets-table td,
+    #tickets-table th {
+        padding: 0.375rem;
+    }
+
+    /* Hide non-essential columns */
+    .table-responsive .d-none-mobile {
+        display: none;
+    }
+
+    .modal-dialog {
+        margin: 0.25rem;
+    }
+
+    .pagination {
+        font-size: 0.8125rem;
+    }
+
+    .page-link {
+        padding: 0.25rem 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 0.8125rem;
+    }
+
+    /* Ticket form modal */
+    #ticketFormModal .modal-xl {
+        margin: 0.25rem;
+    }
+
+    .steps-container {
+        gap: 1rem;
+    }
+
+    .step-item {
+        gap: 0.75rem;
+    }
+
+    .file-upload-label {
+        height: 70px;
+    }
+
+    #ticketFormModal .btn-action {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-end .btn-action:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* ---------------------------------------------------------------
+   Extra Small Mobile (max 375px)
+   --------------------------------------------------------------- */
+@media (max-width: 375px) {
+
+    /* Hide button text, show icon only */
+    .btn-action span {
+        display: none;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.375rem;
+    }
+}
+
+
+/* ===============================================================
+   17. TOUCH OPTIMIZATION
+   ================================================================
+   Optimization for touch devices
+   =============================================================== */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Increase minimum size for clickable elements */
+    .btn,
+    .page-link {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+
+/* ===============================================================
+   18. PRINT STYLES
+   ================================================================
+   Styles for printing pages
+   =============================================================== */
+@media print {
+
+    /* Hide unnecessary elements */
+    .modal-header,
+    .modal-footer,
+    .btn,
+    .nav-tabs {
+        display: none !important;
+    }
+
+    .modal-dialog {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    /* Avoid page breaks inside cards */
+    .card {
+        break-inside: avoid;
+    }
+
+    body {
+        font-size: 12pt;
+    }
+}

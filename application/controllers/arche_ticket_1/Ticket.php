@@ -5,7 +5,6 @@ class Ticket extends CI_Controller
 {
     private const MAX_FILES_DEFAULT     = 3;
     private const MAX_FILE_SIZE_DEFAULT = 10485760;
-    private const DEFAULT_COUNTRY       = 'Vietnam';
 
     /**
      * Contructor
@@ -28,16 +27,13 @@ class Ticket extends CI_Controller
     public function index()
     {
         try {
-            $country = $this->input->get('country');
-
             $cards           = $this->glpi_api_model->getEntities();
             $categoryResults = $this->getValidatedCategories($cards);
 
             $data = [
                 'page_title' => 'Request IT/IS Support',
                 'cards'      => $cards,
-                'formData'   => $categoryResults,
-                'country'    => !empty($country) ? $country : self::DEFAULT_COUNTRY
+                'formData'   => $categoryResults
             ];
 
             // Send data to view
@@ -68,9 +64,30 @@ class Ticket extends CI_Controller
     /**
      * Download ticket document
      */
-    public function downloadTicketDocument($id)
+    public function downloadTicketDocument($documentId)
     {
-        return $this->glpi_api_model->downloadDocument($id);
+        $ticketId = $this->input->get('ticket_id');
+
+        if (!$documentId || !$ticketId) {
+            show_error('Missing document_id or ticket_id', 400);
+            return;
+        }
+
+        $result = $this->glpi_api_model->downloadDocument($documentId, $ticketId);
+
+        if (!$result) {
+            show_error('Document not found or not linked to ticket', 404);
+            return;
+        }
+
+        $response = [
+            'success'      => true,
+            'download_url' => $result['download_url'] ?? null,
+        ];
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
 
     /**
@@ -99,7 +116,7 @@ class Ticket extends CI_Controller
                 return;
             }
 
-            $uploadResult = $this->handleFileUploads();
+            $uploadResult = $this->handleFileUploads($input['category']);
 
             if (!$uploadResult['success']) {
                 $this->sendJsonResponse($uploadResult);
@@ -133,8 +150,7 @@ class Ticket extends CI_Controller
         return [
             'category'    => trim($this->input->post('category')    ?? ''),
             'subcategory' => trim($this->input->post('subcategory') ?? ''),
-            'description' => trim($this->input->post('description') ?? ''),
-            'countryGlpi' => trim($this->input->post('country_glpi') ?? ''),
+            'description' => trim($this->input->post('description') ?? '')
         ];
     }
 
@@ -157,10 +173,6 @@ class Ticket extends CI_Controller
             $errors[] = 'Description must have at least 10 characters';
         }
 
-        if (!empty($input['description']) && mb_strlen($input['description']) > 1000) {
-            $errors[] = 'Description must be less than 1000 characters';
-        }
-
         if (!empty($errors)) {
             return [
                 'success' => false,
@@ -175,7 +187,7 @@ class Ticket extends CI_Controller
     /**
      * Handle file uploads
      */
-    private function handleFileUploads(): array
+    private function handleFileUploads(string $category): array
     {
         if (empty($_FILES['attachments']['name'][0])) {
             return [
@@ -184,104 +196,73 @@ class Ticket extends CI_Controller
             ];
         }
 
-        $maxFiles     = self::MAX_FILES_DEFAULT;
-        $maxSize      = self::MAX_FILE_SIZE_DEFAULT; // bytes
-        $allowedTypes = explode('|', $this->config->item('upload_allowed_types'));
+        $maxFiles = self::MAX_FILES_DEFAULT;
+        $maxSize = self::MAX_FILE_SIZE_DEFAULT / 1024;
+        $allowedTypes = $this->config->item('upload_allowed_types');
 
         $filesCount = count($_FILES['attachments']['name']);
-
-        // Validate the number of files
         if ($filesCount > $maxFiles) {
             return [
                 'success' => false,
-                'message' => "Only maximum {$maxFiles} file(s) are allowed"
+                'message' => "Only maximum uploads are allowed {$maxFiles} files"
             ];
         }
+
+        $uploadPath = $this->config->item('upload_path') . $category . '/';
+        if (!is_dir($uploadPath)) {
+            if (!mkdir($uploadPath, 0755, true)) {
+                return [
+                    'success' => false,
+                    'message' => 'Unable to create upload folder'
+                ];
+            }
+        }
+
+        $config = [
+            'upload_path' => $uploadPath,
+            'allowed_types' => $allowedTypes,
+            'max_size' => $maxSize,
+            'encrypt_name' => true,
+            'remove_spaces' => true
+        ];
+
+        $this->upload->initialize($config);
 
         $uploadedFiles = [];
         $errors = [];
 
         for ($i = 0; $i < $filesCount; $i++) {
             if ($_FILES['attachments']['error'][$i] !== UPLOAD_ERR_OK) {
-                if ($_FILES['attachments']['error'][$i] !== UPLOAD_ERR_NO_FILE) {
-                    $errors[] = $this->getUploadErrorMessage($_FILES['attachments']['error'][$i]);
-                }
                 continue;
             }
 
-            $fileName = $_FILES['attachments']['name'][$i];
-            $fileSize = $_FILES['attachments']['size'][$i];
-            $fileTmp  = $_FILES['attachments']['tmp_name'][$i];
-            $fileType = $_FILES['attachments']['type'][$i];
-
-            // Validate file size
-            if ($fileSize > $maxSize) {
-                $errors[] = "{$fileName}: File size exceeds " . ($maxSize / 1024) . "KB";
-                continue;
-            }
-
-            // Validate file types
-            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            if (!in_array($fileExt, $allowedTypes)) {
-                $errors[] = "{$fileName}: File type not allowed";
-                continue;
-            }
-
-            // Validate file actually exists and can be read
-            if (!file_exists($fileTmp) || !is_readable($fileTmp)) {
-                $errors[] = "{$fileName}: Unable to read uploaded file";
-                continue;
-            }
-
-            // Add files to the list to upload to GLPI
-            $uploadedFiles[] = [
-                'name'      => $fileName,
-                'type'      => $fileType,
-                'tmp_name'  => $fileTmp,
-                'size'      => $fileSize,
-                'extension' => $fileExt,
-                'file_name' => $fileName,
-                'full_path' => $fileTmp
+            $_FILES['file'] = [
+                'name' => $_FILES['attachments']['name'][$i],
+                'type' => $_FILES['attachments']['type'][$i],
+                'tmp_name' => $_FILES['attachments']['tmp_name'][$i],
+                'error' => $_FILES['attachments']['error'][$i],
+                'size' => $_FILES['attachments']['size'][$i]
             ];
+
+            if ($this->upload->do_upload('file')) {
+                $uploadedFiles[] = $this->upload->data();
+            } else {
+                $errors[] = strip_tags($this->upload->display_errors());
+            }
         }
 
-        // If there is an error and no files are successful
         if (!empty($errors) && empty($uploadedFiles)) {
             return [
                 'success' => false,
-                'message' => 'Upload failed: ' . implode(', ', $errors)
+                'message' => 'Upload thất bại: ' . implode(', ', $errors)
             ];
         }
 
-        // If some files are successful, success is still returned
         return [
-            'success'   => true,
-            'files'     => $uploadedFiles,
-            'warnings'  => $errors, // Invalid file errors
-            'message'   => count($uploadedFiles) . ' file(s) ready to upload'
+            'success' => true,
+            'files' => $uploadedFiles,
+            'message' => count($uploadedFiles) . ' file(s) uploaded successfully'
         ];
-    }
-
-    /**
-     * Get readable error message from upload error code
-     */
-    private function getUploadErrorMessage(int $errorCode): string
-    {
-        switch ($errorCode) {
-            case UPLOAD_ERR_INI_SIZE:
-            case UPLOAD_ERR_FORM_SIZE:
-                return 'File size exceeds limit';
-            case UPLOAD_ERR_PARTIAL:
-                return 'File was only partially uploaded';
-            case UPLOAD_ERR_NO_TMP_DIR:
-                return 'Missing temporary folder';
-            case UPLOAD_ERR_CANT_WRITE:
-                return 'Failed to write file to disk';
-            case UPLOAD_ERR_EXTENSION:
-                return 'File upload stopped by extension';
-            default:
-                return 'Unknown upload error';
-        }
     }
 
     /**
@@ -291,9 +272,9 @@ class Ticket extends CI_Controller
     {
         $formData = [
             'subcategory' => $input['subcategory'],
-            'description' => $input['description'],
-            'countryGlpi' => $input['countryGlpi']
+            'description' => $input['description']
         ];
+
 
         return $this->glpi_api_model->prepareTicketData($input['category'], $formData);
     }

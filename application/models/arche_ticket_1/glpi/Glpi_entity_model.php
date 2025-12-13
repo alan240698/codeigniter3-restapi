@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_entity_model extends CI_Model
+class Glpi_entity_model extends CI_Model
 {
     private $transformer;
 
@@ -30,6 +30,7 @@ class glpi_entity_model extends CI_Model
         }
 
         $data = $this->glpi_api->getGlpiEntities();
+
         $this->glpi_api->killSession();
 
         return $this->transformer->transformEntities($data);

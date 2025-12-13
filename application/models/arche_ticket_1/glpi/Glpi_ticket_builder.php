@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_ticket_builder extends CI_Model
+class Glpi_ticket_builder extends CI_Model
 {
     /**
      * Constructor
@@ -28,8 +28,7 @@ class glpi_ticket_builder extends CI_Model
             return false;
         }
 
-        $countryGlpi = $form_data['countryGlpi'];
-        $category_id = sprintf('[%s] - %s > %s', $countryGlpi, $category, $form_data['subcategory'] ?? '');
+        $category_id = '[VN]'. ' - '. $category . ' > ' . ($form_data['subcategory'] ?? '');
 
         $ticket_data = [
             'name'    => $category_id,

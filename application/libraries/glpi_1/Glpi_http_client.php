@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_http_client
+class Glpi_http_client
 {
     private $CI;
     private $api_url;

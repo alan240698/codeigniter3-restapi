@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_category_model extends CI_Model
+class Glpi_category_model extends CI_Model
 {
     private $transformer;
     private $category_mapping = [];

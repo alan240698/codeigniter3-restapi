@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_document_model extends CI_Model
+class Glpi_document_model extends CI_Model
 {
     /**
      * Constructor
@@ -17,14 +17,13 @@ class glpi_document_model extends CI_Model
     /**
      * Download
      */
-    public function download($id)
+    public function download($id, $ticketId)
     {
         if (!$this->glpi_api->initSession()) {
-            log_message('error', 'GLPI: Cannot initialize session for getList');
-            return;
+            return $this->glpi_api_validation->errorResponse('Unable to connect to GLPI API');
         }
 
-        return $this->glpi_api->download_document($id);
+        return $this->glpi_api->download_document($id, $ticketId);
     }
 
     /**
@@ -36,27 +35,20 @@ class glpi_document_model extends CI_Model
 
         foreach ($files as $file) {
             if (!$this->glpi_api_validation->isValidFile($file)) {
-                log_message('error', 'GLPI: Invalid file structure - ' . json_encode($file));
+                log_message('error', 'GLPI: Invalid file structure');
                 continue;
             }
 
-            // Get the correct path and name (supports both formats)
-            $filePath = $file['full_path'] ?? $file['tmp_name'];
-            $fileName = $file['file_name'] ?? $file['name'];
-
-            log_message('info', "GLPI: Uploading file {$fileName} to ticket {$ticket_id}");
-
             $result = $this->glpi_api->uploadDocument(
                 $ticket_id,
-                $filePath,
-                $fileName
+                $file['full_path'],
+                $file['file_name']
             );
 
             if ($this->glpi_api_validation->isSuccessResponse($result)) {
-                $uploaded[] = $fileName;
-                log_message('info', "GLPI: File uploaded successfully: {$fileName}");
+                $uploaded[] = $file['file_name'];
             } else {
-                log_message('error', "GLPI: Failed to upload file: {$fileName} - " . json_encode($result));
+                log_message('error', "GLPI: Failed to upload file: {$file['file_name']}");
             }
         }
 

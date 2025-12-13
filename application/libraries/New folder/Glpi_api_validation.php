@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_api_validation
+class Glpi_api_validation
 {
     private $errors = [];
 
@@ -141,15 +141,9 @@ class glpi_api_validation
      */
     public function isValidFile($file)
     {
-        $hasOldFormat = isset($file['full_path']) 
-                        && isset($file['file_name']) 
-                        && file_exists($file['full_path']);
-
-        $hasNewFormat = isset($file['tmp_name']) 
-                        && isset($file['name']) 
-                        && file_exists($file['tmp_name']);
-
-        return $hasOldFormat || $hasNewFormat;
+        return isset($file['full_path'])
+            && isset($file['file_name'])
+            && file_exists($file['full_path']);
     }
 
     /**
@@ -198,7 +192,7 @@ class glpi_api_validation
         return [
             'subcategory' => [
                 'type' => 'select',
-                'label' => 'Issue Type',
+                'label' => 'Sub-Category',
                 'required' => true,
                 'options' => []
             ],
@@ -206,14 +200,14 @@ class glpi_api_validation
                 'type' => 'textarea',
                 'label' => 'Description',
                 'required' => true,
-                'placeholder' => 'Please describe your issue in detail (min 10, max 1000 characters)...',
+                'placeholder' => 'Describe your problem in detail...',
                 'rows' => 5
             ],
             'attachments' => [
                 'type' => 'file',
                 'label' => 'Attach documents/images',
                 'required' => false,
-                'max_files' => 3,
+                'max_files' => 5,
                 'max_size' => 10485760,
                 'allowed_types' => 'jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|txt'
             ]
@@ -285,12 +279,12 @@ class glpi_api_validation
 
         if (is_numeric($value)) {
             if ($value < $min) {
-                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " must be greater or equal {$min}");
+                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " phải lớn hơn hoặc bằng {$min}");
                 return false;
             }
         } else if (is_string($value)) {
             if (mb_strlen($value) < $min) {
-                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " must be at least {$min} characters");
+                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " phải có ít nhất {$min} ký tự");
                 return false;
             }
         }
@@ -306,12 +300,12 @@ class glpi_api_validation
 
         if (is_numeric($value)) {
             if ($value > $max) {
-                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " must be less than or equal {$max}");
+                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " phải nhỏ hơn hoặc bằng {$max}");
                 return false;
             }
         } else if (is_string($value)) {
             if (mb_strlen($value) > $max) {
-                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " must not exceed {$max} characters");
+                $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . " không được vượt quá {$max} ký tự");
                 return false;
             }
         }
@@ -324,7 +318,7 @@ class glpi_api_validation
         if ($value === null) return true;
 
         if (!in_array($value, $params)) {
-            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' not valid');
+            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' không hợp lệ');
             return false;
         }
 
@@ -336,7 +330,7 @@ class glpi_api_validation
         if ($value === null) return true;
 
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' is not a valid email');
+            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' không phải là email hợp lệ');
             return false;
         }
 
@@ -348,7 +342,7 @@ class glpi_api_validation
         if ($value === null) return true;
 
         if (!file_exists($value)) {
-            $this->_add_error($field, 'File does not exist');
+            $this->_add_error($field, 'File không tồn tại');
             return false;
         }
 
@@ -363,7 +357,7 @@ class glpi_api_validation
         $file_size = filesize($value) / 1024; // Convert to KB
 
         if ($file_size > $max_size) {
-            $this->_add_error($field, 'File size must not be exceeded ' . round($max_size / 1024, 2) . 'MB');
+            $this->_add_error($field, 'Kích thước file không được vượt quá ' . round($max_size / 1024, 2) . 'MB');
             return false;
         }
 
@@ -377,7 +371,7 @@ class glpi_api_validation
         $pattern = $params[0];
 
         if (!preg_match($pattern, $value)) {
-            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' Incorrect format');
+            $this->_add_error($field, ucfirst(str_replace('_', ' ', $field)) . ' không đúng định dạng');
             return false;
         }
 

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_response_handler
+class Glpi_response_handler
 {
     /**
      * Handle

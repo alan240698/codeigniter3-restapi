@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_document_service
+class Glpi_document_service
 {
     private $CI;
     private $http_client;
@@ -70,8 +70,9 @@ class glpi_document_service
     /**
      * Download
      */
-    public function download($document_id)
+    public function download($document_id, $ticket_id)
     {
+
         if (!$this->session_manager->hasActiveSession()) {
             return [
                 'success' => false,
@@ -79,30 +80,25 @@ class glpi_document_service
             ];
         }
 
-        $meta = $this->http_client->request("Document/$document_id", "GET");
+        $ticket_with_doc = $this->http_client->request("Ticket/{$ticket_id}/Document/$document_id", 'GET');
 
-        if (!isset($meta['data']['filepath'])) {
+        if ($ticket_with_doc['success']) {
+            $domainUrl = $this->CI->config->item('glpi_domain_url');
+            $fileUrl = $domainUrl . "/front/document.send.php?docid={$document_id}&tickets_id={$ticket_id}";
+
             return [
-                'success' => false,
-                'message' => 'Document not found'
+                'success' => true,
+                'download_url' => $fileUrl
             ];
         }
 
-        $filePath = $meta['data']['filepath'];
-        
-        if ($filePath) {
-            $session_token = $this->session_manager->getSessionToken();
 
-            $url = "http://172.21.86.29/front/sso.php?session_token=" . urlencode($session_token) . "&document_id=" . $document_id;
-
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
-            $response = curl_exec($ch);
-            curl_close($ch);
-            echo $response;
-        }
+        return [
+            'success' => false,
+            'download_url' => ''
+        ];
     }
+
 
     /**
      * Validate upload

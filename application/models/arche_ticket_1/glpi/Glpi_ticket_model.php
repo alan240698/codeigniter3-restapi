@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_ticket_model extends CI_Model
+class Glpi_ticket_model extends CI_Model
 {
     private $transformer;
     private $builder;
@@ -37,7 +37,6 @@ class glpi_ticket_model extends CI_Model
         }
 
         $data    = $this->glpi_api->get_ticket_by_post();
-
         $tickets = $this->transformer->transformTickets($data);
 
         header('Content-Type: application/json; charset=utf-8');

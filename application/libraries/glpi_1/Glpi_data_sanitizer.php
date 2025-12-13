@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_data_sanitizer
+class Glpi_data_sanitizer
 {
     /**
      * Sanitize

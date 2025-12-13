@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_session_manager
+class Glpi_session_manager
 {
     private $CI;
     private $http_client;

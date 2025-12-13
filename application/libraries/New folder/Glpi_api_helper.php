@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_api_helper
+class Glpi_api_helper
 {
     /**
      * Convert string become slug (lowercase, no spaces)

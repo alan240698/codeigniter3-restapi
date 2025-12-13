@@ -10,8 +10,8 @@ $config['glpi_domain_url']    = 'http://localhost';
  * GLPI API Configuration
  */
 $config['glpi_api_url']    = 'http://localhost/api.php/v1'; 
-$config['glpi_app_token']  = 'dqamt66cruGzkAggv3S0unmvPle5SOFpZ5yjiRue';
-$config['glpi_user_token'] = 'user_token hg7Tu8QDKJ1H8aa4HtLbaxRdRMIQdMtdGY8JQYdF';
+$config['glpi_app_token']  = 'u6gJ6emuZPbazDWPzHoqo9uIIsDpJaZpyA3uQcZ3';
+$config['glpi_user_token'] = 'user_token lva6V7k85pafGMmItzVznLYl9oTyykhhfT51jrvp';
 
 /**
  * Upload configuration

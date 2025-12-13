@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_entity_service
+class Glpi_entity_service
 {
     private $CI;
     private $http_client;

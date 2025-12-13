@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_api_model extends CI_Model
+class Glpi_api_model extends CI_Model
 {
     private $entity_model;
     private $category_model;
@@ -91,9 +91,9 @@ class glpi_api_model extends CI_Model
     /**
      * Download document
      */
-    public function downloadDocument($id)
+    public function downloadDocument($id, $ticketId)
     {
-        return $this->document_model->download($id);
+        return $this->document_model->download($id, $ticketId);
     }
 
     /**

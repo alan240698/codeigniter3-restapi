@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_ticket_service
+class Glpi_ticket_service
 {
     private $CI;
     private $http_client;
@@ -84,7 +84,7 @@ class glpi_ticket_service
             session_start();
         }
 
-        $requesterEmail = 'luonglecr15@gmail.com' ?? $_SESSION['auser'];
+        $requesterEmail = $_SESSION['auser'] ?? 'luonglecr15@gmail.com';   
 
         $payload = [
             'criteria' => [
@@ -201,7 +201,7 @@ class glpi_ticket_service
         }
 
         $ticketId        = $response['data']['id'];
-        $requester_email = 'luonglecr15@gmail.com' ?? $_SESSION['auser'];
+        $requester_email = $_SESSION['auser'] ?? 'luonglecr15@gmail.com';
 
         if ($requester_email) {
             $this->http_client->request("Ticket/$ticketId/Ticket_User", "POST", [

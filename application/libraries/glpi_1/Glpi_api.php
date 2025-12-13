@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class glpi_api
+class Glpi_api
 {
     private $CI;
     private $session_manager;
@@ -150,8 +150,8 @@ class glpi_api
     /**
      * Download document
      */
-    public function download_document($document_id)
+    public function download_document($document_id, $ticket_id)
     {
-        return $this->document_service->download($document_id);
+        return $this->document_service->download($document_id, $ticket_id);
     }
 }
