@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => getenv('DB_HOST') ?: 'db',
-	'username' => getenv('DB_USER') ?: 'ci_user',
-	'password' => getenv('DB_PASS') ?: 'ci_password',
-	'database' => getenv('DB_NAME') ?: 'codeigniter_db',
+	'hostname' => getenv('DB_HOST') ?: 'localhost',
+	'username' => getenv('DB_USER') ?: 'ci3user',
+	'password' => getenv('DB_PASS') ?: 'ci3pass',
+	'database' => getenv('DB_NAME') ?: 'ci3_db',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

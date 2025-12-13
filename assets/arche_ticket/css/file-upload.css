@@ -1,0 +1,212 @@
+/* ========================================
+   FILE UPLOAD STYLING - MODERN DESIGN
+   ======================================== */
+
+.uploaded-files-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.uploaded-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.uploaded-file-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0; /* Important for text truncation */
+}
+
+.file-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+}
+
+.file-icon i {
+    opacity: 0.9;
+}
+
+/* File type specific colors */
+.uploaded-file-item:has(.fa-file-pdf) .file-icon {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+}
+
+.uploaded-file-item:has(.fa-file-word) .file-icon {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.uploaded-file-item:has(.fa-file-excel) .file-icon {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.uploaded-file-item:has(.fa-file-powerpoint) .file-icon {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+}
+
+.uploaded-file-item:has(.fa-file-image) .file-icon {
+    background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+}
+
+.uploaded-file-item:has(.fa-file-archive) .file-icon {
+    background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+}
+
+.file-details {
+    flex: 1;
+    min-width: 0; /* Important for text truncation */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.file-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+
+.file-remove-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #e53e3e;
+    background: white;
+    color: #e53e3e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    font-size: 14px;
+}
+
+.file-remove-btn:hover {
+    background: #e53e3e;
+    color: white;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 8px rgba(229, 62, 62, 0.3);
+}
+
+.file-remove-btn:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.file-remove-btn i {
+    pointer-events: none;
+}
+
+/* Files Summary */
+.files-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.summary-item i {
+    color: #667eea;
+    font-size: 14px;
+}
+
+.summary-item strong {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .uploaded-file-item {
+        padding: 12px;
+    }
+    
+    .file-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .file-name {
+        font-size: 13px;
+    }
+    
+    .file-size {
+        font-size: 11px;
+    }
+    
+    .file-remove-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .files-summary {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+}
+
+/* Animation for new files */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.uploaded-file-item {
+    animation: slideIn 0.3s ease;
+}
