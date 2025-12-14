@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://codeigniter3-restapi.test:8080';
+$config['base_url'] = 'http://codeigniter3-restapi.test';
 
 /*
 |--------------------------------------------------------------------------
@@ -462,7 +462,23 @@ $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = array('^api/.*$');
+$config['csrf_exclude_uris'] = array(
+    '^api/.*$',
+    '^service-groups/.*$',
+    '^ticket-types/.*$',
+    '^issue-types/.*$',
+    '^workflows/.*$',
+    '^workflow-states/.*$',
+    '^workflow-transitions/.*$',
+    '^support-teams/.*$',
+    '^team-members/.*$',
+    '^routing-rules/.*$',
+    '^approval-rules/.*$',
+    '^level-rules/.*$',
+    '^custom-fields/.*$',
+    '^sla-policies/.*$',
+    '^issue-type-sla/.*$'
+);
 
 /*
 |--------------------------------------------------------------------------
