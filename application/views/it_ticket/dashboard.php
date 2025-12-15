@@ -303,7 +303,7 @@
             position: relative;
         }
 
-        .loading-spinner::before {
+        /* .loading-spinner::before {
             content: '';
             position: absolute;
             width: 100%;
@@ -326,7 +326,7 @@
             border-right-color: #10b981;
             border-radius: 50%;
             animation: spin 1.2s linear infinite reverse;
-        }
+        } */
 
         .loading-text {
             color: #1f2937;

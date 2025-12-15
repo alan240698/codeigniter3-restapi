@@ -1,5 +1,67 @@
 <div id="tab-rules" class="tab-content active">
     
+    <style>
+    /* Modern Three-Dots Loading */
+    .tab-loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.2s ease-in;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .loading-spinner {
+        text-align: center;
+    }
+    .dots {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        animation: bounce 1.4s ease-in-out infinite;
+    }
+    .dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+    .dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    .dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    @keyframes bounce {
+        0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+    }
+    .loading-spinner p {
+        color: #667eea;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+    }
+    </style>
+    
     <!-- Smart UX: Setup Progress Indicator -->
     <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
@@ -1199,39 +1261,62 @@ function refreshRulesSmartUX() {
 }
 
 // TAB INITIALIZATION
-function initRulesTab() {
+async function initRulesTab() {
     console.log('Initializing Rules Tab...');
     
-    // Check prerequisites and update UI
-    RulesSmartUX.checkPrerequisites();
+    showTabLoading('tab-rules');
     
-    // Load dropdowns using RulesTabManager
-    RulesTabManager.loadIssueTypesDropdowns();
-    RulesTabManager.loadTeamsDropdowns();
-    
-    // CRITICAL: Activate first section (Routing Rules)
-    const firstSection = document.getElementById('section-routing');
-    const firstButton = document.querySelector('.sub-tab-btn[data-section="routing"]');
-    
-    if (firstSection && firstButton) {
-        // Remove active from all sections
-        document.querySelectorAll('.rules-section').forEach(sec => sec.classList.remove('active'));
-        // Add active to first section
-        firstSection.classList.add('active');
+    try {
+        // Wait for all data to load
+        await Promise.all([
+            RulesSmartUX.checkPrerequisites(),
+            RulesTabManager.loadIssueTypesDropdowns(),
+            RulesTabManager.loadTeamsDropdowns()
+        ]);
         
-        // Activate first button
-        document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
-        firstButton.classList.add('active');
+        // Activate first section
+        const firstSection = document.getElementById('section-routing');
+        const firstButton = document.querySelector('.sub-tab-btn[data-section="routing"]');
         
-        console.log('✅ Activated Routing Rules section');
+        if (firstSection && firstButton) {
+            document.querySelectorAll('.rules-section').forEach(sec => sec.classList.remove('active'));
+            firstSection.classList.add('active');
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+            firstButton.classList.add('active');
+        }
+        
+        await RoutingRulesManager.loadRules();
+        console.log('✅ Rules Tab fully loaded');
+    } catch (error) {
+        console.error('Error initializing Rules Tab:', error);
+    } finally {
+        hideTabLoading('tab-rules');
     }
-    
-    // Load first section data
-    RoutingRulesManager.loadRules();
 }
 
 function cleanupRulesTab() {
     console.log('Cleaning up Rules Tab...');
     document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('active'));
+}
+
+function showTabLoading(tabId) {
+    const tab = document.getElementById(tabId);
+    if (!tab) return;
+    let overlay = tab.querySelector('.tab-loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'tab-loading-overlay';
+        overlay.innerHTML = `<div class="loading-spinner"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Loading data...</p></div>`;
+        tab.style.position = 'relative';
+        tab.appendChild(overlay);
+    }
+    overlay.style.display = 'flex';
+}
+
+function hideTabLoading(tabId) {
+    const tab = document.getElementById(tabId);
+    if (!tab) return;
+    const overlay = tab.querySelector('.tab-loading-overlay');
+    if (overlay) overlay.style.display = 'none';
 }
 </script>

@@ -1,6 +1,6 @@
-`<div id="tab-services" class="tab-content active">
+<div id="tab-services" class="tab-content active">
     <!-- Smart UX: Setup Progress Indicator -->
-    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #0b1c68ff 0%, #18032dff 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-route"></i> Setup Progress
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Follow the order below</span>
@@ -38,7 +38,7 @@
     <!-- Service Groups Section -->
     <div class="card">
         <div class="card-header">
-            <h3><i class="fas fa-folder"></i> Service Groups</h3>
+            <h3></i> Service Groups</h3>
             <button class="btn btn-primary" onclick="ServiceManager.openAddServiceGroup()">
                 <i class="fas fa-plus"></i> Add Service Group
             </button>
@@ -97,7 +97,7 @@
     <!-- Ticket Types Section -->
     <div class="card">
         <div class="card-header">
-            <h3><i class="fas fa-ticket"></i> Ticket Types</h3>
+            <h3></i> Ticket Types</h3>
             <div>
                 <button id="btnAddTicketType" class="btn btn-primary" disabled 
                         onclick="TicketTypeManager.openAddTicketType()"
@@ -388,6 +388,75 @@
         opacity: 0.5;
         cursor: not-allowed;
     }
+
+    /* Modern Three-Dots Loading */
+    .tab-loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .loading-spinner {
+        text-align: center;
+    }
+
+    .dots {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        animation: bounce 1.4s ease-in-out infinite;
+    }
+
+    .dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+        0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+    }
+
+    .loading-spinner p {
+        color: #667eea;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+    }
 </style>
 
 <script>
@@ -584,7 +653,9 @@
                 if (data.success) {
                     ITTicketUI.showSuccess(id ? 'Service Group updated successfully' : 'Service Group created successfully');
                     this.closeModal();
-                    this.loadServiceGroups();
+                    await this.loadServiceGroups();
+                    await SmartUXManager.checkPrerequisites();
+                    await TicketTypeManager.loadServiceGroupsDropdown();
                 } else {
                     ITTicketUI.showError(data.message || 'Error saving service group');
                 }
@@ -603,8 +674,14 @@
 
                 const data = await response.json();
 
-                if (data.success) {
-                    ITTicketUI.showSuccess('Service Group deleted successfully', () => this.loadServiceGroups());
+                if (data?.success) {
+                    ITTicketUI.showSuccess('Service Group deleted successfully', async () => {
+                        await this.loadServiceGroups();
+                        await SmartUXManager.checkPrerequisites();
+                        await TicketTypeManager.loadServiceGroupsDropdown();
+                    });
+                } else {
+                    ITTicketUI.showError(data?.message || 'Error deleting service group')
                 }
             } catch (error) {
                 ITTicketUI.showError('Error deleting service group');
@@ -841,7 +918,9 @@
                 if (data.success) {
                     ITTicketUI.showSuccess(id ? 'Ticket Type updated successfully' : 'Ticket Type created successfully');
                     this.closeModal();
-                    this.loadTicketTypes();
+                    await this.loadTicketTypes();
+                    await SmartUXManager.checkPrerequisites(); // Update progress indicator
+                    await IssueTypeManager.loadTicketTypesDropdown(); 
                 } else {
                     ITTicketUI.showError(data.message || 'Error saving ticket type');
                 }
@@ -861,7 +940,11 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    ITTicketUI.showSuccess('Ticket Type deleted successfully', () => this.loadTicketTypes());
+                    ITTicketUI.showSuccess('Ticket Type deleted successfully', async () => {
+                        await this.loadTicketTypes();
+                        await SmartUXManager.checkPrerequisites(); // Update progress indicator
+                        await IssueTypeManager.loadTicketTypesDropdown(); // Update dropdowns
+                    });
                 }
             } catch (error) {
                 ITTicketUI.showError('Error deleting ticket type');
@@ -1132,7 +1215,8 @@
                 if (data.success) {
                     ITTicketUI.showSuccess(id ? 'Issue Type updated successfully' : 'Issue Type created successfully');
                     this.closeModal();
-                    this.loadIssueTypes();
+                    await this.loadIssueTypes();
+                    await SmartUXManager.checkPrerequisites();
                 } else {
                     ITTicketUI.showError(data.message || 'Error saving issue type');
                 }
@@ -1152,7 +1236,10 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    ITTicketUI.showSuccess('Issue Type deleted successfully', () => this.loadIssueTypes());
+                      ITTicketUI.showSuccess('Issue Type deleted successfully', async () => {
+                        await this.loadIssueTypes();
+                        await SmartUXManager.checkPrerequisites(); // Update progress indicator
+                    });
                 }
             } catch (error) {
                 ITTicketUI.showError('Error deleting issue type');
@@ -1228,7 +1315,7 @@
                 if (sgCount > 0) {
                     sgStep.querySelector('.step-status').textContent = '✓ Completed';
                     sgStep.style.opacity = '1';
-                    sgStep.style.background = 'rgba(16, 185, 129, 0.3)';
+                    sgStep.style.background = 'rgba(57, 163, 238, 0.94)';
                 }
             }
             
@@ -1240,7 +1327,7 @@
                     ttStep.style.opacity = '1';
                     if (ttCount > 0) {
                         ttStep.querySelector('.step-status').textContent = '✓ Completed';
-                        ttStep.style.background = 'rgba(16, 185, 129, 0.3)';
+                        ttStep.style.background = 'rgba(88, 240, 133, 0.92)';
                     } else {
                         ttStep.querySelector('.step-status').textContent = '→ Create now';
                         ttStep.style.background = 'rgba(59, 130, 246, 0.3)';
@@ -1256,7 +1343,7 @@
                     itStep.style.opacity = '1';
                     if (itCount > 0) {
                         itStep.querySelector('.step-status').textContent = '✓ Completed';
-                        itStep.style.background = 'rgba(16, 185, 129, 0.3)';
+                        itStep.style.background = 'rgba(232, 239, 23, 0.3)';
                     } else {
                         itStep.querySelector('.step-status').textContent = '→ Create now';
                         itStep.style.background = 'rgba(59, 130, 246, 0.3)';
@@ -1310,15 +1397,28 @@
     }
 
     // ==================== TAB INITIALIZATION ====================
-    function initServicesTab() {
+    async function initServicesTab() {
         console.log('Initializing Services Tab...');
         
-        // Check prerequisites and update UI
-        SmartUXManager.checkPrerequisites();
+        // Show global loading overlay
+        showTabLoading('tab-services');
         
-        ServiceManager.init();
-        TicketTypeManager.init();
-        IssueTypeManager.init();
+        try {
+            // Wait for ALL data to load in parallel
+            await Promise.all([
+                SmartUXManager.checkPrerequisites(),
+                ServiceManager.init(),
+                TicketTypeManager.init(),
+                IssueTypeManager.init()
+            ]);
+            
+            console.log('Services Tab fully loaded');
+        } catch (error) {
+            console.error('Error initializing Services Tab:', error);
+        } finally {
+            // Hide loading overlay after everything is done
+            hideTabLoading('tab-services');
+        }
     }
 
     function cleanupServicesTab() {
@@ -1327,5 +1427,40 @@
         document.querySelectorAll('.modal').forEach(modal => {
             modal.classList.remove('active');
         });
+    }
+    
+    // ==================== GLOBAL LOADING OVERLAY ====================
+    function showTabLoading(tabId) {
+        const tab = document.getElementById(tabId);
+        if (!tab) return;
+        
+        let overlay = tab.querySelector('.tab-loading-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'tab-loading-overlay';
+            overlay.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <p>Loading...</p>
+                </div>
+            `;
+            tab.style.position = 'relative';
+            tab.appendChild(overlay);
+        }
+        overlay.style.display = 'flex';
+    }
+    
+    function hideTabLoading(tabId) {
+        const tab = document.getElementById(tabId);
+        if (!tab) return;
+        
+        const overlay = tab.querySelector('.tab-loading-overlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
     }
 </script>`
