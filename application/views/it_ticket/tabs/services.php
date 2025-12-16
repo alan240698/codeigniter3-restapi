@@ -5,7 +5,7 @@
             <i class="fas fa-route"></i> Setup Progress
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Follow the order below</span>
         </h4>
-        <div class="progress-steps" style="display: flex; gap: 15px;">
+        <div class="progress-steps" style="display: flex; gap: 15px; flex-wrap: wrap;">
             <div id="step-service-groups" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; transition: all 0.3s ease;">
                 <div class="step-icon" style="margin-bottom: 8px;">
                     <i class="fas fa-folder"></i>
@@ -45,7 +45,7 @@
         </div>
 
         <!-- Search & Filter for Service Groups -->
-        <div class="filter-section" style="display: flex; gap: 15px; align-items: center;">
+        <div class="filter-section" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <div style="flex: 1;">
                 <input type="text" id="searchServiceGroup" placeholder="Search service groups..."
                     style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
@@ -111,7 +111,7 @@
         </div>
 
         <!-- Search & Filter for Ticket Types -->
-        <div class="filter-section" style="display: flex; gap: 15px; align-items: center;">
+        <div class="filter-section" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <div style="flex: 1;">
                 <input type="text" id="searchTicketType" placeholder="Search ticket types..."
                     style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
@@ -185,7 +185,7 @@
         </div>
 
         <!-- Search & Filter for Issue Types -->
-        <div class="filter-section" style="display: flex; gap: 15px; align-items: center;">
+        <div class="filter-section" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <div style="flex: 1;">
                 <input type="text" id="searchIssueType" placeholder="Search issue types..."
                     style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"

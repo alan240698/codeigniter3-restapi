@@ -191,7 +191,7 @@
         .tab-list {
             display: flex;
             overflow-x: auto;
-            border-bottom: 2px solid #f3f4f6;
+            /* border-bottom: 2px solid #f3f4f6; */
         }
 
         .tab-list::-webkit-scrollbar {
