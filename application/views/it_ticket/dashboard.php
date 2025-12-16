@@ -4,13 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin - IT Ticket Configuration</title>
+    <title>IT Ticket Configuration</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- SweetAlert2 -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Link trong roboto, serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- IT Ticket UI Utilities -->
     <script src="<?= base_url('assets/it_ticket/js/ui-utils.js') ?>"></script>
+    <script src="<?= base_url('assets/it_ticket/js/ValidationRulesServiceGroup.js') ?>"></script>
+    <script src="<?= base_url('assets/it_ticket/js/FormValidationManager.js') ?>"></script>
     <style>
         * {
             margin: 0;
@@ -19,7 +25,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: "Roboto", serif;
             background: #f5f7fa;
         }
 
@@ -303,31 +309,6 @@
             position: relative;
         }
 
-        /* .loading-spinner::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 4px solid #e5e7eb;
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        .loading-spinner::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            border: 4px solid transparent;
-            border-right-color: #10b981;
-            border-radius: 50%;
-            animation: spin 1.2s linear infinite reverse;
-        } */
-
         .loading-text {
             color: #1f2937;
             font-size: 16px;
@@ -346,10 +327,24 @@
         }
 
         @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
+
+            0%,
+            20% {
+                content: '';
+            }
+
+            40% {
+                content: '.';
+            }
+
+            60% {
+                content: '..';
+            }
+
+            80%,
+            100% {
+                content: '...';
+            }
         }
 
         /* Card Styles */
@@ -367,7 +362,7 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f3f4f6;
+            /* border-bottom: 2px solid #f3f4f6; */
         }
 
         .card-header h3 {
@@ -381,35 +376,51 @@
         /* Table Styles */
         .data-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
         }
 
-        .data-table thead {
-            background: #f9fafb;
-        }
-
-        .data-table th {
+        .data-table thead th {
+            background: antiquewhite;
             padding: 12px 15px;
-            text-align: left;
             font-size: 12px;
             font-weight: 600;
-            color: #6b7280;
             text-transform: uppercase;
+            /* color: #6b7280; */
+            text-align: left;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #e5e7eb;
+
+            border-bottom: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
         }
 
-        .data-table td {
-            padding: 15px;
-            border-top: 1px solid #f3f4f6;
+        .data-table thead th:last-child {
+            border-right: none;
         }
 
-        .data-table tbody tr {
-            transition: background 0.2s;
+        .data-table thead th:first-child {
+            border-top-left-radius: 10px;
         }
 
-        .data-table tbody tr:hover {
-            background: #f9fafb;
+        .data-table thead th:last-child {
+        border-top-right-radius: 10px;
+        }
+
+        .data-table tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eef0f2;
+            border-right: 1px solid #eef0f2;
+        }
+
+        .data-table tbody td:last-child {
+            border-right: none;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
         /* Buttons */
@@ -426,43 +437,43 @@
             transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: #3b82f6;
+        .btn-primary-it-ticket {
+            background: #00c1ef;
             color: white;
         }
 
-        .btn-primary:hover {
-            background: #2563eb;
+        .btn-primary-it-ticket:hover {
+            background: #08aad3ff;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
 
-        .btn-success {
-            background: #10b981;
+        .btn-success-it-ticket {
+            background: #1fde9eff;
             color: white;
         }
 
-        .btn-success:hover {
+        .btn-success-it-ticket:hover {
             background: #059669;
             transform: translateY(-2px);
         }
 
-        .btn-danger {
-            background: #ef4444;
+        .btn-danger-it-ticket {
+            background: #e56060;
             color: white;
         }
 
-        .btn-danger:hover {
+        .btn-danger-it-ticket:hover {
             background: #dc2626;
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
+        .btn-secondary-it-ticket {
             background: #6b7280;
             color: white;
         }
 
-        .btn-secondary:hover {
+        .btn-secondary-it-ticket:hover {
             background: #4b5563;
         }
 
@@ -523,7 +534,7 @@
             background: white;
             border-radius: 16px;
             width: 90%;
-            max-width: 600px;
+            max-width: 1000px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -661,8 +672,8 @@
         /* Filter Section */
         .filter-section {
             margin-bottom: 20px;
-            padding: 15px;
-            background: #f9fafb;
+            /* padding: 15px;
+            background: #f9fafb; */
             border-radius: 8px;
         }
 
@@ -704,14 +715,14 @@
 
         .pagination-btn:hover:not(:disabled) {
             background: #f3f4f6;
-            border-color: #3b82f6;
-            color: #3b82f6;
+            border-color: #00c1ef;
+            color: #00c1ef;
         }
 
         .pagination-btn.active {
-            background: #3b82f6;
+            background: #00c1ef;
             color: white;
-            border-color: #3b82f6;
+            border-color: #00c1ef;
         }
 
         .pagination-btn:disabled {
@@ -734,7 +745,7 @@
 <body>
     <!-- Top Header -->
     <div class="top-header">
-        <h1><i class="fas fa-cogs"></i> Super Admin Panel</h1>
+        <h1><i class="fas fa-cogs"></i> Admin Panel</h1>
         <p>IT Ticket System Configuration & Management</p>
     </div>
 
@@ -753,7 +764,7 @@
                     <div class="stat-card-value">8</div>
                     <div class="stat-card-label">Service Groups</div>
                     <div class="stat-card-trend up">
-                        <i class="fas fa-arrow-up"></i> 2 mới tạo tuần này
+                        <i class="fas fa-arrow-up"></i> 2 just created this week
                     </div>
                 </div>
 
@@ -779,7 +790,7 @@
                     <div class="stat-card-value">156</div>
                     <div class="stat-card-label">Issue Types</div>
                     <div class="stat-card-trend up">
-                        <i class="fas fa-arrow-up"></i> 12 với sub-issues
+                        <i class="fas fa-arrow-up"></i> 12 with sub-issues
                     </div>
                 </div>
 
@@ -801,11 +812,11 @@
             <div class="chart-container">
                 <div class="chart-header">
                     <h3><i class="fas fa-chart-line"></i> System Overview & Performance</h3>
-                    <p>Tổng quan hiệu suất hệ thống theo thời gian thực</p>
+                    <p>Real-time system performance overview</p>
                 </div>
                 <div class="chart-placeholder">
                     <i class="fas fa-chart-bar" style="font-size: 48px; opacity: 0.8;"></i>
-                    <span style="margin-left: 20px;">Biểu đồ thống kê</span>
+                    <span style="margin-left: 20px;">Statistical chart</span>
                 </div>
             </div>
         </div>
@@ -845,11 +856,11 @@
                     });
                 });
 
-                // Initialize current tab's scripts (CRITICAL FIX)
+                // Initialize current tab's scripts
                 setTimeout(() => {
                     this.initTabScripts(this.currentTab);
                 }, 100);
-                
+
                 // Handle browser back/forward
                 window.addEventListener('popstate', (e) => {
                     if (e.state && e.state.tab) {
@@ -871,7 +882,7 @@
                 document.querySelectorAll('.tab-item').forEach(item => {
                     item.classList.remove('active');
                 });
-                
+
                 // Add active class to clicked tab
                 element.classList.add('active');
 
@@ -881,92 +892,94 @@
 
                 // Fetch tab content via AJAX
                 fetch(this.baseUrl + '?tab=' + tabName, {
-                    method: 'GET',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error('Network response was not ok');
-                    return res.text();
-                })
-                .then(html => {
-                    setTimeout(() => {
-                        // Update content
-                        tabContent.innerHTML = html;
-                        
-                        // CRITICAL: Execute inline scripts
-                        this.executeScripts(tabContent);
-                        
-                        // Update current tab
-                        this.currentTab = tabName;
-                        
-                        // Update URL without reload
-                        const newUrl = this.baseUrl + '?tab=' + tabName;
-                        history.pushState({tab: tabName}, '', newUrl);
-                        
-                        // Remove loading state
-                        this.hideLoading(tabContent);
-                        
-                        // Initialize new tab's scripts
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Network response was not ok');
+                        return res.text();
+                    })
+                    .then(html => {
                         setTimeout(() => {
-                            this.initTabScripts(tabName);
-                        }, 100);
-                    }, 300);
-                })
-                .catch(err => {
-                    console.error('Error loading tab:', err);
-                    tabContent.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: #ef4444;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
-                            <p style="font-size: 16px; font-weight: 600;">Không thể tải nội dung</p>
-                            <p style="font-size: 14px; color: #6b7280; margin-top: 10px;">Vui lòng thử lại sau</p>
-                        </div>
-                    `;
-                    this.hideLoading(tabContent);
-                });
+                            // Update content
+                            tabContent.innerHTML = html;
+
+                            // CRITICAL: Execute inline scripts
+                            this.executeScripts(tabContent);
+
+                            // Update current tab
+                            this.currentTab = tabName;
+
+                            // Update URL without reload
+                            const newUrl = this.baseUrl + '?tab=' + tabName;
+                            history.pushState({
+                                tab: tabName
+                            }, '', newUrl);
+
+                            // Remove loading state
+                            this.hideLoading(tabContent);
+
+                            // Initialize new tab's scripts
+                            setTimeout(() => {
+                                this.initTabScripts(tabName);
+                            }, 100);
+                        }, 300);
+                    })
+                    .catch(err => {
+                        console.error('Error loading tab:', err);
+                        tabContent.innerHTML = `
+                            <div style="text-align: center; padding: 40px; color: #ef4444;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
+                                <p style="font-size: 16px; font-weight: 600;">Could not load content</p>
+                                <p style="font-size: 14px; color: #6b7280; margin-top: 10px;">Please try again later</p>
+                            </div>
+                        `;
+                        this.hideLoading(tabContent);
+                    });
             },
 
             executeScripts(container) {
                 // Find all script tags in loaded content
                 const scripts = container.querySelectorAll('script');
-                
+
                 scripts.forEach(oldScript => {
                     // Create new script element
                     const newScript = document.createElement('script');
-                    
+
                     // Copy attributes
                     Array.from(oldScript.attributes).forEach(attr => {
                         newScript.setAttribute(attr.name, attr.value);
                     });
-                    
+
                     // Copy script content
                     newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                    
-                    // Replace old script with new one (this executes it)
+
+                    // Replace old script with new one
                     oldScript.parentNode.replaceChild(newScript, oldScript);
                 });
-                
-                console.log('✅ Executed', scripts.length, 'scripts from tab content');
+
+                console.log('Executed', scripts.length, 'scripts from tab content');
             },
 
             showLoading(container) {
                 container.classList.add('loading-overlay');
-                
+
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'loading-content';
                 loadingDiv.innerHTML = `
                     <div class="loading-spinner"></div>
-                    <div class="loading-text">Đang tải dữ liệu<span class="loading-dots"></span></div>
-                    <div class="loading-subtext">Vui lòng đợi trong giây lát</div>
+                    <div class="loading-text">Loading data<span class="loading-dots"></span></div>
+                    <div class="loading-subtext">Please wait a moment</div>
                 `;
-                
+
                 container.appendChild(loadingDiv);
             },
 
             hideLoading(container) {
                 container.classList.remove('loading-overlay');
-                
+
                 const loadingContent = container.querySelector('.loading-content');
                 if (loadingContent) {
                     loadingContent.remove();
@@ -975,20 +988,20 @@
 
             initTabScripts(tabName) {
                 const initFunctionName = 'init' + this.capitalize(tabName) + 'Tab';
-                
+
                 if (typeof window[initFunctionName] === 'function') {
-                    console.log('✅ Initializing tab:', tabName);
+                    console.log('Initializing tab:', tabName);
                     window[initFunctionName]();
                 } else {
-                    console.warn('⚠️ Init function not found:', initFunctionName);
+                    console.warn('Init function not found:', initFunctionName);
                 }
             },
 
             cleanupTabScripts(tabName) {
                 const cleanupFunctionName = 'cleanup' + this.capitalize(tabName) + 'Tab';
-                
+
                 if (typeof window[cleanupFunctionName] === 'function') {
-                    console.log('🧹 Cleaning up tab:', tabName);
+                    console.log('Cleaning up tab:', tabName);
                     window[cleanupFunctionName]();
                 }
             },

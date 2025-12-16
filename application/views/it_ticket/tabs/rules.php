@@ -761,7 +761,7 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
                 document.getElementById('modalRoutingRule').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading routing rule');
+            TicketNotifier.showError('Error loading routing rule');
         }
     },
     
@@ -786,14 +786,14 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
         
         const data = await response.json();
         if (data.success) {
-            ITTicketUI.showSuccess('Routing rule saved');
+            TicketNotifier.showSuccess('Routing rule saved');
             this.closeModal();
             this.loadRules();
         }
     },
     
     async deleteRule(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Delete this routing rule?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Delete this routing rule?', 'Yes, proceed'); if (!confirmed) return;
         await fetch(`${this.baseUrl}routing-rules/delete/${id}`, {method: 'POST'});
         this.loadRules();
     },
@@ -871,7 +871,7 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
                 document.getElementById('modalApprovalRule').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading approval rule');
+            TicketNotifier.showError('Error loading approval rule');
         }
     },
     
@@ -896,14 +896,14 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
         });
         
         if ((await response.json()).success) {
-            ITTicketUI.showSuccess('Approval rule saved');
+            TicketNotifier.showSuccess('Approval rule saved');
             this.closeModal();
             this.loadRules();
         }
     },
     
     async deleteRule(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Delete this approval rule?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Delete this approval rule?', 'Yes, proceed'); if (!confirmed) return;
         await fetch(`${this.baseUrl}approval-rules/delete/${id}`, {method: 'POST'});
         this.loadRules();
     },
@@ -981,7 +981,7 @@ const LevelRulesManager = {
                 document.getElementById('modalLevelRule').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading level rule');
+            TicketNotifier.showError('Error loading level rule');
         }
     },
     
@@ -1006,14 +1006,14 @@ const LevelRulesManager = {
         });
         
         if ((await response.json()).success) {
-            ITTicketUI.showSuccess('Level rule saved');
+            TicketNotifier.showSuccess('Level rule saved');
             this.closeModal();
             this.loadRules();
         }
     },
     
     async deleteRule(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Delete this level rule?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Delete this level rule?', 'Yes, proceed'); if (!confirmed) return;
         await fetch(`${this.baseUrl}level-rules/delete/${id}`, {method: 'POST'});
         this.loadRules();
     },
@@ -1097,7 +1097,7 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
                 document.getElementById('modalCustomField').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading custom field');
+            TicketNotifier.showError('Error loading custom field');
         }
     },
     
@@ -1125,14 +1125,14 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
         });
         
         if ((await response.json()).success) {
-            ITTicketUI.showSuccess('Custom field saved');
+            TicketNotifier.showSuccess('Custom field saved');
             this.closeModal();
             this.loadFields();
         }
     },
     
     async deleteField(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Delete this custom field?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Delete this custom field?', 'Yes, proceed'); if (!confirmed) return;
         await fetch(`${this.baseUrl}custom-fields/delete/${id}`, {method: 'POST'});
         this.loadFields();
     },
@@ -1163,7 +1163,7 @@ const RulesSmartUX = {
             // Update button states
             this.updateButtonStates(itCount, teamCount);
             
-            console.log(`📊 Rules Smart UX: IT=${itCount}, Teams=${teamCount}`);
+            console.log(`Rules Smart UX: IT=${itCount}, Teams=${teamCount}`);
         } catch (error) {
             console.error('Rules Smart UX Error:', error);
         }

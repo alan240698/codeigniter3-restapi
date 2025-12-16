@@ -546,7 +546,7 @@ const SLAManager = {
                 document.getElementById('modalSLAPolicy').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading SLA policy');
+            TicketNotifier.showError('Error loading SLA policy');
         }
     },
 
@@ -563,7 +563,7 @@ const SLAManager = {
         };
 
         if (!formData.name || !formData.priority || !formData.resolution_hours) {
-            ITTicketUI.showValidationError('Please fill in required fields');
+            TicketNotifier.showValidationError('Please fill in required fields');
             return;
         }
 
@@ -578,20 +578,20 @@ const SLAManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess(id ? 'SLA Policy updated successfully' : 'SLA Policy created successfully');
+                TicketNotifier.showSuccess(id ? 'SLA Policy updated successfully' : 'SLA Policy created successfully');
                 this.closeModal();
                 this.loadPolicies();
                 SLAMappingManager.loadSLAPoliciesDropdown();
             } else {
-                ITTicketUI.showError(data.message || 'Error saving SLA policy');
+                TicketNotifier.showError(data.message || 'Error saving SLA policy');
             }
         } catch (error) {
-            ITTicketUI.showError('Error saving SLA policy');
+            TicketNotifier.showError('Error saving SLA policy');
         }
     },
 
     async deletePolicy(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Are you sure you want to delete this SLA policy?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this SLA policy?', 'Yes, proceed'); if (!confirmed) return;
 
         try {
             const response = await fetch(`${this.baseUrl}sla-policies/delete/${id}`, {
@@ -601,10 +601,10 @@ const SLAManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess('SLA Policy deleted successfully', () => this.loadPolicies());
+                TicketNotifier.showSuccess('SLA Policy deleted successfully', () => this.loadPolicies());
             }
         } catch (error) {
-            ITTicketUI.showError('Error deleting SLA policy');
+            TicketNotifier.showError('Error deleting SLA policy');
         }
     },
 
@@ -703,7 +703,7 @@ const SLAMappingManager = {
                 document.getElementById('modalSLAMapping').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading SLA mapping');
+            TicketNotifier.showError('Error loading SLA mapping');
         }
     },
 
@@ -716,7 +716,7 @@ const SLAMappingManager = {
         };
 
         if (!formData.issue_type_id || !formData.sla_policy_id) {
-            ITTicketUI.showValidationError('Please select both Issue Type and SLA Policy');
+            TicketNotifier.showValidationError('Please select both Issue Type and SLA Policy');
             return;
         }
 
@@ -731,19 +731,19 @@ const SLAMappingManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess(id ? 'SLA Mapping updated successfully' : 'SLA Mapping created successfully');
+                TicketNotifier.showSuccess(id ? 'SLA Mapping updated successfully' : 'SLA Mapping created successfully');
                 this.closeModal();
                 this.loadMappings();
             } else {
-                ITTicketUI.showError(data.message || 'Error saving SLA mapping');
+                TicketNotifier.showError(data.message || 'Error saving SLA mapping');
             }
         } catch (error) {
-            ITTicketUI.showError('Error saving SLA mapping');
+            TicketNotifier.showError('Error saving SLA mapping');
         }
     },
 
     async deleteMapping(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Are you sure you want to delete this SLA mapping?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this SLA mapping?', 'Yes, proceed'); if (!confirmed) return;
 
         try {
             const response = await fetch(`${this.baseUrl}issue-type-sla/delete/${id}`, {
@@ -753,10 +753,10 @@ const SLAMappingManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess('SLA Mapping deleted successfully', () => this.loadMappings());
+                TicketNotifier.showSuccess('SLA Mapping deleted successfully', () => this.loadMappings());
             }
         } catch (error) {
-            ITTicketUI.showError('Error deleting SLA mapping');
+            TicketNotifier.showError('Error deleting SLA mapping');
         }
     },
 
@@ -835,7 +835,7 @@ const SLASmartUX = {
             // Update button states
             this.updateButtonStates(itCount, slaCount);
             
-            console.log(`📊 SLA Smart UX: IT=${itCount}, Policies=${slaCount}, Mappings=${mapCount}`);
+            console.log(`SLA Smart UX: IT=${itCount}, Policies=${slaCount}, Mappings=${mapCount}`);
         } catch (error) {
             console.error('SLA Smart UX Error:', error);
         }

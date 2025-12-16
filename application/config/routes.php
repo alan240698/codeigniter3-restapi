@@ -119,6 +119,7 @@ $route['workflows']                         = 'api/it_ticket/WorkflowController/
 $route['workflows/show/(:num)']             = 'api/it_ticket/WorkflowController/show/$1';
 $route['workflows/store']                   = 'api/it_ticket/WorkflowController/store';
 $route['workflows/all-group-type']          = 'api/it_ticket/WorkflowController/get_all';
+$route['workflows/all']                     = 'api/it_ticket/WorkflowController/get_all';
 $route['workflows/update/(:num)']           = 'api/it_ticket/WorkflowController/update/$1';
 $route['workflows/delete/(:num)']           = 'api/it_ticket/WorkflowController/delete/$1';
 
@@ -135,6 +136,15 @@ $route['workflow-transitions/show/(:num)']      = 'api/it_ticket/WorkflowTransit
 $route['workflow-transitions/store']            = 'api/it_ticket/WorkflowTransitionController/store';
 $route['workflow-transitions/update/(:num)']    = 'api/it_ticket/WorkflowTransitionController/update/$1';
 $route['workflow-transitions/delete/(:num)']    = 'api/it_ticket/WorkflowTransitionController/delete/$1';
+
+// ISSUE TYPE WORKFLOW MAPPING
+$route['issue-type-workflows']                      = 'api/it_ticket/IssueTypeWorkflowController/index';
+$route['issue-type-workflows/show/(:num)']          = 'api/it_ticket/IssueTypeWorkflowController/show/$1';
+$route['issue-type-workflows/store']                = 'api/it_ticket/IssueTypeWorkflowController/store';
+$route['issue-type-workflows/update/(:num)']        = 'api/it_ticket/IssueTypeWorkflowController/update/$1';
+$route['issue-type-workflows/delete/(:num)']        = 'api/it_ticket/IssueTypeWorkflowController/delete/$1';
+$route['issue-type-workflows/by-issue-type/(:num)'] = 'api/it_ticket/IssueTypeWorkflowController/get_by_issue_type/$1';
+$route['issue-type-workflows/stats']                = 'api/it_ticket/IssueTypeWorkflowController/stats';
 
 
 /*

@@ -1,7 +1,4 @@
-// IT Ticket System - Enhanced UI Utilities
-// SweetAlert2 and Loading States
-
-const ITTicketUI = {
+const TicketNotifier = {
     // Show loading overlay
     showLoading(message = 'Processing...') {
         Swal.fire({
@@ -36,10 +33,14 @@ const ITTicketUI = {
 
     // Error message
     showError(message) {
+        const isHtml = /<\/?[a-z][\s\S]*>/i.test(message);
+
         Swal.fire({
             icon: 'error',
             title: 'Error!',
-            text: message,
+            ...(isHtml
+            ? { html: message }
+            : { text: message }),
             confirmButtonColor: '#ef4444',
             confirmButtonText: 'OK'
         });
@@ -92,10 +93,39 @@ const ITTicketUI = {
     }
 };
 
+const UITicketStatus = {
+    updateStepStatus(step, status) {
+        const statusContainer = step.querySelector('.step-status');
+
+        const statusHTML = {
+            completed: `
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.9); padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Completed</span>
+                </div>
+            `,
+            active: `
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.95); color: #fa709a; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                    <i class="fas fa-arrow-right" style="animation: arrow-move 1s infinite;"></i>
+                    <span>In Progress</span>
+                </div>
+            `,
+            locked: `
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(251, 191, 36, 0.9); padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);">
+                    <i class="fas fa-lock"></i>
+                    <span>Locked</span>
+                </div>
+            `
+        };
+
+        statusContainer.innerHTML = statusHTML[status];
+    },
+};
+
 // Enhanced fetch with loading and error handling
 async function fetchWithLoading(url, options = {}, loadingMessage = 'Loading...') {
     try {
-        ITTicketUI.showLoading(loadingMessage);
+        TicketNotifier.showLoading(loadingMessage);
         
         const response = await fetch(url, {
             ...options,
@@ -106,12 +136,12 @@ async function fetchWithLoading(url, options = {}, loadingMessage = 'Loading...'
         });
 
         const data = await response.json();
-        ITTicketUI.hideLoading();
+        TicketNotifier.hideLoading();
 
         return data;
     } catch (error) {
-        ITTicketUI.hideLoading();
-        ITTicketUI.showError('Network error. Please check your connection.');
+        TicketNotifier.hideLoading();
+        TicketNotifier.showError('Network error. Please check your connection.');
         throw error;
     }
 }
@@ -125,10 +155,10 @@ async function saveWithFeedback(url, formData, successMessage, loadingMessage = 
         }, loadingMessage);
 
         if (data.success) {
-            ITTicketUI.showSuccess(successMessage);
+            TicketNotifier.showSuccess(successMessage);
             return true;
         } else {
-            ITTicketUI.showError(data.message || 'An error occurred');
+            TicketNotifier.showError(data.message || 'An error occurred');
             return false;
         }
     } catch (error) {
@@ -138,7 +168,7 @@ async function saveWithFeedback(url, formData, successMessage, loadingMessage = 
 
 // Enhanced delete with confirmation
 async function deleteWithConfirmation(url, itemName, successCallback) {
-    const confirmed = await ITTicketUI.confirm(
+    const confirmed = await TicketNotifier.confirm(
         'Are you sure?',
         `Do you want to delete this ${itemName}? This action cannot be undone.`,
         'Yes, delete it!'
@@ -152,10 +182,10 @@ async function deleteWithConfirmation(url, itemName, successCallback) {
         }, 'Deleting...');
 
         if (data.success) {
-            ITTicketUI.showSuccess(`${itemName} deleted successfully`, successCallback);
+            TicketNotifier.showSuccess(`${itemName} deleted successfully`, successCallback);
             return true;
         } else {
-            ITTicketUI.showError(data.message || 'Failed to delete');
+            TicketNotifier.showError(data.message || 'Failed to delete');
             return false;
         }
     } catch (error) {

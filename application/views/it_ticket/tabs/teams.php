@@ -668,7 +668,7 @@ const TeamManager = {
                 document.getElementById('modalTeam').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading team');
+            TicketNotifier.showError('Error loading team');
         }
     },
 
@@ -688,7 +688,7 @@ const TeamManager = {
         };
 
         if (!formData.name || !formData.code || !formData.support_level) {
-            ITTicketUI.showValidationError('Please fill in required fields');
+            TicketNotifier.showValidationError('Please fill in required fields');
             return;
         }
 
@@ -703,19 +703,19 @@ const TeamManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess(id ? 'Team updated successfully' : 'Team created successfully');
+                TicketNotifier.showSuccess(id ? 'Team updated successfully' : 'Team created successfully');
                 this.closeModal();
                 this.loadTeams();
             } else {
-                ITTicketUI.showError(data.message || 'Error saving team');
+                TicketNotifier.showError(data.message || 'Error saving team');
             }
         } catch (error) {
-            ITTicketUI.showError('Error saving team');
+            TicketNotifier.showError('Error saving team');
         }
     },
 
     async deleteTeam(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Are you sure you want to delete this team?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this team?', 'Yes, proceed'); if (!confirmed) return;
 
         try {
             const response = await fetch(`${this.baseUrl}support-teams/delete/${id}`, {
@@ -725,10 +725,10 @@ const TeamManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess('Team deleted successfully', () => this.loadTeams());
+                TicketNotifier.showSuccess('Team deleted successfully', () => this.loadTeams());
             }
         } catch (error) {
-            ITTicketUI.showError('Error deleting team');
+            TicketNotifier.showError('Error deleting team');
         }
     },
 
@@ -874,7 +874,7 @@ const MemberManager = {
 
     openAddMember() {
         if (!this.currentTeamId) {
-            ITTicketUI.showValidationError('Please select a team first');
+            TicketNotifier.showValidationError('Please select a team first');
             return;
         }
 
@@ -907,7 +907,7 @@ const MemberManager = {
                 document.getElementById('modalMember').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading member');
+            TicketNotifier.showError('Error loading member');
         }
     },
 
@@ -924,7 +924,7 @@ const MemberManager = {
         };
 
         if (!formData.employee_id || !formData.role) {
-            ITTicketUI.showValidationError('Please fill in required fields');
+            TicketNotifier.showValidationError('Please fill in required fields');
             return;
         }
 
@@ -939,19 +939,19 @@ const MemberManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess(id ? 'Member updated successfully' : 'Member added successfully');
+                TicketNotifier.showSuccess(id ? 'Member updated successfully' : 'Member added successfully');
                 this.closeModal();
                 this.loadMembers(teamId);
             } else {
-                ITTicketUI.showError(data.message || 'Error saving member');
+                TicketNotifier.showError(data.message || 'Error saving member');
             }
         } catch (error) {
-            ITTicketUI.showError('Error saving member');
+            TicketNotifier.showError('Error saving member');
         }
     },
 
     async removeMember(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Are you sure you want to remove this member from the team?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to remove this member from the team?', 'Yes, proceed'); if (!confirmed) return;
 
         try {
             const response = await fetch(`${this.baseUrl}team-members/delete/${id}`, {
@@ -961,11 +961,11 @@ const MemberManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess('Member removed successfully');
+                TicketNotifier.showSuccess('Member removed successfully');
                 this.loadMembers(this.currentTeamId);
             }
         } catch (error) {
-            ITTicketUI.showError('Error removing member');
+            TicketNotifier.showError('Error removing member');
         }
     },
 
