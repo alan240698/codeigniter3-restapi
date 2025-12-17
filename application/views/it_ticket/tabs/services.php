@@ -475,7 +475,7 @@
     const ServiceManager = {
         baseUrl: '<?= base_url() ?>',
         currentPage: 1,
-        perPage: 2,
+        perPage: 5,
         totalItems: 0,
         searchQuery: '',
         filterStatus: '',

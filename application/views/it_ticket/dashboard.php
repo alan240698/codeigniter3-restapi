@@ -16,6 +16,7 @@
     <!-- IT Ticket UI Utilities -->
     <script src="<?= base_url('assets/it_ticket/js/ui-utils.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/ValidationRulesServiceGroup.js') ?>"></script>
+    <script src="<?= base_url('assets/it_ticket/js/ValidationRulesWorkflows.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/FormValidationManager.js') ?>"></script>
     <style>
         * {

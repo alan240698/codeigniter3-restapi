@@ -602,6 +602,8 @@ const SLAManager = {
 
             if (data.success) {
                 TicketNotifier.showSuccess('SLA Policy deleted successfully', () => this.loadPolicies());
+            } else {
+                TicketNotifier.showError(data.message || 'Error delete sla');
             }
         } catch (error) {
             TicketNotifier.showError('Error deleting SLA policy');
