@@ -241,10 +241,22 @@ class ServiceModel extends CI_Model
 
     $total = $this->db->count_all_results();
 
-    // ---------------------
-    // 2. Query lấy dữ liệu
-    // ---------------------
-    $this->db->select('tt.*, sg.name as service_group_name, sg.icon as service_group_icon');
+    $this->db->select("
+        tt.id,
+        tt.service_group_id,
+        tt.code,
+        tt.icon,
+        tt.color,
+        tt.description,
+        tt.sort_order,
+        tt.status,
+        tt.created_at,
+        tt.updated_at,
+        tt.name,
+        CONCAT('[', sg.name, '] - ', tt.name) AS dropdown_type_name,
+        sg.name as service_group_name,
+        sg.icon as service_group_icon
+    ", false);
     $this->db->from($this->table_types . ' tt');
     $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
 
@@ -344,21 +356,23 @@ public function get_all_service_groups($status = 'active')
     }
 
     /**
-     * Check if ticket type code exists
+     * Check if ticket type code exists in a service group
+     *
      * @param string $code Code to check
-     * @param int|null $exclude_id Exclude this ID
+     * @param int $service_group_id Service group ID
+     * @param int|null $exclude_id Exclude this ID (for update)
      * @return bool
      */
-    public function is_ticket_type_code_exists($code, $exclude_id = null)
+    public function is_ticket_type_code_exists($code, $service_group_id, $exclude_id = null)
     {
-        $this->db->where('code', strtoupper($code));
-        
-        if ($exclude_id !== null) {
-            $this->db->where('id !=', $exclude_id);
+        $this->db->where('code', strtoupper(trim($code)));
+        $this->db->where('service_group_id', (int)$service_group_id);
+
+        if (!empty($exclude_id)) {
+            $this->db->where('id !=', (int)$exclude_id);
         }
 
-        $count = $this->db->count_all_results($this->table_types);
-        return $count > 0;
+        return $this->db->count_all_results($this->table_types) > 0;
     }
 
     /**

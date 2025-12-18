@@ -1326,7 +1326,7 @@
 
                 if (data.success) {
                     const options = data.data.map(tt =>
-                        `<option value="${tt.id}">${tt.name}</option>`
+                        `<option value="${tt.id}">${tt.dropdown_type_name}</option>`
                     ).join('');
 
                     // Populate modal dropdown

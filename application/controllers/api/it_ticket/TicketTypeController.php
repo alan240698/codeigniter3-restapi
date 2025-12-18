@@ -304,17 +304,36 @@ class TicketTypeController extends CI_Controller
         return true;
     }
 
-    /**
-     * Custom validation: Check unique code on create
-     */
     public function check_unique_ticket_code($code)
     {
-        if ($this->ServiceModel->is_ticket_type_code_exists($code)) {
-            $this->form_validation->set_message('check_unique_ticket_code', 'Code already exists');
+        $serviceGroupId = $this->input->post('service_group_id');
+        $excludeId      = $this->input->post('id');
+
+        if (empty($serviceGroupId)) {
+            $this->form_validation->set_message(
+                'check_unique_ticket_code',
+                'Service Group is required'
+            );
             return false;
         }
+
+        $exists = $this->ServiceModel->is_ticket_type_code_exists(
+            $code,
+            $serviceGroupId,
+            $excludeId
+        );
+
+        if ($exists) {
+            $this->form_validation->set_message(
+                'check_unique_ticket_code',
+                'Code already exists in this Service Group'
+            );
+            return false;
+        }
+
         return true;
     }
+
 
     /**
      * Custom validation: Check unique code on update

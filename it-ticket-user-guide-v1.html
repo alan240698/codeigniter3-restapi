@@ -441,143 +441,447 @@
                 <h2>4. Service Structure Configuration</h2>
 
                 <h3>4.1. Service Groups</h3>
-                <p>Service Groups represent high-level service categories that organize your support operations by
-                    department or functional area.</p>
-
                 <table>
                     <thead>
                         <tr>
                             <th>Service Group</th>
                             <th>Code</th>
-                            <th>Description</th>
-                            <th>Scope</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>IT Infrastructure</td>
-                            <td><span class="badge badge-blue">IT_INFRA</span></td>
-                            <td>Infrastructure and systems</td>
-                            <td>Servers, networks, hardware</td>
+                            <td>Network</td>
+                            <td><span class="badge badge-blue">NETWORK</span></td>
                         </tr>
                         <tr>
-                            <td>Software & Applications</td>
-                            <td><span class="badge badge-blue">SOFTWARE</span></td>
-                            <td>Application support</td>
-                            <td>Business applications, licenses</td>
+                            <td>User computer</td>
+                            <td><span class="badge badge-blue">USER_COMPUTER</span></td>
                         </tr>
                         <tr>
-                            <td>Human Resources</td>
-                            <td><span class="badge badge-blue">HR</span></td>
-                            <td>HR services</td>
-                            <td>Leave, payroll, onboarding</td>
+                            <td>Group applications</td>
+                            <td><span class="badge badge-blue">GROUP_APPLICATIONS</span></td>
                         </tr>
                         <tr>
-                            <td>Facilities Management</td>
-                            <td><span class="badge badge-blue">FACILITIES</span></td>
-                            <td>Office and facilities</td>
-                            <td>Office equipment, maintenance</td>
+                            <td>Cyber Security</td>
+                            <td><span class="badge badge-blue">CYBER_SECURITY</span></td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h3>4.2. Ticket Types</h3>
-                <p>Ticket Types define the nature of requests within each Service Group, enabling more granular
-                    classification.</p>
+                <h3>4.2. IT Services</h3>
+                <h4>IT Services of the Network Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Unable to be connected</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_BE_CONNECTED</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>Unable to access some websites</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_SOME_WEBSITES</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>Unable to access Internet</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_INTERNET</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>VPN access from home</td>
+                            <td><span class="badge badge-amber">VPN_ACCESS_FROM_HOME</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Network</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>IT Services of the User computer Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hardware: computer, peripheral</td>
+                            <td><span class="badge badge-amber">HARDWARE_COMPUTER_PERIPHERAL</span></td>
+                            <td>User-computer</td>
+                        </tr>
+                        <tr>
+                            <td>Software: Edge, Acrobat, 7zip…</td>
+                            <td><span class="badge badge-amber">SOFTWARE_EDGE_ACROBAT_7ZIP</span></td>
+                            <td>User-computer</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>User-computer</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>IT Services of the Cyber Security Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Scam</td>
+                            <td><span class="badge badge-amber">SCAM</span></td>
+                            <td>Cyber Security</td>
+                        </tr>
+                        <tr>
+                            <td>Virus</td>
+                            <td><span class="badge badge-amber">VIRUS</span></td>
+                            <td>Cyber Security</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Cyber Security</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>IT Services of the Group Application Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Sub IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group website</td>
+                            <td>Accessible</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_ACCESSIBLE</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Group website</td>
+                            <td>Bug, error, permission</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_BUG_ERROR_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
 
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">INTRANET_LOGON</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Permission</td>
+                            <td><span class="badge badge-amber">INTRANET_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Bug, error</td>
+                            <td><span class="badge badge-amber">INTRANET_BUG_ERROR</span></td>
+                            <td>Group Application</td>
+                        </tr>
+
+                        <tr>
+                            <td>M365</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">M365_LOGON</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>M365</td>
+                            <td>Email delegation</td>
+                            <td><span class="badge badge-amber">M365_EMAIL_DELEGATION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>M365</td>
+                            <td>License assignment</td>
+                            <td><span class="badge badge-amber">M365_LICENSE_ASSIGNMENT</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>SharePoint</td>
+                            <td>Creation / Permission</td>
+                            <td><span class="badge badge-amber">SHAREPOINT_CREATION_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>User permission</td>
+                            <td><span class="badge badge-amber">NAVISION_USER_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Bug / error</td>
+                            <td><span class="badge badge-amber">NAVISION_BUG_ERROR</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.3. Ticket Type</h3>
                 <table>
                     <thead>
                         <tr>
                             <th>Ticket Type</th>
                             <th>Code</th>
-                            <th>Service Group</th>
-                            <th>Typical Use Cases</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Access Request</td>
-                            <td><span class="badge badge-amber">ACCESS_REQ</span></td>
-                            <td>IT Infrastructure</td>
-                            <td>VPN, system access, permissions</td>
+                       <tr>
+                            <td>Incident & Service Request</td>
+                            <td><span class="badge badge-amber">INCIDENT_SERVICE_REQUEST</span></td>
                         </tr>
                         <tr>
-                            <td>Hardware Issue</td>
-                            <td><span class="badge badge-amber">HW_ISSUE</span></td>
-                            <td>IT Infrastructure</td>
-                            <td>Equipment failures, replacements</td>
+                            <td>Problem</td>
+                            <td><span class="badge badge-amber">PROBLEM</span></td>
                         </tr>
                         <tr>
-                            <td>Network Problem</td>
-                            <td><span class="badge badge-amber">NET_ISSUE</span></td>
-                            <td>IT Infrastructure</td>
-                            <td>Connectivity, performance issues</td>
-                        </tr>
-                        <tr>
-                            <td>Software Installation</td>
-                            <td><span class="badge badge-amber">SW_INSTALL</span></td>
-                            <td>Software & Applications</td>
-                            <td>Application installation, updates</td>
+                            <td>Change</td>
+                            <td><span class="badge badge-amber">CHANGE</span></td>
                         </tr>
                     </tbody>
                 </table>
-
-                <h3>4.3. Issue Types</h3>
-                <p>Issue Types provide the most granular level of classification, supporting hierarchical structures
-                    with parent-child relationships.</p>
-
-                <div class="info-box">
-                    <h4>Example: Access Request Hierarchy</h4>
-                    <div class="flow-diagram">
-                        Access Request
-                        ├── VPN Access (VPN_ACCESS)
-                        │ ├── New VPN Account (VPN_NEW)
-                        │ ├── VPN Connection Issue (VPN_ISSUE)
-                        │ └── VPN Account Termination (VPN_TERM)
-                        ├── Email Access (EMAIL_ACCESS)
-                        │ ├── New Email Account (EMAIL_NEW)
-                        │ ├── Password Reset (EMAIL_RESET)
-                        │ └── Mailbox Quota Increase (EMAIL_QUOTA)
-                        └── System Access (SYS_ACCESS)
-                        ├── ERP Access Request (ERP_ACCESS)
-                        ├── CRM Access Request (CRM_ACCESS)
-                        └── Database Access (DB_ACCESS)
-                    </div>
-                </div>
             </div>
 
             <div class="section" id="teams">
                 <h2>5. Support Teams Management</h2>
-                <p>Support teams are organized in a tiered structure (L1, L2, L3) to facilitate efficient escalation and
-                    resolution processes.</p>
-
                 <table>
                     <thead>
                         <tr>
                             <th>Team Name</th>
-                            <th>Level</th>
-                            <th>Service Group</th>
-                            <th>Responsibilities</th>
+                            <th>Levels</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>L1 IT Support</td>
-                            <td><span class="badge badge-green">Level 1</span></td>
-                            <td>IT Infrastructure</td>
-                            <td>First-line support, basic troubleshooting</td>
+                            <td>Group IS</td>
+                            <td><span class="badge badge-green">Level 1, Level 2, Level 3</span></td>
+
                         </tr>
                         <tr>
-                            <td>L2 Network Team</td>
-                            <td><span class="badge badge-amber">Level 2</span></td>
-                            <td>IT Infrastructure</td>
-                            <td>Advanced network diagnostics and resolution</td>
+                            <td>Group IT</td>
+                            <td><span class="badge badge-amber">Level 1, Level 2, Level 3</span></td>
                         </tr>
                         <tr>
-                            <td>L3 Infrastructure</td>
-                            <td><span class="badge badge-red">Level 3</span></td>
-                            <td>IT Infrastructure</td>
-                            <td>Expert-level infrastructure support</td>
+                            <td>Local IT - Country</td>
+                            <td><span class="badge badge-red">Level 1, Level 2, Level 3</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="resolve-action">
+                <h2>6. Resolve Action</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Solution Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Self-service</td>
+                        </tr>
+                        <tr>
+                            <td>Standard solution</td>
+                        </tr>
+                        <tr>
+                            <td>No issue</td>
+                        </tr>
+                        <tr>
+                            <td>Duplicated</td>
+                        </tr>
+                        <tr>
+                            <td>New solution</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="impacts">
+                <h2>7. Impacts</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Impact Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Individual</td>
+                        </tr>
+                        <tr>
+                            <td>Several users</td>
+                        </tr>
+                        <tr>
+                            <td>Majority</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="section" id="severity">
+                <h2>8. Severity</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Severity Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Blocking</td>
+                        </tr>
+                        <tr>
+                            <td>Acceptable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="complexity">
+                <h2>9. Complexity</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Complexity Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Simple</td>
+                        </tr>
+                        <tr>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>Complex</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="urgency">
+                <h2>10. Urgency</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Urgency Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>High</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="section" id="priority">
+                <h2>11. Priority</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Priority level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="priority">
+                <h2>12. Priority</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Priority level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="application-service-categories">
+                <h2>13. Application Service Categories</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Plastic</td>
+                        </tr>
+                        <tr>
+                            <td>Bronze</td>
+                        </tr>
+                        <tr>
+                            <td>Silver</td>
+                        </tr>
+                        <tr>
+                            <td>Golden</td>
                         </tr>
                     </tbody>
                 </table>
