@@ -69,11 +69,11 @@
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Complete setup in Service Structure tab first</span>
         </h4>
         <div class="progress-steps" style="display: flex; gap: 15px;">
-            <div id="rules-step-issue-types" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
+            <div id="rules-step-it-services" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
                 <div class="step-icon" style="font-size: 24px; margin-bottom: 8px;">
                     <i class="fas fa-list"></i>
                 </div>
-                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Issue Types</div>
+                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">IT Service</div>
                 <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
                 <div class="step-status" style="font-size: 12px; opacity: 0.8;">🔒 Required</div>
             </div>
@@ -128,9 +128,9 @@
 
             <div class="filter-section" style="display: flex; gap: 15px; align-items: center;">
                 <div style="flex: 1;">
-                    <select id="filterRoutingIssueType" onchange="RoutingRulesManager.filterRules()"
+                    <select id="filterRoutingItService" onchange="RoutingRulesManager.filterRules()"
                         style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                        <option value="">All Issue Types</option>
+                        <option value="">All IT Service</option>
                     </select>
                 </div>
                 <div>
@@ -148,7 +148,7 @@
                     <tr>
                         <th style="width: 50px;">#</th>
                         <th>Rule Name</th>
-                        <th>Issue Type</th>
+                        <th>IT Service</th>
                         <th>Priority</th>
                         <th>Assignment Type</th>
                         <th>Target</th>
@@ -175,15 +175,15 @@
                         <i class="fas fa-plus"></i> Add Approval Rule
                     </button>
                     <small id="hintApprovalRule" class="help-text" style="display: block; margin-top: 8px; color: #f59e0b; font-size: 13px;">
-                        <i class="fas fa-info-circle"></i> Create Issue Types first (Service Structure tab)
+                        <i class="fas fa-info-circle"></i> Create IT Service first (Service Structure tab)
                     </small>
                 </div>
             </div>
 
             <div class="filter-section">
-                <select id="filterApprovalIssueType" onchange="ApprovalRulesManager.filterRules()"
+                <select id="filterApprovalItService" onchange="ApprovalRulesManager.filterRules()"
                     style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                    <option value="">All Issue Types</option>
+                    <option value="">All IT Service</option>
                 </select>
             </div>
 
@@ -192,7 +192,7 @@
                     <tr>
                         <th style="width: 50px;">#</th>
                         <th>Rule Name</th>
-                        <th>Issue Type</th>
+                        <th>IT Service</th>
                         <th>Approval Type</th>
                         <th>Approver</th>
                         <th>Auto Assign</th>
@@ -219,15 +219,15 @@
                         <i class="fas fa-plus"></i> Add Level Rule
                     </button>
                     <small id="hintLevelRule" class="help-text" style="display: block; margin-top: 8px; color: #f59e0b; font-size: 13px;">
-                        <i class="fas fa-info-circle"></i> Create Issue Types + Support Teams first
+                        <i class="fas fa-info-circle"></i> Create IT Service + Support Teams first
                     </small>
                 </div>
             </div>
 
             <div class="filter-section">
-                <select id="filterLevelIssueType" onchange="LevelRulesManager.filterRules()"
+                <select id="filterLevelItService" onchange="LevelRulesManager.filterRules()"
                     style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                    <option value="">All Issue Types</option>
+                    <option value="">All IT Service</option>
                 </select>
             </div>
 
@@ -235,7 +235,7 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
-                        <th>Issue Type</th>
+                        <th>IT Service</th>
                         <th>Level</th>
                         <th>Level Name</th>
                         <th>Support Team</th>
@@ -263,15 +263,15 @@
                         <i class="fas fa-plus"></i> Add Custom Field
                     </button>
                     <small id="hintCustomField" class="help-text" style="display: block; margin-top: 8px; color: #f59e0b; font-size: 13px;">
-                        <i class="fas fa-info-circle"></i> Create Issue Types first (Service Structure tab)
+                        <i class="fas fa-info-circle"></i> Create IT Service first (Service Structure tab)
                     </small>
                 </div>
             </div>
 
             <div class="filter-section">
-                <select id="filterFieldIssueType" onchange="CustomFieldsManager.filterFields()"
+                <select id="filterFieldItService" onchange="CustomFieldsManager.filterFields()"
                     style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                    <option value="">All Issue Types</option>
+                    <option value="">All IT Service</option>
                 </select>
             </div>
 
@@ -280,7 +280,7 @@
                     <tr>
                         <th style="width: 50px;">#</th>
                         <th>Field Name</th>
-                        <th>Issue Type</th>
+                        <th>IT Service</th>
                         <th>Field Type</th>
                         <th>Required</th>
                         <th>Sort Order</th>
@@ -308,8 +308,8 @@
         <div class="modal-body">
             <input type="hidden" id="routingId">
             <div class="form-group">
-                <label>Issue Type <span class="required">*</span></label>
-                <select id="routingIssueType"></select>
+                <label>IT Service <span class="required">*</span></label>
+                <select id="routingItService"></select>
             </div>
             <div class="form-group">
                 <label>Rule Name <span class="required">*</span></label>
@@ -362,8 +362,8 @@
         <div class="modal-body">
             <input type="hidden" id="approvalId">
             <div class="form-group">
-                <label>Issue Type <span class="required">*</span></label>
-                <select id="approvalIssueType"></select>
+                <label>IT Service <span class="required">*</span></label>
+                <select id="approvalItService"></select>
             </div>
             <div class="form-group">
                 <label>Rule Name <span class="required">*</span></label>
@@ -425,8 +425,8 @@
         <div class="modal-body">
             <input type="hidden" id="levelId">
             <div class="form-group">
-                <label>Issue Type <span class="required">*</span></label>
-                <select id="levelIssueType"></select>
+                <label>IT Service <span class="required">*</span></label>
+                <select id="levelItService"></select>
             </div>
             <div class="form-group">
                 <label>Level Number <span class="required">*</span></label>
@@ -484,8 +484,8 @@
         <div class="modal-body">
             <input type="hidden" id="fieldId">
             <div class="form-group">
-                <label>Issue Type <span class="required">*</span></label>
-                <select id="fieldIssueType"></select>
+                <label>IT Service <span class="required">*</span></label>
+                <select id="fieldItService"></select>
             </div>
             <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
@@ -601,9 +601,9 @@ window.RulesTabManager = window.RulesTabManager || {
     currentSection: 'routing',
     baseUrl: '<?= base_url() ?>',
     
-    async loadIssueTypesDropdowns() {
+    async loadItServicesDropdowns() {
         try {
-            const response = await fetch(`${this.baseUrl}issue-types/all-group-type`);
+            const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
             const data = await response.json();
             
             if (data.success) {
@@ -611,34 +611,34 @@ window.RulesTabManager = window.RulesTabManager || {
                     `<option value="${it.id}">${it.name}</option>`
                 ).join('');
                 
-                // Update all Issue Type filter dropdowns
+                // Update all IT Service filter dropdowns
                 const filterDropdowns = [
-                    'filterRoutingIssueType',
-                    'filterApprovalIssueType',
-                    'filterLevelIssueType',
-                    'filterFieldIssueType'
+                    'filterRoutingItService',
+                    'filterApprovalItService',
+                    'filterLevelItService',
+                    'filterFieldItService'
                 ];
                 
                 filterDropdowns.forEach(id => {
                     const elem = document.getElementById(id);
-                    if (elem) elem.innerHTML = '<option value="">All Issue Types</option>' + options;
+                    if (elem) elem.innerHTML = '<option value="">All IT Service</option>' + options;
                 });
                 
                 // Update all modal dropdowns
                 const modalDropdowns = [
-                    'routingIssueType',
-                    'approvalIssueType',
-                    'levelIssueType',
-                    'fieldIssueType'
+                    'routingItService',
+                    'approvalItService',
+                    'levelItService',
+                    'fieldItService'
                 ];
                 
                 modalDropdowns.forEach(id => {
                     const elem = document.getElementById(id);
-                    if (elem) elem.innerHTML = '<option value="">Select Issue Type</option>' + options;
+                    if (elem) elem.innerHTML = '<option value="">Select IT Service</option>' + options;
                 });
             }
         } catch (error) {
-            console.error('Error loading issue types:', error);
+            console.error('Error loading IT Service:', error);
         }
     },
     
@@ -691,10 +691,10 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
     
     async loadRules() {
         try {
-            const issueTypeId = document.getElementById('filterRoutingIssueType')?.value || '';
+            const itServiceId = document.getElementById('filterRoutingItService')?.value || '';
             const status = document.getElementById('filterRoutingStatus')?.value || '';
             
-            const response = await fetch(`${this.baseUrl}routing-rules?issue_type_id=${issueTypeId}&status=${status}`);
+            const response = await fetch(`${this.baseUrl}routing-rules?it_service_id=${itServiceId}&status=${status}`);
             const data = await response.json();
             
             if (data.success) {
@@ -716,7 +716,7 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
             <tr>
                 <td>${i + 1}</td>
                 <td><strong>${rule.rule_name}</strong></td>
-                <td>${rule.issue_type_name}</td>
+                <td>${rule.it_service_name}</td>
                 <td><span class="badge badge-info">${rule.priority}</span></td>
                 <td><span class="badge badge-warning">${rule.assignment_type}</span></td>
                 <td>${rule.target_team_name || rule.target_user_name || '-'}</td>
@@ -733,7 +733,7 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
         document.getElementById('modalRoutingTitle').textContent = 'Add Routing Rule';
         document.getElementById('routingId').value = '';
         document.getElementById('routingRuleName').value = '';
-        document.getElementById('routingIssueType').value = '';
+        document.getElementById('routingItService').value = '';
         document.getElementById('routingPriority').value = '100';
         document.getElementById('routingAssignmentType').value = 'team';
         document.getElementById('routingTargetTeam').value = '';
@@ -752,7 +752,7 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
                 document.getElementById('modalRoutingTitle').textContent = 'Edit Routing Rule';
                 document.getElementById('routingId').value = rule.id;
                 document.getElementById('routingRuleName').value = rule.rule_name;
-                document.getElementById('routingIssueType').value = rule.issue_type_id;
+                document.getElementById('routingItService').value = rule.it_service_id;
                 document.getElementById('routingPriority').value = rule.priority;
                 document.getElementById('routingAssignmentType').value = rule.assignment_type;
                 document.getElementById('routingTargetTeam').value = rule.target_team_id || '';
@@ -768,7 +768,7 @@ window.RoutingRulesManager = window.RoutingRulesManager || {
     async saveRule() {
         const id = document.getElementById('routingId').value;
         const formData = {
-            issue_type_id: document.getElementById('routingIssueType').value,
+            it_service_id: document.getElementById('routingItService').value,
             rule_name: document.getElementById('routingRuleName').value,
             priority: document.getElementById('routingPriority').value,
             assignment_type: document.getElementById('routingAssignmentType').value,
@@ -807,8 +807,8 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
     baseUrl: '<?= base_url() ?>',
     
     async loadRules() {
-        const issueTypeId = document.getElementById('filterApprovalIssueType')?.value || '';
-        const response = await fetch(`${this.baseUrl}approval-rules?issue_type_id=${issueTypeId}`);
+        const itServiceId = document.getElementById('filterApprovalItService')?.value || '';
+        const response = await fetch(`${this.baseUrl}approval-rules?it_service_id=${itServiceId}`);
         const data = await response.json();
         if (data.success) this.renderRules(data.data);
     },
@@ -824,7 +824,7 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
             <tr>
                 <td>${i + 1}</td>
                 <td><strong>${rule.rule_name}</strong></td>
-                <td>${rule.issue_type_name}</td>
+                <td>${rule.it_service_name}</td>
                 <td><span class="badge badge-warning">${rule.approval_type}</span></td>
                 <td>${rule.approver_user_id || rule.approver_role || '-'}</td>
                 <td>${rule.auto_assign_after_approval ? 'Yes' : 'No'}</td>
@@ -840,7 +840,7 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
     openAddRule() {
         document.getElementById('modalApprovalTitle').textContent = 'Add Approval Rule';
         document.getElementById('approvalId').value = '';
-        document.getElementById('approvalIssueType').value = '';
+        document.getElementById('approvalItService').value = '';
         document.getElementById('approvalRuleName').value = '';
         document.getElementById('approvalRequired').value = '1';
         document.getElementById('approvalType').value = 'manager';
@@ -860,7 +860,7 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
                 const rule = data.data;
                 document.getElementById('modalApprovalTitle').textContent = 'Edit Approval Rule';
                 document.getElementById('approvalId').value = rule.id;
-                document.getElementById('approvalIssueType').value = rule.issue_type_id;
+                document.getElementById('approvalItService').value = rule.it_service_id;
                 document.getElementById('approvalRuleName').value = rule.rule_name;
                 document.getElementById('approvalRequired').value = rule.requires_approval;
                 document.getElementById('approvalType').value = rule.approval_type;
@@ -878,7 +878,7 @@ window.ApprovalRulesManager = window.ApprovalRulesManager || {
     async saveRule() {
         const id = document.getElementById('approvalId').value;
         const formData = {
-            issue_type_id: document.getElementById('approvalIssueType').value,
+            it_service_id: document.getElementById('approvalItService').value,
             rule_name: document.getElementById('approvalRuleName').value,
             requires_approval: document.getElementById('approvalRequired').value,
             approval_type: document.getElementById('approvalType').value,
@@ -917,8 +917,8 @@ const LevelRulesManager = {
     baseUrl: '<?= base_url() ?>',
     
     async loadRules() {
-        const issueTypeId = document.getElementById('filterLevelIssueType')?.value || '';
-        const response = await fetch(`${this.baseUrl}level-rules?issue_type_id=${issueTypeId}`);
+        const itServiceId = document.getElementById('filterLevelItService')?.value || '';
+        const response = await fetch(`${this.baseUrl}level-rules?it_service_id=${itServiceId}`);
         const data = await response.json();
         if (data.success) this.renderRules(data.data);
     },
@@ -933,7 +933,7 @@ const LevelRulesManager = {
         tbody.innerHTML = rules.map((rule, i) => `
             <tr>
                 <td>${i + 1}</td>
-                <td>${rule.issue_type_name}</td>
+                <td>${rule.it_service_name}</td>
                 <td><span class="level-badge l${rule.level_number}">L${rule.level_number}</span></td>
                 <td><strong>${rule.level_name}</strong></td>
                 <td>${rule.support_team_name || '-'}</td>
@@ -950,7 +950,7 @@ const LevelRulesManager = {
     openAddRule() {
         document.getElementById('modalLevelTitle').textContent = 'Add Level Rule';
         document.getElementById('levelId').value = '';
-        document.getElementById('levelIssueType').value = '';
+        document.getElementById('levelItService').value = '';
         document.getElementById('levelNumber').value = '';
         document.getElementById('levelName').value = '';
         document.getElementById('levelSupportTeam').value = '';
@@ -970,7 +970,7 @@ const LevelRulesManager = {
                 const rule = data.data;
                 document.getElementById('modalLevelTitle').textContent = 'Edit Level Rule';
                 document.getElementById('levelId').value = rule.id;
-                document.getElementById('levelIssueType').value = rule.issue_type_id;
+                document.getElementById('levelItService').value = rule.it_service_id;
                 document.getElementById('levelNumber').value = rule.level_number;
                 document.getElementById('levelName').value = rule.level_name;
                 document.getElementById('levelSupportTeam').value = rule.support_team_id || '';
@@ -988,7 +988,7 @@ const LevelRulesManager = {
     async saveRule() {
         const id = document.getElementById('levelId').value;
         const formData = {
-            issue_type_id: document.getElementById('levelIssueType').value,
+            it_service_id: document.getElementById('levelItService').value,
             level_number: document.getElementById('levelNumber').value,
             level_name: document.getElementById('levelName').value,
             support_team_id: document.getElementById('levelSupportTeam').value || null,
@@ -1027,8 +1027,8 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
     baseUrl: '<?= base_url() ?>',
     
     async loadFields() {
-        const issueTypeId = document.getElementById('filterFieldIssueType')?.value || '';
-        const response = await fetch(`${this.baseUrl}custom-fields?issue_type_id=${issueTypeId}`);
+        const itServiceId = document.getElementById('filterFieldItService')?.value || '';
+        const response = await fetch(`${this.baseUrl}custom-fields?it_service_id=${itServiceId}`);
         const data = await response.json();
         if (data.success) this.renderFields(data.data);
     },
@@ -1044,7 +1044,7 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
             <tr>
                 <td>${i + 1}</td>
                 <td><strong>${field.field_label}</strong><br><small style="color: #6b7280;">${field.field_name}</small></td>
-                <td>${field.issue_type_name}</td>
+                <td>${field.it_service_name}</td>
                 <td><span class="badge badge-info">${field.field_type}</span></td>
                 <td>${field.is_required ? '<i class="fas fa-check text-success"></i>' : '-'}</td>
                 <td>${field.sort_order}</td>
@@ -1060,7 +1060,7 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
     openAddField() {
         document.getElementById('modalFieldTitle').textContent = 'Add Custom Field';
         document.getElementById('fieldId').value = '';
-        document.getElementById('fieldIssueType').value = '';
+        document.getElementById('fieldItService').value = '';
         document.getElementById('fieldName').value = '';
         document.getElementById('fieldLabel').value = '';
         document.getElementById('fieldType').value = 'text';
@@ -1083,7 +1083,7 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
                 const field = data.data;
                 document.getElementById('modalFieldTitle').textContent = 'Edit Custom Field';
                 document.getElementById('fieldId').value = field.id;
-                document.getElementById('fieldIssueType').value = field.issue_type_id;
+                document.getElementById('fieldItService').value = field.it_service_id;
                 document.getElementById('fieldName').value = field.field_name;
                 document.getElementById('fieldLabel').value = field.field_label;
                 document.getElementById('fieldType').value = field.field_type;
@@ -1104,7 +1104,7 @@ window.CustomFieldsManager = window.CustomFieldsManager || {
     async saveField() {
         const id = document.getElementById('fieldId').value;
         const formData = {
-            issue_type_id: document.getElementById('fieldIssueType').value,
+            it_service_id: document.getElementById('fieldItService').value,
             field_name: document.getElementById('fieldName').value,
             field_label: document.getElementById('fieldLabel').value,
             field_type: document.getElementById('fieldType').value,
@@ -1147,8 +1147,8 @@ const RulesSmartUX = {
     
     async checkPrerequisites() {
         try {
-            // Check Issue Types
-            const itResponse = await fetch(`${this.baseUrl}issue-types/all-group-type`);
+            // Check IT Service
+            const itResponse = await fetch(`${this.baseUrl}it-services/all-group-type`);
             const itData = await itResponse.json();
             const itCount = itData.data ? itData.data.length : 0;
             
@@ -1170,8 +1170,8 @@ const RulesSmartUX = {
     },
     
     updateProgress(itCount, teamCount) {
-        // Issue Types step
-        const itStep = document.getElementById('rules-step-issue-types');
+        // IT Service step
+        const itStep = document.getElementById('rules-step-it-services');
         if (itStep) {
             itStep.querySelector('.step-count').textContent = itCount;
             if (itCount > 0) {
@@ -1202,7 +1202,7 @@ const RulesSmartUX = {
     },
     
     updateButtonStates(itCount, teamCount) {
-        // Approval Rules button (needs Issue Types)
+        // Approval Rules button (needs IT Service)
         const btnApproval = document.getElementById('btnAddApprovalRule');
         const hintApproval = document.getElementById('hintApprovalRule');
         if (btnApproval && hintApproval) {
@@ -1219,7 +1219,7 @@ const RulesSmartUX = {
             }
         }
         
-        // Level Rules button (needs Issue Types + Support Teams)
+        // Level Rules button (needs IT Service + Support Teams)
         const btnLevel = document.getElementById('btnAddLevelRule');
         const hintLevel = document.getElementById('hintLevelRule');
         if (btnLevel && hintLevel) {
@@ -1236,7 +1236,7 @@ const RulesSmartUX = {
             }
         }
         
-        // Custom Fields button (needs Issue Types)
+        // Custom Fields button (needs IT Service)
         const btnCustom = document.getElementById('btnAddCustomField');
         const hintCustom = document.getElementById('hintCustomField');
         if (btnCustom && hintCustom) {
@@ -1270,7 +1270,7 @@ async function initRulesTab() {
         // Wait for all data to load
         await Promise.all([
             RulesSmartUX.checkPrerequisites(),
-            RulesTabManager.loadIssueTypesDropdowns(),
+            RulesTabManager.loadItServicesDropdowns(),
             RulesTabManager.loadTeamsDropdowns()
         ]);
         

@@ -927,7 +927,7 @@ function validateForm() {
     }
 
     if (!subcategory) {
-        showFileError('Please select an issue type');
+        showFileError('Please select an it service');
         return false;
     }
 

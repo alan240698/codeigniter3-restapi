@@ -7,7 +7,7 @@ class RulesModel extends CI_Model
     private $table_approval = 'it_ticket_approval_rules';
     private $table_level = 'it_ticket_level_rules';
     private $table_custom_fields = 'it_ticket_custom_fields';
-    private $table_issue_types = 'it_ticket_issue_types';
+    private $table_it_ticket_services = 'it_ticket_services';
     private $table_teams = 'it_ticket_support_teams';
 
     /*
@@ -16,19 +16,19 @@ class RulesModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-    public function get_routing_rules($issue_type_id = null, $status = null)
+    public function get_routing_rules($it_service_id = null, $status = null)
     {
         $this->db->select('
             rr.*,
-            it.name as issue_type_name,
+            it.name as it_service_name,
             st.name as target_team_name
         ');
         $this->db->from($this->table_routing . ' rr');
-        $this->db->join($this->table_issue_types . ' it', 'rr.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'rr.id = it.id', 'left');
         $this->db->join($this->table_teams . ' st', 'rr.target_team_id = st.id', 'left');
 
-        if (!empty($issue_type_id)) {
-            $this->db->where('rr.issue_type_id', $issue_type_id);
+        if (!empty($it_service_id)) {
+            $this->db->where('rr.id', $it_service_id);
         }
 
         if (!empty($status)) {
@@ -68,9 +68,9 @@ class RulesModel extends CI_Model
     /**
      * Get applicable routing rule for a ticket
      */
-    public function get_applicable_routing_rule($issue_type_id, $conditions = [])
+    public function get_applicable_routing_rule($it_service_id, $conditions = [])
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('status', 'active');
         $this->db->order_by('priority', 'ASC');
         
@@ -97,17 +97,17 @@ class RulesModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-    public function get_approval_rules($issue_type_id = null)
+    public function get_approval_rules($it_service_id = null)
     {
         $this->db->select('
             ar.*,
-            it.name as issue_type_name
+            it.name as it_service_name
         ');
         $this->db->from($this->table_approval . ' ar');
-        $this->db->join($this->table_issue_types . ' it', 'ar.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'ar.id = it.id', 'left');
 
-        if (!empty($issue_type_id)) {
-            $this->db->where('ar.issue_type_id', $issue_type_id);
+        if (!empty($it_service_id)) {
+            $this->db->where('ar.id', $it_service_id);
         }
 
         $this->db->order_by('ar.created_at', 'DESC');
@@ -140,11 +140,11 @@ class RulesModel extends CI_Model
     }
 
     /**
-     * Get approval rule for issue type
+     * Get approval rule for it service
      */
-    public function get_approval_rule_by_issue_type($issue_type_id)
+    public function get_approval_rule_by_it_service($it_service_id)
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('status', 'active');
         $this->db->where('requires_approval', 1);
         
@@ -157,23 +157,23 @@ class RulesModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-    public function get_level_rules($issue_type_id = null)
+    public function get_level_rules($it_service_id = null)
     {
         $this->db->select('
             lr.*,
-            it.name as issue_type_name,
+            it.name as it_service_name,
             st.name as support_team_name,
             st.support_level
         ');
         $this->db->from($this->table_level . ' lr');
-        $this->db->join($this->table_issue_types . ' it', 'lr.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'lr.id = it.id', 'left');
         $this->db->join($this->table_teams . ' st', 'lr.support_team_id = st.id', 'left');
 
-        if (!empty($issue_type_id)) {
-            $this->db->where('lr.issue_type_id', $issue_type_id);
+        if (!empty($it_service_id)) {
+            $this->db->where('lr.id', $it_service_id);
         }
 
-        $this->db->order_by('lr.issue_type_id', 'ASC');
+        $this->db->order_by('lr.id', 'ASC');
         $this->db->order_by('lr.level_number', 'ASC');
         
         return $this->db->get()->result();
@@ -204,11 +204,11 @@ class RulesModel extends CI_Model
     }
 
     /**
-     * Check if level number exists for issue type
+     * Check if level number exists for it service
      */
-    public function level_number_exists($issue_type_id, $level_number, $exclude_id = null)
+    public function level_number_exists($it_service_id, $level_number, $exclude_id = null)
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('level_number', $level_number);
         
         if ($exclude_id !== null) {
@@ -222,9 +222,9 @@ class RulesModel extends CI_Model
     /**
      * Get level rule by level number
      */
-    public function get_level_by_number($issue_type_id, $level_number)
+    public function get_level_by_number($it_service_id, $level_number)
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('level_number', $level_number);
         $this->db->where('status', 'active');
         
@@ -232,12 +232,12 @@ class RulesModel extends CI_Model
     }
 
     /**
-     * Get max level for issue type
+     * Get max level for it service
      */
-    public function get_max_level($issue_type_id)
+    public function get_max_level($it_service_id)
     {
         $this->db->select_max('level_number');
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('status', 'active');
         
         $result = $this->db->get($this->table_level)->row();
@@ -250,17 +250,17 @@ class RulesModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-    public function get_custom_fields($issue_type_id = null, $status = null)
+    public function get_custom_fields($it_service_id = null, $status = null)
     {
         $this->db->select('
             cf.*,
-            it.name as issue_type_name
+            it.name as it_service_name
         ');
         $this->db->from($this->table_custom_fields . ' cf');
-        $this->db->join($this->table_issue_types . ' it', 'cf.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'cf.id = it.id', 'left');
 
-        if (!empty($issue_type_id)) {
-            $this->db->where('cf.issue_type_id', $issue_type_id);
+        if (!empty($it_service_id)) {
+            $this->db->where('cf.id', $it_service_id);
         }
 
         if (!empty($status)) {
@@ -298,11 +298,11 @@ class RulesModel extends CI_Model
     }
 
     /**
-     * Check if field name exists for issue type
+     * Check if field name exists for it service
      */
-    public function field_name_exists($issue_type_id, $field_name, $exclude_id = null)
+    public function field_name_exists($it_service_id, $field_name, $exclude_id = null)
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('field_name', $field_name);
         
         if ($exclude_id !== null) {
@@ -314,11 +314,11 @@ class RulesModel extends CI_Model
     }
 
     /**
-     * Get required custom fields for issue type
+     * Get required custom fields for it service
      */
-    public function get_required_fields($issue_type_id)
+    public function get_required_fields($it_service_id)
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         $this->db->where('is_required', 1);
         $this->db->where('status', 'active');
         $this->db->order_by('sort_order', 'ASC');
@@ -351,24 +351,24 @@ class RulesModel extends CI_Model
     }
 
     /**
-     * Get all rules for an issue type
+     * Get all rules for an it service
      */
-    public function get_all_rules_by_issue_type($issue_type_id)
+    public function get_all_rules_by_it_service($it_service_id)
     {
         return [
-            'routing' => $this->get_routing_rules($issue_type_id, 'active'),
-            'approval' => $this->get_approval_rules($issue_type_id),
-            'levels' => $this->get_level_rules($issue_type_id),
-            'custom_fields' => $this->get_custom_fields($issue_type_id, 'active')
+            'routing' => $this->get_routing_rules($it_service_id, 'active'),
+            'approval' => $this->get_approval_rules($it_service_id),
+            'levels' => $this->get_level_rules($it_service_id),
+            'custom_fields' => $this->get_custom_fields($it_service_id, 'active')
         ];
     }
 
     /**
      * Validate custom field data against rules
      */
-    public function validate_custom_field_data($issue_type_id, $data)
+    public function validate_custom_field_data($it_service_id, $data)
     {
-        $fields = $this->get_custom_fields($issue_type_id, 'active');
+        $fields = $this->get_custom_fields($it_service_id, 'active');
         $errors = [];
 
         foreach ($fields as $field) {

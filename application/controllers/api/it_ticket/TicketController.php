@@ -91,7 +91,7 @@ class TicketController extends CI_Controller
             $_POST = $input;
             $this->form_validation->set_rules('service_group_id', 'Service Group', 'required|integer');
             $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer');
-            $this->form_validation->set_rules('issue_type_id', 'Issue Type', 'required|integer');
+            $this->form_validation->set_rules('it_service_id', 'It Service', 'required|integer');
             $this->form_validation->set_rules('subject', 'Subject', 'required|trim|max_length[255]');
             $this->form_validation->set_rules('description', 'Description', 'required|trim');
             $this->form_validation->set_rules('priority', 'Priority', 'required|in_list[low,medium,high,critical]');
@@ -113,9 +113,9 @@ class TicketController extends CI_Controller
                 return;
             }
 
-            $issueType = $this->ServiceModel->get_issue_type($input['issue_type_id']);
-            if (!$issueType) {
-                $this->_response(['success' => false, 'message' => 'Issue Type not found'], 400);
+            $itService = $this->ServiceModel->get_it_service($input['it_service_id']);
+            if (!$itService) {
+                $this->_response(['success' => false, 'message' => 'It service not found'], 400);
                 return;
             }
 
@@ -124,12 +124,12 @@ class TicketController extends CI_Controller
 
             // Calculate SLA due date
             $slaDueDate = $this->TicketModel->calculate_sla_due_date(
-                $input['issue_type_id'],
+                $input['it_service_id'],
                 $input['priority']
             );
 
             // Check if approval is required
-            $approvalRule = $this->RulesModel->get_approval_rule_by_issue_type($input['issue_type_id']);
+            $approvalRule = $this->RulesModel->get_approval_rule_by_it_service($input['it_service_id']);
             $requiresApproval = $approvalRule ? 1 : 0;
 
             // Prepare ticket data
@@ -137,7 +137,7 @@ class TicketController extends CI_Controller
                 'ticket_number' => $ticketNumber,
                 'service_group_id' => $input['service_group_id'],
                 'ticket_type_id' => $input['ticket_type_id'],
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'subject' => $input['subject'],
                 'description' => $input['description'],
                 'custom_fields_data' => isset($input['custom_fields']) ? json_encode($input['custom_fields']) : null,

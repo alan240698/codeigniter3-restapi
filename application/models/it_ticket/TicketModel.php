@@ -7,7 +7,7 @@ class TicketModel extends CI_Model
     private $table_history = 'it_ticket_history';
     private $table_service_groups = 'it_ticket_service_groups';
     private $table_ticket_types = 'it_ticket_types';
-    private $table_issue_types = 'it_ticket_issue_types';
+    private $table_it_ticket_services = 'it_ticket_services';
     private $table_workflows = 'it_ticket_workflows';
     private $table_workflow_states = 'it_ticket_workflow_states';
     private $table_support_teams = 'it_ticket_support_teams';
@@ -22,14 +22,14 @@ class TicketModel extends CI_Model
             t.*,
             sg.name as service_group_name,
             tt.name as ticket_type_name,
-            it.name as issue_type_name,
+            it.name as it_service_name,
             ws.name as current_state_name,
             st.name as assigned_team_name
         ');
         $this->db->from($this->table_tickets . ' t');
         $this->db->join($this->table_service_groups . ' sg', 't.service_group_id = sg.id', 'left');
         $this->db->join($this->table_ticket_types . ' tt', 't.ticket_type_id = tt.id', 'left');
-        $this->db->join($this->table_issue_types . ' it', 't.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 't.id = it.id', 'left');
         $this->db->join($this->table_workflow_states . ' ws', 't.current_state_id = ws.id', 'left');
         $this->db->join($this->table_support_teams . ' st', 't.assigned_team_id = st.id', 'left');
 
@@ -82,7 +82,7 @@ class TicketModel extends CI_Model
             t.*,
             sg.name as service_group_name,
             tt.name as ticket_type_name,
-            it.name as issue_type_name,
+            it.name as it_service_name,
             w.name as workflow_name,
             ws.name as current_state_name,
             st.name as assigned_team_name
@@ -90,7 +90,7 @@ class TicketModel extends CI_Model
         $this->db->from($this->table_tickets . ' t');
         $this->db->join($this->table_service_groups . ' sg', 't.service_group_id = sg.id', 'left');
         $this->db->join($this->table_ticket_types . ' tt', 't.ticket_type_id = tt.id', 'left');
-        $this->db->join($this->table_issue_types . ' it', 't.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 't.id = it.id', 'left');
         $this->db->join($this->table_workflows . ' w', 't.workflow_id = w.id', 'left');
         $this->db->join($this->table_workflow_states . ' ws', 't.current_state_id = ws.id', 'left');
         $this->db->join($this->table_support_teams . ' st', 't.assigned_team_id = st.id', 'left');
@@ -156,13 +156,13 @@ class TicketModel extends CI_Model
     /**
      * Calculate SLA due date
      */
-    public function calculate_sla_due_date($issue_type_id, $priority)
+    public function calculate_sla_due_date($it_service_id, $priority)
     {
-        // Get SLA policy for this issue type and priority
+        // Get SLA policy for this it service and priority
         $this->db->select('sp.resolution_hours, sp.business_hours_only');
-        $this->db->from('it_ticket_issue_type_sla its');
+        $this->db->from('it_ticket_service_sla its');
         $this->db->join($this->table_sla_policies . ' sp', 'its.sla_policy_id = sp.id');
-        $this->db->where('its.issue_type_id', $issue_type_id);
+        $this->db->where('its.id', $it_service_id);
         $this->db->where('sp.priority', $priority);
         $this->db->where('its.is_active', 1);
         $this->db->where('sp.status', 'active');

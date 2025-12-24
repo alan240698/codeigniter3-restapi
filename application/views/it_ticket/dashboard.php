@@ -789,9 +789,9 @@
                         </div>
                     </div>
                     <div class="stat-card-value">156</div>
-                    <div class="stat-card-label">Issue Types</div>
+                    <div class="stat-card-label">IT Service</div>
                     <div class="stat-card-trend up">
-                        <i class="fas fa-arrow-up"></i> 12 with sub-issues
+                        <i class="fas fa-arrow-up"></i> 12 with sub-it-service
                     </div>
                 </div>
 

@@ -263,11 +263,11 @@ class TicketTypeController extends CI_Controller
                 return;
             }
 
-            // Check if has issue types
-            if ($this->ServiceModel->ticket_type_has_issues($id)) {
+            // Check if has it service
+            if ($this->ServiceModel->ticket_type_has_it_service($id)) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Cannot delete ticket type with existing issue types'
+                    'message' => 'Cannot delete ticket type with existing it service'
                 ], 400);
                 return;
             }

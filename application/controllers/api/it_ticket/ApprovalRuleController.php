@@ -12,8 +12,8 @@ class ApprovalRuleController extends CI_Controller
     public function index()
     {
         try {
-            $issueTypeId = $this->input->get('issue_type_id');
-            $rules = $this->RulesModel->get_approval_rules($issueTypeId);
+            $itServiceId = $this->input->get('it_service_id');
+            $rules = $this->RulesModel->get_approval_rules($itServiceId);
             $this->_response(['success' => true, 'data' => $rules]);
         } catch (Exception $e) {
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
@@ -40,8 +40,8 @@ class ApprovalRuleController extends CI_Controller
             $rawInput = file_get_contents('php://input');
             $input = json_decode($rawInput, true);
 
-            if (empty($input['issue_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Issue Type is required'], 400);
+            if (empty($input['it_service_id'])) {
+                $this->_response(['success' => false, 'message' => 'It Service is required'], 400);
                 return;
             }
 
@@ -65,7 +65,7 @@ class ApprovalRuleController extends CI_Controller
             }
 
             $data = [
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'rule_name' => $input['rule_name'],
                 'requires_approval' => $input['requires_approval'] ?? 1,
                 'approval_type' => $input['approval_type'],

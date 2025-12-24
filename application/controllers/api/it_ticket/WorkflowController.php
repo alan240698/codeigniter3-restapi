@@ -169,8 +169,8 @@ class WorkflowController extends CI_Controller
                 return;
             }
 
-            if ($this->WorkflowModel->workflow_has_issue_types($id)) {
-                $this->_response(['success' => false, 'message' => 'Cannot delete workflow that is mapped to issue types'], 400);
+            if ($this->WorkflowModel->workflow_has_it_services($id)) {
+                $this->_response(['success' => false, 'message' => 'Cannot delete workflow that is mapped to it services'], 400);
                 return;
             }
 

@@ -1,19 +1,20 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class IssueTypeController extends CI_Controller
+class ItServiceController extends CI_Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->library(['form_validation']);
         $this->load->model('it_ticket/ServiceModel');
-        
+
         // Set JSON response header
         header('Content-Type: application/json');
     }
 
     /**
-     * GET /api/issue-types
+     * GET /api/it-services
      * Get paginated list with filters
      */
     public function index()
@@ -26,10 +27,10 @@ class IssueTypeController extends CI_Controller
             $ticketTypeId = $this->input->get('ticket_type_id');
 
             // Get filtered data
-            $result = $this->ServiceModel->get_issue_types_paginated(
-                $page, 
-                $perPage, 
-                $search, 
+            $result = $this->ServiceModel->get_it_services_paginated(
+                $page,
+                $perPage,
+                $search,
                 $ticketTypeId
             );
 
@@ -41,7 +42,6 @@ class IssueTypeController extends CI_Controller
                 'per_page' => $perPage,
                 'total_pages' => ceil($result['total'] / $perPage)
             ]);
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -51,20 +51,18 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * GET /api/issue-types/all
-     * Get all issue types (for dropdown)
+     * GET /api/it-services/all
+     * Get all it services (for dropdown)
      */
     public function get_all()
     {
         try {
-            // $ticketTypeId = $this->input->get('ticket_type_id');
-            $issueTypes = $this->ServiceModel->get_all_group_type();
+            $itServices = $this->ServiceModel->get_all_group_type();
 
             $this->_response([
                 'success' => true,
-                'data' => $issueTypes
+                'data' => $itServices
             ]);
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -74,37 +72,35 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * GET /api/issue-types/all-group-type
-     * Get all issue types with group info (alias for get_all)
+     * GET /api/it-services/all-group-type
+     * Get all it services with group info (alias for get_all)
      */
     public function get_all_with_groups()
     {
-        // Just call get_all - same functionality
         return $this->get_all();
     }
 
     /**
-     * GET /api/issue-types/{id}
-     * Get single issue type
+     * GET /api/it-services/{id}
+     * Get single it service
      */
     public function show($id)
     {
         try {
-            $issueType = $this->ServiceModel->get_issue_type($id);
+            $itService = $this->ServiceModel->get_it_service($id);
 
-            if (!$issueType) {
+            if (!$itService) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Issue Type not found'
+                    'message' => 'It service not found'
                 ], 404);
                 return;
             }
 
             $this->_response([
                 'success' => true,
-                'data' => $issueType
+                'data' => $itService
             ]);
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -114,19 +110,18 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * GET /api/issue-types/{id}/children
-     * Get children of an issue type
+     * GET /api/it-services/{id}/children
+     * Get children of an it service
      */
     public function get_children($id)
     {
         try {
-            $children = $this->ServiceModel->get_issue_type_children($id);
+            $children = $this->ServiceModel->get_it_service_children($id);
 
             $this->_response([
                 'success' => true,
                 'data' => $children
             ]);
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -136,24 +131,21 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * POST /api/issue-types
-     * Create new issue type
+     * POST /api/it-services
+     * Create new it service
      */
     public function store()
     {
         try {
-            // Get JSON input
-            // Get JSON input
             $rawInput = file_get_contents('php://input');
             $input = json_decode($rawInput, true);
 
-
             // Validate input
-                $_POST = $input;
+            $_POST = $input;
             $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer|callback_check_ticket_type_exists');
-            $this->form_validation->set_rules('parent_id', 'Parent Issue Type', 'callback_check_parent_exists');
+            $this->form_validation->set_rules('parent_id', 'Parent It Service', 'callback_check_parent_exists');
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
-            $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_issue_code');
+            $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_it_service_code');
             $this->form_validation->set_rules('input_type', 'Input Type', 'required|in_list[radio,dropdown,tree]');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
             $this->form_validation->set_rules('sort_order', 'Sort Order', 'integer|greater_than_equal_to[0]');
@@ -183,18 +175,17 @@ class IssueTypeController extends CI_Controller
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
-            $insertId = $this->ServiceModel->create_issue_type($data);
+            $insertId = $this->ServiceModel->create_it_service($data);
 
             if ($insertId) {
                 $this->_response([
                     'success' => true,
-                    'message' => 'Issue Type created successfully',
+                    'message' => 'It service created successfully',
                     'data' => ['id' => $insertId]
                 ], 201);
             } else {
-                throw new Exception('Failed to create issue type');
+                throw new Exception('Failed to create it service');
             }
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -204,25 +195,25 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * POST /api/issue-types/{parent_id}/sub-issue
-     * Create sub-issue (shortcut method)
+     * POST /api/it-services/{parent_id}/sub-it-service
+     * Create sub-it-service (shortcut method)
      */
-    public function create_sub_issue($parent_id)
+    public function create_sub_it_service($parent_id)
     {
         try {
             // Check if parent exists
-            $parent = $this->ServiceModel->get_issue_type($parent_id);
+            $parent = $this->ServiceModel->get_it_service($parent_id);
             if (!$parent) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Parent Issue Type not found'
+                    'message' => 'Parent It Service not found'
                 ], 404);
                 return;
             }
 
             // Get JSON input
             $input = json_decode($this->input->raw_input_stream, true);
-            
+
             // Force parent_id
             $input['parent_id'] = $parent_id;
             $input['ticket_type_id'] = $parent->ticket_type_id;
@@ -230,7 +221,7 @@ class IssueTypeController extends CI_Controller
             // Validate input
             $this->form_validation->set_data($input);
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
-            $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_issue_code');
+            $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_it_service_code');
             $this->form_validation->set_rules('input_type', 'Input Type', 'required|in_list[radio,dropdown,tree]');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
             $this->form_validation->set_rules('sort_order', 'Sort Order', 'integer|greater_than_equal_to[0]');
@@ -260,18 +251,17 @@ class IssueTypeController extends CI_Controller
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
-            $insertId = $this->ServiceModel->create_issue_type($data);
+            $insertId = $this->ServiceModel->create_it_service($data);
 
             if ($insertId) {
                 $this->_response([
                     'success' => true,
-                    'message' => 'Sub-Issue created successfully',
+                    'message' => 'Sub-It-Service created successfully',
                     'data' => ['id' => $insertId]
                 ], 201);
             } else {
-                throw new Exception('Failed to create sub-issue');
+                throw new Exception('Failed to create sub-it-service');
             }
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -281,18 +271,18 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * PUT /api/issue-types/{id}
-     * Update issue type
+     * PUT /api/it-services/{id}
+     * Update it service
      */
     public function update($id)
     {
         try {
             // Check if exists
-            $existing = $this->ServiceModel->get_issue_type($id);
+            $existing = $this->ServiceModel->get_it_service($id);
             if (!$existing) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Issue Type not found'
+                    'message' => 'It Service not found'
                 ], 404);
                 return;
             }
@@ -303,9 +293,9 @@ class IssueTypeController extends CI_Controller
             // Validate input
             $this->form_validation->set_data($input);
             $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer|callback_check_ticket_type_exists');
-            $this->form_validation->set_rules('parent_id', 'Parent Issue Type', 'callback_check_parent_exists|callback_check_not_self_parent[' . $id . ']');
+            $this->form_validation->set_rules('parent_id', 'Parent It Service', 'callback_check_parent_exists|callback_check_not_self_parent[' . $id . ']');
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
-            $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_issue_code_update[' . $id . ']');
+            $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_it_service_code_update[' . $id . ']');
             $this->form_validation->set_rules('input_type', 'Input Type', 'required|in_list[radio,dropdown,tree]');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
             $this->form_validation->set_rules('sort_order', 'Sort Order', 'integer|greater_than_equal_to[0]');
@@ -332,23 +322,22 @@ class IssueTypeController extends CI_Controller
                 'description' => $input['description'] ?? null,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
-            
+
             // Update sort_order if provided
             if (isset($input['sort_order'])) {
                 $data['sort_order'] = $input['sort_order'];
             }
 
-            $updated = $this->ServiceModel->update_issue_type($id, $data);
+            $updated = $this->ServiceModel->update_it_ticket($id, $data);
 
             if ($updated) {
                 $this->_response([
                     'success' => true,
-                    'message' => 'Issue Type updated successfully'
+                    'message' => 'It Service updated successfully'
                 ]);
             } else {
-                throw new Exception('Failed to update issue type');
+                throw new Exception('Failed to update it service');
             }
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -358,33 +347,33 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * DELETE /api/issue-types/{id}
-     * Delete issue type (cascade delete children)
+     * DELETE /api/it-services/{id}
+     * Delete it service (cascade delete children)
      */
     public function delete($id)
     {
         try {
             // Check if exists
-            $existing = $this->ServiceModel->get_issue_type($id);
+            $existing = $this->ServiceModel->get_it_service($id);
             if (!$existing) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Issue Type not found'
+                    'message' => 'It Service not found'
                 ], 404);
                 return;
             }
 
             // Check if has children
-            $hasChildren = $this->ServiceModel->issue_type_has_children($id);
-            
+            $hasChildren = $this->ServiceModel->it_service_has_children($id);
+
             if ($hasChildren) {
                 // Confirm cascade delete
                 $forceDelete = $this->input->get('force');
-                
+
                 if ($forceDelete !== 'true') {
                     $this->_response([
                         'success' => false,
-                        'message' => 'This issue type has sub-issues. Add ?force=true to delete all.',
+                        'message' => 'This it service has sub-it-service. Add ?force=true to delete all.',
                         'has_children' => true
                     ], 400);
                     return;
@@ -392,19 +381,18 @@ class IssueTypeController extends CI_Controller
             }
 
             // Delete (cascade)
-            $deleted = $this->ServiceModel->delete_issue_type($id);
+            $deleted = $this->ServiceModel->delete_it_ticket($id);
 
             if ($deleted) {
                 $this->_response([
                     'success' => true,
-                    'message' => $hasChildren 
-                        ? 'Issue Type and all sub-issues deleted successfully' 
-                        : 'Issue Type deleted successfully'
+                    'message' => $hasChildren
+                        ? 'It Service and all sub-it-service deleted successfully'
+                        : 'It Service deleted successfully'
                 ]);
             } else {
-                throw new Exception('Failed to delete issue type');
+                throw new Exception('Failed to delete it service');
             }
-
         } catch (Exception $e) {
             $this->_response([
                 'success' => false,
@@ -427,7 +415,7 @@ class IssueTypeController extends CI_Controller
     }
 
     /**
-     * Custom validation: Check if parent issue type exists
+     * Custom validation: Check if parent it service exists
      */
     public function check_parent_exists($parentId)
     {
@@ -435,9 +423,9 @@ class IssueTypeController extends CI_Controller
             return true; // Optional field
         }
 
-        $parent = $this->ServiceModel->get_issue_type($parentId);
+        $parent = $this->ServiceModel->get_it_service($parentId);
         if (!$parent) {
-            $this->form_validation->set_message('check_parent_exists', 'Parent Issue Type does not exist');
+            $this->form_validation->set_message('check_parent_exists', 'Parent it service does not exist');
             return false;
         }
         return true;
@@ -462,10 +450,10 @@ class IssueTypeController extends CI_Controller
     /**
      * Custom validation: Check unique code on create
      */
-    public function check_unique_issue_code($code)
+    public function check_unique_it_service_code($code)
     {
-        if ($this->ServiceModel->is_issue_type_code_exists($code)) {
-            $this->form_validation->set_message('check_unique_issue_code', 'Code already exists');
+        if ($this->ServiceModel->is_it_service_code_exists($code)) {
+            $this->form_validation->set_message('check_unique_it_service_code', 'Code already exists');
             return false;
         }
         return true;
@@ -474,10 +462,10 @@ class IssueTypeController extends CI_Controller
     /**
      * Custom validation: Check unique code on update
      */
-    public function check_unique_issue_code_update($code, $id)
+    public function check_unique_it_service_code_update($code, $id)
     {
-        if ($this->ServiceModel->is_issue_type_code_exists($code, $id)) {
-            $this->form_validation->set_message('check_unique_issue_code_update', 'Code already exists');
+        if ($this->ServiceModel->is_it_service_code_exists($code, $id)) {
+            $this->form_validation->set_message('check_unique_it_service_code_update', 'Code already exists');
             return false;
         }
         return true;

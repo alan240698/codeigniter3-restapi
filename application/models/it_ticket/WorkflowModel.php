@@ -7,7 +7,7 @@ class WorkflowModel extends CI_Model
     private $table_states = 'it_ticket_workflow_states';
     private $table_transitions = 'it_ticket_workflow_transitions';
     private $table_tickets = 'it_ticket_tickets';
-    private $table_issue_workflows = 'it_ticket_issue_type_workflows';
+    private $table_it_service_workflows = 'it_ticket_service_workflows';
 
     /*
     |--------------------------------------------------------------------------
@@ -150,12 +150,12 @@ class WorkflowModel extends CI_Model
     }
 
     /**
-     * Check if workflow has issue types
+     * Check if workflow has it services
      */
-    public function workflow_has_issue_types($workflow_id)
+    public function workflow_has_it_services($workflow_id)
     {
         $this->db->where('workflow_id', $workflow_id);
-        $count = $this->db->count_all_results($this->table_issue_workflows);
+        $count = $this->db->count_all_results($this->table_it_service_workflows);
         return $count > 0;
     }
 
@@ -376,7 +376,7 @@ class WorkflowModel extends CI_Model
             'total_states' => 0,
             'total_transitions' => 0,
             'total_tickets' => 0,
-            'linked_issue_types' => 0
+            'linked_it_services' => 0
         ];
 
         // Count states
@@ -391,40 +391,40 @@ class WorkflowModel extends CI_Model
         $this->db->where('workflow_id', $workflow_id);
         $stats['total_tickets'] = $this->db->count_all_results($this->table_tickets);
 
-        // Count linked issue types
+        // Count linked it services
         $this->db->where('workflow_id', $workflow_id);
-        $stats['linked_issue_types'] = $this->db->count_all_results($this->table_issue_workflows);
+        $stats['linked_it_services'] = $this->db->count_all_results($this->table_it_service_workflows);
 
         return $stats;
     }
 
     /*
 |--------------------------------------------------------------------------
-| ISSUE TYPE WORKFLOW MAPPING - CRUD OPERATIONS
+| IT SERVICE WORKFLOW MAPPING - CRUD OPERATIONS
 |--------------------------------------------------------------------------
 */
 
 /**
- * Get issue type workflow mappings with details
+ * Get it service workflow mappings with details
  */
-public function get_issue_type_workflow_mappings($issueTypeId = null)
+public function get_it_service_workflow_mappings($itServiceId = null)
 {
     $this->db->select('
         itw.*,
-        it.name as issue_type_name,
-        it.code as issue_type_code,
+        it.name as it_service_name,
+        it.code as it_service_code,
         w.name as workflow_name,
         w.code as workflow_code,
         w.status as workflow_status,
         COUNT(ws.id) as states_count
     ');
-    $this->db->from($this->table_issue_workflows . ' itw');
-    $this->db->join('it_ticket_issue_types it', 'itw.issue_type_id = it.id', 'left');
+    $this->db->from($this->table_it_service_workflows . ' itw');
+    $this->db->join('it_ticket_services it', 'itw.id = it.id', 'left');
     $this->db->join($this->table_workflows . ' w', 'itw.workflow_id = w.id', 'left');
     $this->db->join($this->table_states . ' ws', 'w.id = ws.workflow_id', 'left');
 
-    if ($issueTypeId) {
-        $this->db->where('itw.issue_type_id', $issueTypeId);
+    if ($itServiceId) {
+        $this->db->where('itw.id', $itServiceId);
     }
 
     $this->db->group_by('itw.id');
@@ -434,18 +434,18 @@ public function get_issue_type_workflow_mappings($issueTypeId = null)
 }
 
 /**
- * Get single issue type workflow mapping by ID
+ * Get single it service workflow mapping by ID
  */
-public function get_issue_type_workflow($id)
+public function get_it_service_workflow($id)
 {
     $this->db->where('id', $id);
-    return $this->db->get($this->table_issue_workflows)->row();
+    return $this->db->get($this->table_it_service_workflows)->row();
 }
 
 /**
- * Get active workflow for specific issue type
+ * Get active workflow for specific it service
  */
-public function get_active_workflow_by_issue_type($issueTypeId)
+public function get_active_workflow_by_it_service($itServiceId)
 {
     $this->db->select('
         itw.*,
@@ -455,10 +455,10 @@ public function get_active_workflow_by_issue_type($issueTypeId)
         w.status as workflow_status,
         COUNT(ws.id) as states_count
     ');
-    $this->db->from($this->table_issue_workflows . ' itw');
+    $this->db->from($this->table_it_service_workflows . ' itw');
     $this->db->join($this->table_workflows . ' w', 'itw.workflow_id = w.id', 'left');
     $this->db->join($this->table_states . ' ws', 'w.id = ws.workflow_id', 'left');
-    $this->db->where('itw.issue_type_id', $issueTypeId);
+    $this->db->where('itw.id', $itServiceId);
     $this->db->where('itw.is_active', 1);
     $this->db->group_by('itw.id');
 
@@ -466,55 +466,55 @@ public function get_active_workflow_by_issue_type($issueTypeId)
 }
 
 /**
- * Get mapping by issue type and workflow
+ * Get mapping by it service and workflow
  */
-public function get_mapping_by_issue_and_workflow($issueTypeId, $workflowId)
+public function get_mapping_by_it_service_and_workflow($itServiceId, $workflowId)
 {
-    $this->db->where('issue_type_id', $issueTypeId);
+    $this->db->where('id', $itServiceId);
     $this->db->where('workflow_id', $workflowId);
-    return $this->db->get($this->table_issue_workflows)->row();
+    return $this->db->get($this->table_it_service_workflows)->row();
 }
 
 /**
- * Create new issue type workflow mapping
+ * Create new it service workflow mapping
  */
-public function create_issue_type_workflow($data)
+public function create_it_service_workflow($data)
 {
-    $this->db->insert($this->table_issue_workflows, $data);
+    $this->db->insert($this->table_it_service_workflows, $data);
     return $this->db->insert_id();
 }
 
 /**
- * Update issue type workflow mapping
+ * Update it service workflow mapping
  */
-public function update_issue_type_workflow($id, $data)
+public function update_it_service_workflow($id, $data)
 {
     $this->db->where('id', $id);
-    return $this->db->update($this->table_issue_workflows, $data);
+    return $this->db->update($this->table_it_service_workflows, $data);
 }
 
 /**
- * Delete issue type workflow mapping
+ * Delete it service workflow mapping
  */
-public function delete_issue_type_workflow($id)
+public function delete_it_service_workflow($id)
 {
     $this->db->where('id', $id);
-    return $this->db->delete($this->table_issue_workflows);
+    return $this->db->delete($this->table_it_service_workflows);
 }
 
 /**
- * Deactivate all workflow mappings for an issue type
+ * Deactivate all workflow mappings for an it service
  */
-public function deactivate_issue_type_workflows($issueTypeId, $excludeId = null)
+public function deactivate_it_service_workflows($itServiceId, $excludeId = null)
 {
-    $this->db->where('issue_type_id', $issueTypeId);
+    $this->db->where('id', $itServiceId);
     $this->db->where('is_active', 1);
 
     if ($excludeId !== null) {
         $this->db->where('id !=', $excludeId);
     }
 
-    return $this->db->update($this->table_issue_workflows, ['is_active' => 0]);
+    return $this->db->update($this->table_it_service_workflows, ['is_active' => 0]);
 }
 
 /**
@@ -522,12 +522,12 @@ public function deactivate_issue_type_workflows($issueTypeId, $excludeId = null)
  */
 public function mapping_has_active_tickets($mappingId)
 {
-    $mapping = $this->get_issue_type_workflow($mappingId);
+    $mapping = $this->get_it_service_workflow($mappingId);
     if (!$mapping) {
         return false;
     }
 
-    $this->db->where('issue_type_id', $mapping->issue_type_id);
+    $this->db->where('id', $mapping->id);
     $this->db->where('workflow_id', $mapping->workflow_id);
     $this->db->where_in('status', ['open', 'in_progress', 'pending']); // Adjust status values as needed
     
@@ -544,41 +544,41 @@ public function get_workflow_mapping_stats()
         'total_mappings' => 0,
         'active_mappings' => 0,
         'inactive_mappings' => 0,
-        'mapped_issue_types' => 0,
-        'unmapped_issue_types' => 0
+        'mapped_it_services' => 0,
+        'unmapped_it_services' => 0
     ];
 
     // Total mappings
-    $stats['total_mappings'] = $this->db->count_all($this->table_issue_workflows);
+    $stats['total_mappings'] = $this->db->count_all($this->table_it_service_workflows);
 
     // Active mappings
     $this->db->where('is_active', 1);
-    $stats['active_mappings'] = $this->db->count_all_results($this->table_issue_workflows);
+    $stats['active_mappings'] = $this->db->count_all_results($this->table_it_service_workflows);
 
     // Inactive mappings
     $this->db->where('is_active', 0);
-    $stats['inactive_mappings'] = $this->db->count_all_results($this->table_issue_workflows);
+    $stats['inactive_mappings'] = $this->db->count_all_results($this->table_it_service_workflows);
 
-    // Mapped issue types (distinct)
-    $this->db->select('DISTINCT issue_type_id');
+    // Mapped it services (distinct)
+    $this->db->select('DISTINCT id');
     $this->db->where('is_active', 1);
-    $stats['mapped_issue_types'] = $this->db->count_all_results($this->table_issue_workflows);
+    $stats['mapped_it_services'] = $this->db->count_all_results($this->table_it_service_workflows);
 
-    // Unmapped issue types
+    // Unmapped it services
     $this->db->select('COUNT(*) as count');
-    $this->db->from('it_ticket_issue_types it');
-    $this->db->join($this->table_issue_workflows . ' itw', 'it.id = itw.issue_type_id AND itw.is_active = 1', 'left');
+    $this->db->from('it_ticket_services it');
+    $this->db->join($this->table_it_service_workflows . ' itw', 'it.id = itw.id AND itw.is_active = 1', 'left');
     $this->db->where('itw.id IS NULL');
     $result = $this->db->get()->row();
-    $stats['unmapped_issue_types'] = $result ? $result->count : 0;
+    $stats['unmapped_it_services'] = $result ? $result->count : 0;
 
     return $stats;
 }
 
 /**
- * Get all issue types with their workflow mappings
+ * Get all it services with their workflow mappings
  */
-public function get_issue_types_with_workflows()
+public function get_it_services_with_workflows()
 {
     $this->db->select('
         it.id,
@@ -589,8 +589,8 @@ public function get_issue_types_with_workflows()
         w.code as workflow_code,
         itw.is_active as has_workflow
     ');
-    $this->db->from('it_ticket_issue_types it');
-    $this->db->join($this->table_issue_workflows . ' itw', 'it.id = itw.issue_type_id AND itw.is_active = 1', 'left');
+    $this->db->from('it_ticket_services it');
+    $this->db->join($this->table_it_service_workflows . ' itw', 'it.id = itw.id AND itw.is_active = 1', 'left');
     $this->db->join($this->table_workflows . ' w', 'itw.workflow_id = w.id', 'left');
     $this->db->order_by('it.name', 'ASC');
 
@@ -598,35 +598,35 @@ public function get_issue_types_with_workflows()
 }
 
 /**
- * Bulk assign workflow to multiple issue types
+ * Bulk assign workflow to multiple it services
  */
-public function bulk_assign_workflow($issueTypeIds, $workflowId)
+public function bulk_assign_workflow($itServiceIds, $workflowId)
 {
-    if (empty($issueTypeIds) || !$workflowId) {
+    if (empty($itServiceIds) || !$workflowId) {
         return false;
     }
 
     $this->db->trans_start();
 
-    foreach ($issueTypeIds as $issueTypeId) {
+    foreach ($itServiceIds as $itServiceId) {
         // Check if mapping already exists
-        $existing = $this->get_mapping_by_issue_and_workflow($issueTypeId, $workflowId);
+        $existing = $this->get_mapping_by_it_service_and_workflow($itServiceId, $workflowId);
         
         if ($existing) {
             // Just activate it
-            $this->update_issue_type_workflow($existing->id, ['is_active' => 1]);
+            $this->update_it_service_workflow($existing->id, ['is_active' => 1]);
         } else {
             // Create new mapping
-            $this->create_issue_type_workflow([
-                'issue_type_id' => $issueTypeId,
+            $this->create_it_service_workflow([
+                'id' => $itServiceId,
                 'workflow_id' => $workflowId,
                 'is_active' => 1,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
         }
 
-        // Deactivate other workflows for this issue type
-        $this->deactivate_issue_type_workflows($issueTypeId);
+        // Deactivate other workflows for this it service
+        $this->deactivate_it_service_workflows($itServiceId);
     }
 
     $this->db->trans_complete();
@@ -635,11 +635,11 @@ public function bulk_assign_workflow($issueTypeIds, $workflowId)
 }
 
 /**
- * Get workflow with full details for issue type
+ * Get workflow with full details for it service
  */
-public function get_workflow_details_for_issue_type($issueTypeId)
+public function get_workflow_details_for_it_service($itServiceId)
 {
-    $mapping = $this->get_active_workflow_by_issue_type($issueTypeId);
+    $mapping = $this->get_active_workflow_by_it_service($itServiceId);
     
     if (!$mapping) {
         return null;

@@ -1,24 +1,25 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class IssueTypeWorkflowController extends CI_Controller
+class ItServiceWorkflowController extends CI_Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
+
         $this->load->model('it_ticket/WorkflowModel');
         header('Content-Type: application/json');
     }
 
     /**
-     * GET /issue-type-workflows
+     * GET /it-service-workflows
      * Get workflow mappings with filters
      */
     public function index()
     {
         try {
-            $issueTypeId = $this->input->get('issue_type_id');
-
-            $mappings = $this->WorkflowModel->get_issue_type_workflow_mappings($issueTypeId);
+            $itServiceId = $this->input->get('it_service_id');
+            $mappings = $this->WorkflowModel->get_it_service_workflow_mappings($itServiceId);
 
             $this->_response([
                 'success' => true,
@@ -34,12 +35,12 @@ class IssueTypeWorkflowController extends CI_Controller
     }
 
     /**
-     * GET /issue-type-workflows/show/{id}
+     * GET /it-service-workflows/show/{id}
      */
     public function show($id)
     {
         try {
-            $mapping = $this->WorkflowModel->get_issue_type_workflow($id);
+            $mapping = $this->WorkflowModel->get_it_service_workflow($id);
 
             if (!$mapping) {
                 $this->_response([
@@ -63,7 +64,7 @@ class IssueTypeWorkflowController extends CI_Controller
     }
 
     /**
-     * POST /issue-type-workflows/store
+     * POST /it-service-workflows/store
      */
     public function store()
     {
@@ -72,8 +73,8 @@ class IssueTypeWorkflowController extends CI_Controller
             $input = json_decode($rawInput, true);
 
             // Validation
-            if (empty($input['issue_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Issue Type is required'], 400);
+            if (empty($input['it_service_id'])) {
+                $this->_response(['success' => false, 'message' => 'It service is required'], 400);
                 return;
             }
 
@@ -83,35 +84,35 @@ class IssueTypeWorkflowController extends CI_Controller
             }
 
             // Check if mapping already exists
-            $existing = $this->WorkflowModel->get_mapping_by_issue_and_workflow(
-                $input['issue_type_id'], 
+            $existing = $this->WorkflowModel->get_mapping_by_it_service_and_workflow(
+                $input['it_service_id'], 
                 $input['workflow_id']
             );
 
             if ($existing) {
                 $this->_response([
                     'success' => false, 
-                    'message' => 'This Issue Type is already mapped to this Workflow'
+                    'message' => 'This it service is already mapped to this Workflow'
                 ], 400);
                 return;
             }
 
-            // Check if issue type already has an active workflow
-            $activeMapping = $this->WorkflowModel->get_active_workflow_by_issue_type($input['issue_type_id']);
+            // Check if it service already has an active workflow
+            $activeMapping = $this->WorkflowModel->get_active_workflow_by_it_service($input['it_service_id']);
             
             if ($activeMapping && $input['is_active'] == 1) {
                 // Deactivate old mapping if new mapping is active
-                $this->WorkflowModel->update_issue_type_workflow($activeMapping->id, ['is_active' => 0]);
+                $this->WorkflowModel->update_it_service_workflow($activeMapping->id, ['is_active' => 0]);
             }
 
             $data = [
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'workflow_id' => $input['workflow_id'],
                 'is_active' => $input['is_active'] ?? 1,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
-            $insertId = $this->WorkflowModel->create_issue_type_workflow($data);
+            $insertId = $this->WorkflowModel->create_it_service_workflow($data);
 
             if ($insertId) {
                 $this->_response([
@@ -132,12 +133,12 @@ class IssueTypeWorkflowController extends CI_Controller
     }
 
     /**
-     * POST /issue-type-workflows/update/{id}
+     * POST /it-service-workflows/update/{id}
      */
     public function update($id)
     {
         try {
-            $existing = $this->WorkflowModel->get_issue_type_workflow($id);
+            $existing = $this->WorkflowModel->get_it_service_workflow($id);
             if (!$existing) {
                 $this->_response(['success' => false, 'message' => 'Workflow Mapping not found'], 404);
                 return;
@@ -152,28 +153,28 @@ class IssueTypeWorkflowController extends CI_Controller
                 return;
             }
 
-            // Check if changing to a different workflow that already exists for this issue type
+            // Check if changing to a different workflow that already exists for this it service
             if ($input['workflow_id'] != $existing->workflow_id) {
-                $duplicate = $this->WorkflowModel->get_mapping_by_issue_and_workflow(
-                    $existing->issue_type_id, 
+                $duplicate = $this->WorkflowModel->get_mapping_by_it_service_and_workflow(
+                    $existing->it_service_id, 
                     $input['workflow_id']
                 );
 
                 if ($duplicate) {
                     $this->_response([
                         'success' => false, 
-                        'message' => 'This Issue Type is already mapped to the selected Workflow'
+                        'message' => 'This it service is already mapped to the selected Workflow'
                     ], 400);
                     return;
                 }
             }
 
-            // If activating this mapping, deactivate others for same issue type
+            // If activating this mapping, deactivate others for same it service
             if ($input['is_active'] == 1) {
-                $otherActive = $this->WorkflowModel->get_active_workflow_by_issue_type($existing->issue_type_id);
+                $otherActive = $this->WorkflowModel->get_active_workflow_by_it_service($existing->it_service_id);
                 
                 if ($otherActive && $otherActive->id != $id) {
-                    $this->WorkflowModel->update_issue_type_workflow($otherActive->id, ['is_active' => 0]);
+                    $this->WorkflowModel->update_it_service_workflow($otherActive->id, ['is_active' => 0]);
                 }
             }
 
@@ -182,7 +183,7 @@ class IssueTypeWorkflowController extends CI_Controller
                 'is_active' => $input['is_active']
             ];
 
-            $updated = $this->WorkflowModel->update_issue_type_workflow($id, $data);
+            $updated = $this->WorkflowModel->update_it_service_workflow($id, $data);
 
             if ($updated) {
                 $this->_response(['success' => true, 'message' => 'Workflow Mapping updated successfully']);
@@ -196,12 +197,12 @@ class IssueTypeWorkflowController extends CI_Controller
     }
 
     /**
-     * POST /issue-type-workflows/delete/{id}
+     * POST /it-service-workflows/delete/{id}
      */
     public function delete($id)
     {
         try {
-            $existing = $this->WorkflowModel->get_issue_type_workflow($id);
+            $existing = $this->WorkflowModel->get_it_service_workflow($id);
             if (!$existing) {
                 $this->_response(['success' => false, 'message' => 'Workflow Mapping not found'], 404);
                 return;
@@ -217,7 +218,7 @@ class IssueTypeWorkflowController extends CI_Controller
                 return;
             }
 
-            $deleted = $this->WorkflowModel->delete_issue_type_workflow($id);
+            $deleted = $this->WorkflowModel->delete_it_service_workflow($id);
 
             if ($deleted) {
                 $this->_response(['success' => true, 'message' => 'Workflow Mapping deleted successfully']);
@@ -231,18 +232,18 @@ class IssueTypeWorkflowController extends CI_Controller
     }
 
     /**
-     * GET /issue-type-workflows/by-issue-type/{issue_type_id}
-     * Get active workflow for specific issue type
+     * GET /it-service-workflows/by-it-service/{it_service_id}
+     * Get active workflow for specific it service
      */
-    public function get_by_issue_type($issueTypeId)
+    public function get_by_it_service($itServiceId)
     {
         try {
-            $workflow = $this->WorkflowModel->get_active_workflow_by_issue_type($issueTypeId);
+            $workflow = $this->WorkflowModel->get_active_workflow_by_it_service($itServiceId);
 
             if (!$workflow) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'No active workflow found for this issue type'
+                    'message' => 'No active workflow found for this it service'
                 ], 404);
                 return;
             }
@@ -261,7 +262,7 @@ class IssueTypeWorkflowController extends CI_Controller
     }
 
     /**
-     * GET /issue-type-workflows/stats
+     * GET /it-service-workflows/stats
      * Get workflow mapping statistics
      */
     public function stats()
@@ -271,8 +272,8 @@ class IssueTypeWorkflowController extends CI_Controller
                 'total_mappings' => 0,
                 'active_mappings' => 0,
                 'inactive_mappings' => 0,
-                'mapped_issue_types' => 0,
-                'unmapped_issue_types' => 0
+                'mapped_it_services' => 0,
+                'unmapped_it_services' => 0
             ];
 
             $stats = $this->WorkflowModel->get_workflow_mapping_stats();

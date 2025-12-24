@@ -286,10 +286,10 @@
         </div>
     </div>
 
-    <!-- Issue Type Workflow Mapping Section -->
+    <!-- IT Services Workflow Mapping Section -->
     <div class="card" style="margin-top: 30px;">
         <div class="card-header">
-            <h3><i class="fas fa-link"></i> Issue Type Workflow Mapping</h3>
+            <h3><i class="fas fa-link"></i> IT Services Workflow Mapping</h3>
             <div>
                 <button id="btnAddWorkflowMapping" class="btn btn-primary-it-ticket" disabled
                     onclick="WorkflowMappingManager.openAddMapping()"
@@ -303,9 +303,9 @@
         </div>
 
         <div class="filter-section">
-            <select id="filterMappingWorkflowIssueType" onchange="WorkflowMappingManager.filterMappings()"
+            <select id="filterMappingWorkflowItService" onchange="WorkflowMappingManager.filterMappings()"
                 style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                <option value="">All Issue Types</option>
+                <option value="">All IT Service</option>
             </select>
         </div>
 
@@ -314,7 +314,7 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
-                        <th>Issue Type</th>
+                        <th>IT Service</th>
                         <th>Workflow</th>
                         <th>States Count</th>
                         <th>Status</th>
@@ -522,9 +522,9 @@
             <input type="hidden" id="wfMappingId">
 
             <div class="form-group">
-                <label>Issue Type <span class="required">*</span></label>
-                <select id="wfMappingIssueType">
-                    <option value="">Select Issue Type</option>
+                <label>IT Service <span class="required">*</span></label>
+                <select id="wfMappingItService">
+                    <option value="">Select IT Service</option>
                 </select>
             </div>
 
@@ -549,7 +549,7 @@
                     <div style="flex: 1;">
                         <strong style="color: #92400e; display: block; margin-bottom: 5px;">Note:</strong>
                         <p style="font-size: 13px; color: #92400e; margin: 0;">
-                            Each issue type can only have ONE active workflow. If you assign a new workflow,
+                            Each IT Service can only have ONE active workflow. If you assign a new workflow,
                             the previous one will be automatically deactivated.
                         </p>
                     </div>
@@ -1453,15 +1453,15 @@
     // ==================== WORKFLOW MAPPING MANAGER ====================
     const WorkflowMappingManager = {
         baseUrl: '<?= base_url() ?>',
-        filterIssueType: '',
+        filterItService: '',
 
         async loadMappings() {
             try {
                 const params = new URLSearchParams({
-                    issue_type_id: this.filterIssueType
+                    it_service_id: this.filterItService
                 });
 
-                const response = await fetch(`${this.baseUrl}issue-type-workflows?${params}`);
+                const response = await fetch(`${this.baseUrl}it-service-workflows?${params}`);
                 const data = await response.json();
 
                 if (data.success) {
@@ -1490,7 +1490,7 @@
             tbody.innerHTML = mappings.map((mapping, index) => `
             <tr>
                 <td>${index + 1}</td>
-                <td><strong>${mapping.issue_type_name}</strong></td>
+                <td><strong>${mapping.it_service_name}</strong></td>
                 <td>${mapping.workflow_name}</td>
                 <td><span class="badge badge-success">${mapping.states_count || 0} states</span></td>
                 <td><span class="badge badge-${mapping.is_active ? 'success' : 'danger'}">${mapping.is_active ? 'Active' : 'Inactive'}</span></td>
@@ -1511,7 +1511,7 @@
         openAddMapping() {
             document.getElementById('modalWorkflowMappingTitle').textContent = 'Add Workflow Mapping';
             document.getElementById('wfMappingId').value = '';
-            document.getElementById('wfMappingIssueType').value = '';
+            document.getElementById('wfMappingItService').value = '';
             document.getElementById('wfMappingWorkflow').value = '';
             document.getElementById('wfMappingStatus').value = '1';
             document.getElementById('modalWorkflowMapping').classList.add('active');
@@ -1519,14 +1519,14 @@
 
         async editMapping(id) {
             try {
-                const response = await fetch(`${this.baseUrl}issue-type-workflows/show/${id}`);
+                const response = await fetch(`${this.baseUrl}it-service-workflows/show/${id}`);
                 const data = await response.json();
 
                 if (data.success) {
                     const mapping = data.data;
                     document.getElementById('modalWorkflowMappingTitle').textContent = 'Edit Workflow Mapping';
                     document.getElementById('wfMappingId').value = mapping.id;
-                    document.getElementById('wfMappingIssueType').value = mapping.issue_type_id;
+                    document.getElementById('wfMappingItService').value = mapping.it_service_id;
                     document.getElementById('wfMappingWorkflow').value = mapping.workflow_id;
                     document.getElementById('wfMappingStatus').value = mapping.is_active ? '1' : '0';
                     document.getElementById('modalWorkflowMapping').classList.add('active');
@@ -1539,18 +1539,18 @@
         async saveMapping() {
             const id = document.getElementById('wfMappingId').value;
             const formData = {
-                issue_type_id: document.getElementById('wfMappingIssueType').value,
+                it_service_id: document.getElementById('wfMappingItService').value,
                 workflow_id: document.getElementById('wfMappingWorkflow').value,
                 is_active: document.getElementById('wfMappingStatus').value === '1' ? 1 : 0
             };
 
-            if (!formData.issue_type_id || !formData.workflow_id) {
-                TicketNotifier.showValidationError('Please select both Issue Type and Workflow');
+            if (!formData.it_service_id || !formData.workflow_id) {
+                TicketNotifier.showValidationError('Please select both IT Service and Workflow');
                 return;
             }
 
             try {
-                const url = id ? `${this.baseUrl}issue-type-workflows/update/${id}` : `${this.baseUrl}issue-type-workflows/store`;
+                const url = id ? `${this.baseUrl}it-service-workflows/update/${id}` : `${this.baseUrl}it-service-workflows/store`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -1579,7 +1579,7 @@
             if (!confirmed) return;
 
             try {
-                const response = await fetch(`${this.baseUrl}issue-type-workflows/delete/${id}`, {
+                const response = await fetch(`${this.baseUrl}it-service-workflows/delete/${id}`, {
                     method: 'POST'
                 });
 
@@ -1597,13 +1597,13 @@
         },
 
         filterMappings() {
-            this.filterIssueType = document.getElementById('filterMappingWorkflowIssueType').value;
+            this.filterItService = document.getElementById('filterMappingWorkflowItService').value;
             this.loadMappings();
         },
 
-        async loadIssueTypesDropdown() {
+        async loadItServicesDropdown() {
             try {
-                const response = await fetch(`${this.baseUrl}issue-types/all-group-type`);
+                const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
                 const data = await response.json();
 
                 if (data.success) {
@@ -1611,13 +1611,13 @@
                         `<option value="${it.id}">${it.name}</option>`
                     ).join('');
 
-                    document.getElementById('filterMappingWorkflowIssueType').innerHTML =
-                        '<option value="">All Issue Types</option>' + options;
-                    document.getElementById('wfMappingIssueType').innerHTML =
-                        '<option value="">Select Issue Type</option>' + options;
+                    document.getElementById('filterMappingWorkflowItService').innerHTML =
+                        '<option value="">All IT Service</option>' + options;
+                    document.getElementById('wfMappingItService').innerHTML =
+                        '<option value="">Select IT Service</option>' + options;
                 }
             } catch (error) {
-                console.error('Error loading issue types:', error);
+                console.error('Error loading it service:', error);
             }
         },
 
@@ -1674,7 +1674,7 @@
                 // Check Mappings count
                 let mapCount = 0;
                 try {
-                    const mapResponse = await fetch(`${this.baseUrl}issue-type-workflows`);
+                    const mapResponse = await fetch(`${this.baseUrl}it-service-workflows`);
                     const mapData = await mapResponse.json();
                     mapCount = mapData.data ? mapData.data.length : 0;
                 } catch (e) {
@@ -1799,7 +1799,7 @@
                 StateManager.init(),
                 WorkflowManager.loadWorkflows(),
                 WorkflowMappingManager.loadMappings(),
-                WorkflowMappingManager.loadIssueTypesDropdown(),
+                WorkflowMappingManager.loadItServicesDropdown(),
                 WorkflowMappingManager.loadWorkflowsDropdown()
             ]);
             console.log('Workflows Tab fully loaded');

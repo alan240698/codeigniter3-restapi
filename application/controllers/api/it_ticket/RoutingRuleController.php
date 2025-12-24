@@ -16,10 +16,10 @@ class RoutingRuleController extends CI_Controller
     public function index()
     {
         try {
-            $issueTypeId = $this->input->get('issue_type_id');
+            $itServiceId = $this->input->get('it_service_id');
             $status = $this->input->get('status');
 
-            $rules = $this->RulesModel->get_routing_rules($issueTypeId, $status);
+            $rules = $this->RulesModel->get_routing_rules($itServiceId, $status);
 
             $this->_response([
                 'success' => true,
@@ -73,8 +73,8 @@ class RoutingRuleController extends CI_Controller
             $input = json_decode($rawInput, true);
 
             // Validation
-            if (empty($input['issue_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Issue Type is required'], 400);
+            if (empty($input['it_service_id'])) {
+                $this->_response(['success' => false, 'message' => 'It Service is required'], 400);
                 return;
             }
 
@@ -103,7 +103,7 @@ class RoutingRuleController extends CI_Controller
             }
 
             $data = [
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'rule_name' => $input['rule_name'],
                 'priority' => $input['priority'] ?? 100,
                 'conditions' => $input['conditions'] ?? null,

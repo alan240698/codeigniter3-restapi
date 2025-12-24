@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class SLAModel extends CI_Model
 {
     private $table_policies = 'it_ticket_sla_policies';
-    private $table_mappings = 'it_ticket_issue_type_sla';
-    private $table_issue_types = 'it_ticket_issue_types';
+    private $table_mappings = 'it_ticket_service_sla';
+    private $table_it_ticket_services = 'it_ticket_services';
 
     /*
     |--------------------------------------------------------------------------
@@ -17,7 +17,7 @@ class SLAModel extends CI_Model
 {
     $this->db->select("
         sp.*,
-        COUNT(DISTINCT its.issue_type_id) AS issue_types_count,
+        COUNT(DISTINCT its.id) AS it_services_count,
         CASE sp.priority
             WHEN 'critical' THEN 1
             WHEN 'high' THEN 2
@@ -146,7 +146,7 @@ public function get_all_sla_policies($status = 'active')
     }
 
     /**
-     * Check if policy has issue type mappings
+     * Check if policy has it service mappings
      */
     public function policy_has_mappings($policy_id)
     {
@@ -157,18 +157,18 @@ public function get_all_sla_policies($status = 'active')
 
     /*
     |--------------------------------------------------------------------------
-    | ISSUE TYPE SLA MAPPING - CRUD OPERATIONS
+    | IT SERVICE SLA MAPPING - CRUD OPERATIONS
     |--------------------------------------------------------------------------
     */
 
     /**
      * Get SLA mappings with full details
      */
-    public function get_issue_type_sla_mappings($issue_type_id = null)
+    public function get_it_service_sla_mappings($it_service_id = null)
     {
         $this->db->select('
             its.*,
-            it.name as issue_type_name,
+            it.name as it_service_name,
             sp.name as sla_policy_name,
             sp.priority,
             sp.first_response_hours,
@@ -176,11 +176,11 @@ public function get_all_sla_policies($status = 'active')
             sp.business_hours_only
         ');
         $this->db->from($this->table_mappings . ' its');
-        $this->db->join($this->table_issue_types . ' it', 'its.issue_type_id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'its.id = it.id', 'left');
         $this->db->join($this->table_policies . ' sp', 'its.sla_policy_id = sp.id', 'left');
 
-        if (!empty($issue_type_id)) {
-            $this->db->where('its.issue_type_id', $issue_type_id);
+        if (!empty($it_service_id)) {
+            $this->db->where('its.id', $it_service_id);
         }
 
         $this->db->order_by('its.is_active', 'DESC');
@@ -192,16 +192,16 @@ public function get_all_sla_policies($status = 'active')
     /**
      * Get single SLA mapping by ID
      */
-    public function get_issue_type_sla($id)
+    public function get_it_service_sla($id)
     {
         $this->db->where('id', $id);
         return $this->db->get($this->table_mappings)->row();
     }
 
     /**
-     * Get active SLA for specific issue type
+     * Get active SLA for specific it service
      */
-    public function get_active_sla_by_issue_type($issue_type_id)
+    public function get_active_sla_by_it_service($it_service_id)
     {
         $this->db->select('
             its.*,
@@ -213,7 +213,7 @@ public function get_all_sla_policies($status = 'active')
         ');
         $this->db->from($this->table_mappings . ' its');
         $this->db->join($this->table_policies . ' sp', 'its.sla_policy_id = sp.id');
-        $this->db->where('its.issue_type_id', $issue_type_id);
+        $this->db->where('its.id', $it_service_id);
         $this->db->where('its.is_active', 1);
         $this->db->where('sp.status', 'active');
         
@@ -223,7 +223,7 @@ public function get_all_sla_policies($status = 'active')
     /**
      * Create new SLA mapping
      */
-    public function create_issue_type_sla($data)
+    public function create_it_service_sla($data)
     {
         $this->db->insert($this->table_mappings, $data);
         return $this->db->insert_id();
@@ -232,7 +232,7 @@ public function get_all_sla_policies($status = 'active')
     /**
      * Update SLA mapping
      */
-    public function update_issue_type_sla($id, $data)
+    public function update_it_service_sla($id, $data)
     {
         $this->db->where('id', $id);
         return $this->db->update($this->table_mappings, $data);
@@ -241,18 +241,18 @@ public function get_all_sla_policies($status = 'active')
     /**
      * Delete SLA mapping
      */
-    public function delete_issue_type_sla($id)
+    public function delete_it_service_sla($id)
     {
         $this->db->where('id', $id);
         return $this->db->delete($this->table_mappings);
     }
 
     /**
-     * Deactivate all SLA mappings for an issue type
+     * Deactivate all SLA mappings for an it service
      */
-    public function deactivate_all_for_issue_type($issue_type_id)
+    public function deactivate_all_for_it_service($it_service_id)
     {
-        $this->db->where('issue_type_id', $issue_type_id);
+        $this->db->where('id', $it_service_id);
         return $this->db->update($this->table_mappings, ['is_active' => 0]);
     }
 
@@ -265,13 +265,13 @@ public function get_all_sla_policies($status = 'active')
     /**
      * Calculate SLA due date
      * 
-     * @param int $issue_type_id Issue type ID
+     * @param int $it_service_id it service ID
      * @param string $created_at Ticket creation datetime
      * @return array ['first_response_due' => datetime, 'resolution_due' => datetime]
      */
-    public function calculate_sla_due_dates($issue_type_id, $created_at)
+    public function calculate_sla_due_dates($it_service_id, $created_at)
     {
-        $sla = $this->get_active_sla_by_issue_type($issue_type_id);
+        $sla = $this->get_active_sla_by_it_service($it_service_id);
 
         if (!$sla) {
             return null;

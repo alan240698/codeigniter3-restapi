@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class IssueTypeSLAController extends CI_Controller
+class ItServiceSLAController extends CI_Controller
 {
     public function __construct() {
         parent::__construct();
@@ -10,15 +10,15 @@ class IssueTypeSLAController extends CI_Controller
     }
 
     /**
-     * GET /issue-type-sla
+     * GET /it-service-sla
      * Get SLA mappings with filters
      */
     public function index()
     {
         try {
-            $issueTypeId = $this->input->get('issue_type_id');
+            $itServiceId = $this->input->get('it_service_id');
 
-            $mappings = $this->SLAModel->get_issue_type_sla_mappings($issueTypeId);
+            $mappings = $this->SLAModel->get_it_service_sla_mappings($itServiceId);
 
             $this->_response([
                 'success' => true,
@@ -34,12 +34,12 @@ class IssueTypeSLAController extends CI_Controller
     }
 
     /**
-     * GET /issue-type-sla/show/{id}
+     * GET /it-service-sla/show/{id}
      */
     public function show($id)
     {
         try {
-            $mapping = $this->SLAModel->get_issue_type_sla($id);
+            $mapping = $this->SLAModel->get_it_service_sla($id);
 
             if (!$mapping) {
                 $this->_response([
@@ -63,7 +63,7 @@ class IssueTypeSLAController extends CI_Controller
     }
 
     /**
-     * POST /issue-type-sla/store
+     * POST /it-service-sla/store
      */
     public function store()
     {
@@ -72,8 +72,8 @@ class IssueTypeSLAController extends CI_Controller
             $input = json_decode($rawInput, true);
 
             // Validation
-            if (empty($input['issue_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Issue Type is required'], 400);
+            if (empty($input['it_service_id'])) {
+                $this->_response(['success' => false, 'message' => 'It Service is required'], 400);
                 return;
             }
 
@@ -82,22 +82,22 @@ class IssueTypeSLAController extends CI_Controller
                 return;
             }
 
-            // Check if issue type already has an active SLA
-            $existing = $this->SLAModel->get_active_sla_by_issue_type($input['issue_type_id']);
+            // Check if it service already has an active SLA
+            $existing = $this->SLAModel->get_active_sla_by_it_service($input['it_service_id']);
             
             if ($existing && $input['is_active'] == 1) {
                 // Deactivate old mapping if new mapping is active
-                $this->SLAModel->update_issue_type_sla($existing->id, ['is_active' => 0]);
+                $this->SLAModel->update_it_service_sla($existing->id, ['is_active' => 0]);
             }
 
             $data = [
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'sla_policy_id' => $input['sla_policy_id'],
                 'is_active' => $input['is_active'] ?? 1,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
-            $insertId = $this->SLAModel->create_issue_type_sla($data);
+            $insertId = $this->SLAModel->create_it_service_sla($data);
 
             if ($insertId) {
                 $this->_response([
@@ -118,12 +118,12 @@ class IssueTypeSLAController extends CI_Controller
     }
 
     /**
-     * POST /issue-type-sla/update/{id}
+     * POST /it-service-sla/update/{id}
      */
     public function update($id)
     {
         try {
-            $existing = $this->SLAModel->get_issue_type_sla($id);
+            $existing = $this->SLAModel->get_it_service_sla($id);
             if (!$existing) {
                 $this->_response(['success' => false, 'message' => 'SLA Mapping not found'], 404);
                 return;
@@ -138,12 +138,12 @@ class IssueTypeSLAController extends CI_Controller
                 return;
             }
 
-            // If activating this mapping, deactivate others for same issue type
+            // If activating this mapping, deactivate others for same it service
             if ($input['is_active'] == 1) {
-                $otherActive = $this->SLAModel->get_active_sla_by_issue_type($existing->issue_type_id);
+                $otherActive = $this->SLAModel->get_active_sla_by_it_service($existing->it_service_id);
                 
                 if ($otherActive && $otherActive->id != $id) {
-                    $this->SLAModel->update_issue_type_sla($otherActive->id, ['is_active' => 0]);
+                    $this->SLAModel->update_it_service_sla($otherActive->id, ['is_active' => 0]);
                 }
             }
 
@@ -152,7 +152,7 @@ class IssueTypeSLAController extends CI_Controller
                 'is_active' => $input['is_active']
             ];
 
-            $updated = $this->SLAModel->update_issue_type_sla($id, $data);
+            $updated = $this->SLAModel->update_it_service_sla($id, $data);
 
             if ($updated) {
                 $this->_response(['success' => true, 'message' => 'SLA Mapping updated successfully']);
@@ -166,18 +166,18 @@ class IssueTypeSLAController extends CI_Controller
     }
 
     /**
-     * POST /issue-type-sla/delete/{id}
+     * POST /it-service-sla/delete/{id}
      */
     public function delete($id)
     {
         try {
-            $existing = $this->SLAModel->get_issue_type_sla($id);
+            $existing = $this->SLAModel->get_it_service_sla($id);
             if (!$existing) {
                 $this->_response(['success' => false, 'message' => 'SLA Mapping not found'], 404);
                 return;
             }
 
-            $deleted = $this->SLAModel->delete_issue_type_sla($id);
+            $deleted = $this->SLAModel->delete_it_service_sla($id);
 
             if ($deleted) {
                 $this->_response(['success' => true, 'message' => 'SLA Mapping deleted successfully']);
@@ -191,18 +191,18 @@ class IssueTypeSLAController extends CI_Controller
     }
 
     /**
-     * GET /issue-type-sla/by-issue-type/{issue_type_id}
-     * Get active SLA for specific issue type
+     * GET /it-service-sla/by-it-service/{it_service_id}
+     * Get active SLA for specific it service
      */
-    public function get_by_issue_type($issueTypeId)
+    public function get_by_it_service($itServiceId)
     {
         try {
-            $sla = $this->SLAModel->get_active_sla_by_issue_type($issueTypeId);
+            $sla = $this->SLAModel->get_active_sla_by_it_service($itServiceId);
 
             if (!$sla) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'No active SLA found for this issue type'
+                    'message' => 'No active SLA found for this it service'
                 ], 404);
                 return;
             }

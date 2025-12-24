@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database ERD - IT Ticket Management System</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontSize: 14
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 60px;
+        }
+
+        header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 30px;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .meta-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #888;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 60px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+            line-height: 32px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .mermaid {
+            background: #fafafa;
+            padding: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 3px solid #1a1a1a;
+            padding: 16px 20px;
+            margin: 25px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .info-box strong {
+            color: #1a1a1a;
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 60px 0 40px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .summary h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            padding: 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .summary-item dt {
+            font-size: 13px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .summary-item dd {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #333;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .btn {
+                display: none;
+            }
+            .mermaid {
+                page-break-inside: avoid;
+            }
+            h2 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Database Entity Relationship Diagram</h1>
+            <p class="subtitle">IT Ticket Management System with HR Integration</p>
+            <div class="meta-info">
+                Document Version: 2.0 | Updated: December 22, 2025 | 35 Tables, 60+ Relationships
+            </div>
+        </header>
+
+        <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+
+        <!-- SECTION 1: HR SYSTEM -->
+        <h2><span class="section-number">1</span>HR System Core</h2>
+        <div class="info-box">
+            <strong>Existing HR System (6 Tables)</strong>
+            Core employee management including contracts, departments, job titles, offices, and manager relationships. These tables are from existing HR system and should not be modified.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            hr_table_main {
+                int ide PK "Employee ID"
+                varchar fname "First Name"
+                varchar lname "Last Name"
+                varchar arche_email UK "Email"
+                varchar phonework "Phone"
+                varchar country "Country"
+                int working_location FK "Office ID"
+                int job_title_id FK "Job Title ID"
+                int estatus "Status"
+            }
+
+            hr_table_contract {
+                int id PK "Contract ID"
+                int id_e FK "Employee ID"
+                date cfrom "Contract From"
+                date cto "Contract To"
+                date tdate "Termination Date"
+            }
+
+            hr_menu_department {
+                int id PK "Department ID"
+                varchar code UK "Department Code"
+                varchar name "Department Name"
+            }
+
+            hr_menu_job_title {
+                int idjt PK "Job Title ID"
+                varchar title "Job Title"
+                int dept FK "Department ID"
+            }
+
+            hr_menu_offices {
+                int idf PK "Office ID"
+                varchar offices "Office Name"
+            }
+
+            hr_table_direct_manager {
+                int id PK "Record ID"
+                int id_e FK "Employee ID"
+                int id_m FK "Manager ID"
+                tinyint is_main "Is Main Manager"
+            }
+
+            hr_table_main ||--o{ hr_table_contract : "has"
+            hr_table_main ||--o| hr_menu_job_title : "assigned"
+            hr_table_main ||--o| hr_menu_offices : "works at"
+            hr_menu_job_title ||--o| hr_menu_department : "belongs to"
+            hr_table_main ||--o{ hr_table_direct_manager : "employee"
+            hr_table_main ||--o{ hr_table_direct_manager : "manager"
+        </div>
+
+        <!-- SECTION 2: FOUNDATION -->
+        <h2><span class="section-number">2</span>System Foundation</h2>
+        <div class="info-box">
+            <strong>Core System Tables (7 Tables)</strong>
+            Roles, Service Groups, Support Teams, Workflows, SLA Policies, Email Templates, and Tags.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_roles {
+                int id PK
+                varchar name UK
+                varchar display_name
+                text description
+                json permissions
+            }
+
+            it_ticket_service_groups {
+                int id PK
+                varchar name
+                varchar code UK
+                text description
+                varchar icon
+                varchar color
+                int sort_order
+                enum status
+            }
+
+            it_ticket_support_teams {
+                int id PK
+                varchar name
+                varchar code UK
+                enum support_level
+                varchar department_code FK
+                int office_id FK
+                int manager_id FK
+                enum status
+            }
+
+            it_ticket_workflows {
+                int id PK
+                varchar name
+                varchar code UK
+                text description
+                enum status
+            }
+
+            it_ticket_sla_policies {
+                int id PK
+                varchar name
+                enum priority
+                int first_response_hours
+                int resolution_hours
+                boolean business_hours_only
+                enum status
+            }
+
+            it_ticket_tags {
+                int id PK
+                varchar name UK
+                varchar color
+                int usage_count
+                enum status
+            }
+        </div>
+
+        <!-- SECTION 3: USER ROLES & TEAMS -->
+        <h2><span class="section-number">3</span>Access Control & Team Structure</h2>
+        <div class="info-box">
+            <strong>User Roles & Team Members (2 Tables)</strong>
+            Maps HR employees to IT system roles and team memberships.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            hr_table_main {
+                int ide PK
+                varchar full_name
+            }
+
+            it_ticket_roles {
+                int id PK
+                varchar name
+            }
+
+            it_ticket_support_teams {
+                int id PK
+                varchar name
+            }
+
+            it_ticket_user_roles {
+                int id PK
+                int employee_id FK
+                int role_id FK
+                boolean is_active
+                datetime assigned_at
+            }
+
+            it_ticket_team_members {
+                int id PK
+                int team_id FK
+                int employee_id FK
+                enum role
+                boolean is_active
+                datetime joined_at
+            }
+
+            hr_table_main ||--o{ it_ticket_user_roles : "has roles"
+            it_ticket_roles ||--o{ it_ticket_user_roles : "assigned to"
+            it_ticket_support_teams ||--o{ it_ticket_team_members : "has members"
+            hr_table_main ||--o{ it_ticket_team_members : "member of"
+        </div>
+
+        <!-- SECTION 4: SERVICE CATALOG -->
+        <h2><span class="section-number">4</span>Service Catalog Structure</h2>
+        <div class="info-box">
+            <strong>Ticket Types & Services (3 Tables)</strong>
+            Hierarchical service catalog: Service Groups → Ticket Types → Services (with parent-child tree structure).
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_service_groups {
+                int id PK
+                varchar name
+                varchar code UK
+            }
+
+            it_ticket_types {
+                int id PK
+                int service_group_id FK
+                varchar name
+                varchar code UK
+                enum status
+            }
+
+            it_ticket_services {
+                int id PK
+                int ticket_type_id FK
+                varchar name
+                varchar code UK
+                int parent_id FK
+                enum input_type
+                enum status
+            }
+
+            it_ticket_service_groups ||--o{ it_ticket_types : "contains"
+            it_ticket_types ||--o{ it_ticket_services : "contains"
+            it_ticket_services ||--o{ it_ticket_services : "parent-child"
+        </div>
+
+        <!-- SECTION 5: WORKFLOWS -->
+        <h2><span class="section-number">5</span>Workflow Engine</h2>
+        <div class="info-box">
+            <strong>Workflow States & Transitions (2 Tables)</strong>
+            Define workflow states and allowed transitions between states with conditions.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_workflows {
+                int id PK
+                varchar name
+                varchar code UK
+            }
+
+            it_ticket_workflow_states {
+                int id PK
+                int workflow_id FK
+                varchar name
+                varchar code UK
+                enum state_type
+                int sla_hours
+            }
+
+            it_ticket_workflow_transitions {
+                int id PK
+                int workflow_id FK
+                int from_state_id FK
+                int to_state_id FK
+                varchar name
+                json conditions
+            }
+
+            it_ticket_workflows ||--o{ it_ticket_workflow_states : "has states"
+            it_ticket_workflows ||--o{ it_ticket_workflow_transitions : "has transitions"
+            it_ticket_workflow_states ||--o{ it_ticket_workflow_transitions : "from"
+            it_ticket_workflow_states ||--o{ it_ticket_workflow_transitions : "to"
+        </div>
+
+        <!-- SECTION 6: SERVICE RULES -->
+        <h2><span class="section-number">6</span>Service Configuration & Rules</h2>
+        <div class="info-box">
+            <strong>Service Rules (6 Tables)</strong>
+            Workflows, routing rules, approval rules, level rules, custom fields, and SLA policies per service.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_services {
+                int id PK
+                varchar name
+            }
+
+            it_ticket_service_workflows {
+                int id PK
+                int service_id FK
+                int workflow_id FK
+            }
+
+            it_ticket_routing_rules {
+                int id PK
+                int service_id FK
+                enum assignment_type
+                int target_team_id FK
+            }
+
+            it_ticket_approval_rules {
+                int id PK
+                int service_id FK
+                enum approval_type
+                int approver_user_id FK
+            }
+
+            it_ticket_level_rules {
+                int id PK
+                int service_id FK
+                int level_number
+                int support_team_id FK
+            }
+
+            it_ticket_custom_fields {
+                int id PK
+                int service_id FK
+                varchar field_name
+                enum field_type
+                json field_options
+            }
+
+            it_ticket_service_sla {
+                int id PK
+                int service_id FK
+                int sla_policy_id FK
+            }
+
+            it_ticket_services ||--o{ it_ticket_service_workflows : "has"
+            it_ticket_services ||--o{ it_ticket_routing_rules : "has"
+            it_ticket_services ||--o{ it_ticket_approval_rules : "has"
+            it_ticket_services ||--o{ it_ticket_level_rules : "has"
+            it_ticket_services ||--o{ it_ticket_custom_fields : "has"
+            it_ticket_services ||--o{ it_ticket_service_sla : "has"
+        </div>
+
+        <!-- SECTION 7: TICKETS -->
+        <h2><span class="section-number">7</span>Tickets Core</h2>
+        <div class="info-box">
+            <strong>Main Tickets Table (1 Table)</strong>
+            Central ticket management with all core fields, status tracking, SLA monitoring, and assignment.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_tickets {
+                int id PK
+                varchar ticket_number UK
+                int service_group_id FK
+                int ticket_type_id FK
+                int service_id FK
+                int workflow_id FK
+                int current_state_id FK
+                varchar subject
+                text description
+                enum priority
+                enum status
+                int requester_id FK
+                int assigned_to FK
+                int assigned_team_id FK
+                int current_level
+                datetime sla_due_date
+                enum sla_status
+                enum approval_status
+                text solution
+                datetime resolved_at
+                datetime closed_at
+            }
+
+            it_ticket_service_groups ||--o{ it_ticket_tickets : "categorizes"
+            it_ticket_types ||--o{ it_ticket_tickets : "defines type"
+            it_ticket_services ||--o{ it_ticket_tickets : "defines service"
+            it_ticket_workflows ||--o{ it_ticket_tickets : "follows"
+            it_ticket_workflow_states ||--o{ it_ticket_tickets : "current state"
+            it_ticket_support_teams ||--o{ it_ticket_tickets : "assigned to"
+        </div>
+
+        <!-- SECTION 8: TICKET ACTIVITY -->
+        <h2><span class="section-number">8</span>Ticket Activity & Tracking</h2>
+        <div class="info-box">
+            <strong>Activity Tracking (6 Tables)</strong>
+            Complete audit trail including custom field values, history, state transitions, comments, attachments, and watchers.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_tickets {
+                int id PK
+            }
+
+            it_ticket_custom_field_values {
+                int id PK
+                int ticket_id FK
+                int custom_field_id FK
+                text field_value
+            }
+
+            it_ticket_history {
+                int id PK
+                int ticket_id FK
+                int employee_id FK
+                enum action_type
+                text old_value
+                text new_value
+            }
+
+            it_ticket_state_history {
+                int id PK
+                int ticket_id FK
+                int from_state_id FK
+                int to_state_id FK
+                int employee_id FK
+                int duration_seconds
+            }
+
+            it_ticket_comments {
+                int id PK
+                int ticket_id FK
+                int employee_id FK
+                text comment
+                boolean is_internal
+                boolean is_solution
+            }
+
+            it_ticket_attachments {
+                int id PK
+                int ticket_id FK
+                int comment_id FK
+                varchar filename
+                varchar file_path
+            }
+
+            it_ticket_watchers {
+                int id PK
+                int ticket_id FK
+                int employee_id FK
+                enum watch_type
+            }
+
+            it_ticket_tickets ||--o{ it_ticket_custom_field_values : "has"
+            it_ticket_tickets ||--o{ it_ticket_history : "logs"
+            it_ticket_tickets ||--o{ it_ticket_state_history : "state changes"
+            it_ticket_tickets ||--o{ it_ticket_comments : "has"
+            it_ticket_tickets ||--o{ it_ticket_attachments : "has"
+            it_ticket_tickets ||--o{ it_ticket_watchers : "followed by"
+        </div>
+
+        <!-- SECTION 9: ESCALATIONS & APPROVALS -->
+        <h2><span class="section-number">9</span>Escalations & Approvals</h2>
+        <div class="info-box">
+            <strong>Workflow Actions (2 Tables)</strong>
+            Multi-level escalations and approval workflows with status tracking.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_tickets {
+                int id PK
+            }
+
+            it_ticket_escalations {
+                int id PK
+                int ticket_id FK
+                int from_level
+                int to_level
+                int from_employee_id FK
+                int to_employee_id FK
+                int to_team_id FK
+                text reason
+                enum status
+            }
+
+            it_ticket_approvals {
+                int id PK
+                int ticket_id FK
+                int approver_id FK
+                enum status
+                text comments
+                datetime requested_at
+                datetime responded_at
+            }
+
+            it_ticket_tickets ||--o{ it_ticket_escalations : "escalated"
+            it_ticket_tickets ||--o{ it_ticket_approvals : "requires approval"
+        </div>
+
+        <!-- SECTION 10: NOTIFICATIONS -->
+        <h2><span class="section-number">10</span>Notifications & Communications</h2>
+        <div class="info-box">
+            <strong>Communication System (4 Tables)</strong>
+            Tags, reminders, notifications, and email logs for complete communication tracking.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_tickets {
+                int id PK
+            }
+
+            it_ticket_tag_mappings {
+                int id PK
+                int ticket_id FK
+                int tag_id FK
+            }
+
+            it_ticket_reminders {
+                int id PK
+                int ticket_id FK
+                int employee_id FK
+                enum reminder_type
+                datetime remind_at
+                boolean is_sent
+            }
+
+            it_ticket_notifications {
+                int id PK
+                int employee_id FK
+                int ticket_id FK
+                varchar type
+                varchar title
+                text message
+                boolean is_read
+            }
+
+            it_ticket_email_logs {
+                int id PK
+                int ticket_id FK
+                int template_id FK
+                varchar to_email
+                varchar subject
+                enum status
+            }
+
+            it_ticket_tickets ||--o{ it_ticket_tag_mappings : "tagged"
+            it_ticket_tickets ||--o{ it_ticket_reminders : "has reminders"
+            it_ticket_tickets ||--o{ it_ticket_notifications : "generates"
+            it_ticket_tickets ||--o{ it_ticket_email_logs : "sends emails"
+        </div>
+
+        <!-- SECTION 11: KNOWLEDGE BASE & ANALYTICS -->
+        <h2><span class="section-number">11</span>Knowledge Base & Analytics</h2>
+        <div class="info-box">
+            <strong>Reporting & Insights (3 Tables)</strong>
+            Knowledge base for solutions, detailed SLA tracking, and pre-aggregated statistics.
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            it_ticket_services {
+                int id PK
+            }
+
+            it_ticket_tickets {
+                int id PK
+            }
+
+            it_ticket_knowledge_base {
+                int id PK
+                int service_id FK
+                varchar title
+                text content
+                text solution
+                int views_count
+                int helpful_count
+                enum status
+            }
+
+            it_ticket_sla_tracking {
+                int id PK
+                int ticket_id FK
+                int sla_policy_id FK
+                enum metric_type
+                datetime target_time
+                datetime actual_time
+                enum status
+            }
+
+            it_ticket_statistics {
+                int id PK
+                date stat_date
+                varchar stat_type
+                varchar stat_key
+                int stat_value
+                json metadata
+            }
+
+            it_ticket_services ||--o{ it_ticket_knowledge_base : "has articles"
+            it_ticket_tickets ||--o{ it_ticket_sla_tracking : "tracks SLA"
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary">
+            <h3>System Overview</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <dt>Total Tables</dt>
+                    <dd>35</dd>
+                </div>
+                <div class="summary-item">
+                    <dt>HR Tables</dt>
+                    <dd>6</dd>
+                </div>
+                <div class="summary-item">
+                    <dt>IT System Tables</dt>
+                    <dd>29</dd>
+                </div>
+                <div class="summary-item">
+                    <dt>Foreign Keys</dt>
+                    <dd>60+</dd>
+                </div>
+                <div class="summary-item">
+                    <dt>Foundation Tables</dt>
+                    <dd>7</dd>
+                </div>
+                <div class="summary-item">
+                    <dt>Service Rules</dt>
+                    <dd>6</dd>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            IT Ticket Management System | Database Documentation v2.0 | December 2025
+        </footer>
+    </div>
+</body>
+</html>

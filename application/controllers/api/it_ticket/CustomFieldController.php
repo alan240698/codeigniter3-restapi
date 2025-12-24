@@ -12,8 +12,8 @@ class CustomFieldController extends CI_Controller
     public function index()
     {
         try {
-            $issueTypeId = $this->input->get('issue_type_id');
-            $fields = $this->RulesModel->get_custom_fields($issueTypeId);
+            $itServiceId = $this->input->get('it_service_id');
+            $fields = $this->RulesModel->get_custom_fields($itServiceId);
             $this->_response(['success' => true, 'data' => $fields]);
         } catch (Exception $e) {
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
@@ -40,8 +40,8 @@ class CustomFieldController extends CI_Controller
             $rawInput = file_get_contents('php://input');
             $input = json_decode($rawInput, true);
 
-            if (empty($input['issue_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Issue Type is required'], 400);
+            if (empty($input['it_service_id'])) {
+                $this->_response(['success' => false, 'message' => 'It Service is required'], 400);
                 return;
             }
 
@@ -67,8 +67,8 @@ class CustomFieldController extends CI_Controller
             }
 
             // Check duplicate field name
-            if ($this->RulesModel->field_name_exists($input['issue_type_id'], $input['field_name'])) {
-                $this->_response(['success' => false, 'message' => 'Field name already exists for this issue type'], 400);
+            if ($this->RulesModel->field_name_exists($input['it_service_id'], $input['field_name'])) {
+                $this->_response(['success' => false, 'message' => 'Field name already exists for this It Service'], 400);
                 return;
             }
 
@@ -91,7 +91,7 @@ class CustomFieldController extends CI_Controller
             }
 
             $data = [
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'field_name' => $input['field_name'],
                 'field_label' => $input['field_label'],
                 'field_type' => $input['field_type'],
@@ -144,7 +144,7 @@ class CustomFieldController extends CI_Controller
             }
 
             // Check duplicate field name (exclude current)
-            if ($this->RulesModel->field_name_exists($existing->issue_type_id, $input['field_name'], $id)) {
+            if ($this->RulesModel->field_name_exists($existing->it_service_id, $input['field_name'], $id)) {
                 $this->_response(['success' => false, 'message' => 'Field name already exists'], 400);
                 return;
             }
@@ -217,12 +217,12 @@ class CustomFieldController extends CI_Controller
     }
 
     /**
-     * GET /custom-fields/by-issue-type/{issue_type_id}
+     * GET /custom-fields/by-it-service/{it_service_id}
      */
-    public function get_by_issue_type($issueTypeId)
+    public function get_by_it_service($itServiceId)
     {
         try {
-            $fields = $this->RulesModel->get_custom_fields($issueTypeId, 'active');
+            $fields = $this->RulesModel->get_custom_fields($itServiceId, 'active');
             $this->_response(['success' => true, 'data' => $fields]);
         } catch (Exception $e) {
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);

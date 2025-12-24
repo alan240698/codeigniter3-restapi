@@ -82,7 +82,7 @@ const ValidationRulesServiceGroup = {
             }
         }
     },
-    issueType: {
+    itService: {
         ticket_type_id: {
             required: true,
             message: {
@@ -95,7 +95,7 @@ const ValidationRulesServiceGroup = {
             maxLength: 100,
             pattern: /^[a-zA-Z0-9\s\-_]+$/,
             message: {
-                required: 'Issue name is required',
+                required: 'It ticket name is required',
                 minLength: 'Name must be at least 3 characters',
                 maxLength: 'Name must not exceed 100 characters',
                 pattern: 'Name can only contain letters, numbers, spaces, hyphens and underscores'
@@ -107,7 +107,7 @@ const ValidationRulesServiceGroup = {
             maxLength: 20,
             pattern: /^[A-Z0-9_]+$/,
             message: {
-                required: 'Issue code is required',
+                required: 'It ticket code is required',
                 minLength: 'Code must be at least 2 characters',
                 maxLength: 'Code must not exceed 20 characters',
                 pattern: 'Code must be uppercase letters, numbers and underscores only'

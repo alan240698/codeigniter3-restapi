@@ -220,7 +220,7 @@ class SLAPolicyController extends CI_Controller
             if ($this->SLAModel->policy_has_mappings($id)) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Cannot delete SLA Policy that is mapped to issue types'
+                    'message' => 'Cannot delete SLA Policy that is mapped to it services'
                 ], 400);
                 return;
             }

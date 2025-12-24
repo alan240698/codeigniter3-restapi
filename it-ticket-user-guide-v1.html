@@ -355,11 +355,14 @@
                 <a href="#setup">3. Implementation Workflow</a>
                 <a href="#service-structure">4. Service Structure Configuration</a>
                 <a href="#teams">5. Support Teams Management</a>
-                <a href="#rules">6. Business Rules Engine</a>
-                <a href="#workflows">7. Workflow Automation</a>
-                <a href="#sla">8. SLA Configuration</a>
-                <a href="#result">9. System Output & Integration</a>
-                <a href="#benefits">10. Business Benefits</a>
+                <a href="#resolve-action">6. Resolve Action</a>
+                <a href="#impacts">7. Impacts</a>
+                <a href="#severity">8. Severity</a>
+                <a href="#complexity">9. Complexity</a>
+                <a href="#urgency">10. Urgency</a>
+                <a href="#priority">11. Priority</a>
+                <a href="#application-service-categories">12. Application Service Categories</a>
+                <a href="#rules">13. Business Rules Engine</a>
             </div>
 
             <div class="section" id="overview">
@@ -373,18 +376,7 @@
                 <ul>
                     <li>Automated ticket classification and categorization</li>
                     <li>Intelligent routing to appropriate teams and agents</li>
-                    <li>Dynamic SLA policy application and monitoring</li>
-                    <li>Multi-level approval workflows</li>
-                    <li>Automatic escalation management</li>
-                    <li>Comprehensive audit trail and reporting</li>
                 </ul>
-
-                <div class="success-box">
-                    <h4>Key Value Proposition</h4>
-                    <p>Upon ticket submission, the system automatically analyzes the request and returns a comprehensive
-                        JSON response containing all necessary routing, SLA, and workflow information. This enables
-                        seamless integration with your existing development infrastructure.</p>
-                </div>
             </div>
 
             <div class="section" id="architecture">
@@ -394,46 +386,28 @@
                     User Submission
                     ↓
                     ┌─────────────────────────────────────┐
-                    │ Classification Engine │
-                    │ • Service Group Detection │
-                    │ • Ticket Type Identification │
-                    │ • Issue Type Mapping │
+                    │ Classification Engine               │
+                    │ • Service Group Detection           │
+                    │ • Ticket Type Identification        │
+                    │ • IT Services                       │
                     └─────────────────────────────────────┘
                     ↓
                     ┌─────────────────────────────────────┐
-                    │ Business Rules Engine │
-                    │ • Routing Rules │
-                    │ • Approval Rules │
-                    │ • Custom Field Validation │
+                    │ Business Rules Engine               │
+                    │ • Routing Rules                     │
+                    │ • Approval Rules                    │
                     └─────────────────────────────────────┘
-                    ↓
-                    ┌─────────────────────────────────────┐
-                    │ SLA & Workflow Engine │
-                    │ • SLA Policy Application │
-                    │ • Workflow State Management │
-                    │ • Escalation Rules │
-                    └─────────────────────────────────────┘
-                    ↓
-                    JSON Response → API Integration
                 </div>
             </div>
 
             <div class="section" id="setup">
                 <h2>3. Implementation Workflow</h2>
-                <p>The system configuration follows a structured, sequential approach to ensure all dependencies are
-                    properly established.</p>
-
                 <ol class="step-list">
                     <li><strong>Service Structure Configuration</strong> - Define service groups, ticket types, and
-                        issue types to establish your classification taxonomy</li>
+                        it services</li>
                     <li><strong>Team Structure Setup</strong> - Create support teams with appropriate levels and assign
                         members</li>
-                    <li><strong>Business Rules Definition</strong> - Configure routing, approval, escalation, and custom
-                        field rules</li>
-                    <li><strong>Workflow Configuration</strong> - Define ticket lifecycle states and transitions</li>
-                    <li><strong>SLA Policy Setup</strong> - Establish service level agreements and response/resolution
-                        targets</li>
-                    <li><strong>Testing & Validation</strong> - Verify configuration through test scenarios</li>
+                    <li><strong>Business Rules Definition</strong> - Configure routing, approval</li>
                 </ol>
             </div>
 
@@ -575,7 +549,9 @@
                             <td>Group website</td>
                             <td>Accessible</td>
                             <td><span class="badge badge-amber">GROUP_WEBSITE_ACCESSIBLE</span></td>
-                            <td>Group Application</td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
                             <td>Group website</td>
@@ -674,27 +650,48 @@
             </div>
 
             <div class="section" id="teams">
-                <h2>5. Support Teams Management</h2>
+                <h2>5. Group Teams Management</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Team Name</th>
-                            <th>Levels</th>
+                            <th>Group Name</th>
+                            <th>Members</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Group IS</td>
-                            <td><span class="badge badge-green">Level 1, Level 2, Level 3</span></td>
+                            <td><span class="badge badge-green">hien.ntt@archetype-group.com<br/>thong.dh@archetype-group.com<br/>anh.lv@archetype-group.com<br/>luong.lt@archetype-group.com<br>nhi.nny@archetype-group.com<br/></span></td>
 
                         </tr>
                         <tr>
                             <td>Group IT</td>
-                            <td><span class="badge badge-amber">Level 1, Level 2, Level 3</span></td>
+                            <td><span class="badge badge-amber">hien.ntt@archetype-group.com<br/>minh.td@archetype-group.com<br/>nam.bg@archetype-group.com</span></td>
                         </tr>
                         <tr>
                             <td>Local IT - Country</td>
-                            <td><span class="badge badge-red">Level 1, Level 2, Level 3</span></td>
+                            <td>
+                                <span class="badge badge-red">IT-VN</span>
+                                <span class="badge badge-red">hien.ntt@archetype-group.com, minh.td@archetype-group.com, phong.lh@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-amber">IT-CAM</span>
+                                <span class="badge badge-amber">hien.ntt@archetype-group.com, sengkhoun.chhai@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-green">IT-THA</span>
+                                <span class="badge badge-green">hien.ntt@archetype-group.com, it.th.outsource@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-amber">IT-IND</span>
+                                <span class="badge badge-amber">hien.ntt@archetype-group.com, Gopi.manoharan@archetype-group.com, lokesh.sankar@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-green">IT-IDN</span>
+                                <span class="badge badge-green">hien.ntt@archetype-group.com, gilbert.allegro@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-red">IT – MGL</span>
+                                <span class="badge badge-red">hien.ntt@archetype-group.com, gan-erdene.m@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-amber">IT – CHN</span>
+                                <span class="badge badge-amber">hien.ntt@archetype-group.com, clark.zhang@archetype-group.com</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -837,33 +834,8 @@
                 </table>
             </div>
 
-            <div class="section" id="priority">
-                <h2>12. Priority</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Priority level</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
             <div class="section" id="application-service-categories">
-                <h2>13. Application Service Categories</h2>
+                <h2>12. Application Service Categories</h2>
                 <table>
                     <thead>
                         <tr>
@@ -888,867 +860,257 @@
             </div>
 
             <div class="section" id="rules">
-                <h2>6. Business Rules Engine</h2>
+                <h2>13. Business Rules Engine</h2>
 
-                <h3>6.1. Routing Rules</h3>
+                <h3>13.1. Routing Rules</h3>
                 <p>Routing Rules automatically assign tickets to appropriate teams based on issue classification and
                     business logic.</p>
 
                 <table>
                     <thead>
                         <tr>
-                            <th>Rule Name</th>
-                            <th>Issue Type</th>
-                            <th>Assigned To</th>
-                            <th>Priority</th>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>VPN Access Routing</td>
-                            <td>VPN Access</td>
-                            <td>L1 IT Support</td>
-                            <td><span class="badge badge-amber">High</span></td>
+                            <td>Unable to be connected</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_BE_CONNECTED</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>Network Issue Routing</td>
-                            <td>Network Problem</td>
-                            <td>L2 Network Team</td>
-                            <td><span class="badge badge-red">Critical</span></td>
+                            <td>Unable to access some websites</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_SOME_WEBSITES</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Group IT</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>Hardware Replacement</td>
-                            <td>Hardware Issue</td>
-                            <td>L1 IT Support</td>
-                            <td><span class="badge badge-amber">High</span></td>
+                            <td>Unable to access Internet</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_INTERNET</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>VPN access from home</td>
+                            <td><span class="badge badge-amber">VPN_ACCESS_FROM_HOME</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Group IT</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                     </tbody>
                 </table>
-
-                <h3>6.2. Approval Rules</h3>
-                <p>Approval Rules define required approvals before ticket processing, supporting multi-level approval
-                    chains.</p>
-
-                <div class="info-box">
-                    <h4>Approval Workflow Example: Budget Request</h4>
-                    <div class="flow-diagram">
-                        Request Amount > $10,000:
-
-                        Step 1: Direct Manager
-                        ↓ (Approved)
-                        Step 2: Department Head
-                        ↓ (Approved)
-                        Step 3: Finance Director
-                        ↓ (Approved)
-                        Step 4: CEO (Final Approval)
-                        ↓ (Approved)
-                        Process Request → Complete
-                    </div>
-                </div>
-
                 <table>
                     <thead>
                         <tr>
-                            <th>Rule Name</th>
-                            <th>Issue Type</th>
-                            <th>Approver Level</th>
-                            <th>Condition</th>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Leave Approval</td>
-                            <td>Leave Request</td>
-                            <td>Direct Manager</td>
-                            <td>Always required</td>
+                            <td>Hardware: computer, peripheral</td>
+                            <td><span class="badge badge-amber">HARDWARE_COMPUTER_PERIPHERAL</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>System Access Approval</td>
-                            <td>System Access</td>
-                            <td>IT Manager</td>
-                            <td>If accessing >3 systems</td>
+                            <td>Software: Edge, Acrobat, 7zip…</td>
+                            <td><span class="badge badge-amber">SOFTWARE_EDGE_ACROBAT_7ZIP</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>Budget Approval</td>
-                            <td>Budget Request</td>
-                            <td>Finance Director</td>
-                            <td>If amount >$5,000</td>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                     </tbody>
                 </table>
-
-                <h3>6.3. Escalation Rules</h3>
-                <p>Escalation Rules ensure timely resolution by automatically escalating tickets that exceed defined
-                    time thresholds.</p>
-
                 <table>
                     <thead>
                         <tr>
-                            <th>Level</th>
-                            <th>Team</th>
-                            <th>Time Limit</th>
-                            <th>Escalation Action</th>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><span class="badge badge-green">L1</span></td>
-                            <td>L1 IT Support</td>
-                            <td>4 hours</td>
-                            <td>Basic troubleshooting and diagnosis</td>
+                            <td>Scam</td>
+                            <td><span class="badge badge-amber">SCAM</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-amber">L2</span></td>
-                            <td>L2 Network Team</td>
-                            <td>8 hours</td>
-                            <td>Advanced technical investigation</td>
+                            <td>Virus</td>
+                            <td><span class="badge badge-amber">VIRUS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-red">L3</span></td>
-                            <td>L3 Infrastructure</td>
-                            <td>24 hours</td>
-                            <td>Expert-level resolution or vendor escalation</td>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                     </tbody>
                 </table>
-
-                <div class="warning-box">
-                    <h4>Automatic Escalation Process</h4>
-                    <p>When time limits are exceeded:</p>
-                    <ul>
-                        <li>Ticket automatically reassigned to next level team</li>
-                        <li>Email notifications sent to both current and new team</li>
-                        <li>Priority may be elevated based on configuration</li>
-                        <li>Escalation logged in ticket audit trail</li>
-                    </ul>
-                </div>
-
-                <h3>6.4. Custom Fields Configuration</h3>
-                <p>Custom Fields enable collection of issue-specific information, ensuring agents have all necessary
-                    data upfront.</p>
-
                 <table>
                     <thead>
                         <tr>
-                            <th>Field Name</th>
-                            <th>Type</th>
-                            <th>Required</th>
-                            <th>Validation Rules</th>
+                            <th>IT Service</th>
+                            <th>Sub IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>VPN Username</td>
-                            <td>Text Input</td>
-                            <td><span class="badge badge-red">Yes</span></td>
-                            <td>Alphanumeric only, 3-20 characters</td>
+                            <td>Group website</td>
+                            <td>Accessible</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_ACCESSIBLE</span></td>
+                            <td>Group IT </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>Department</td>
-                            <td>Dropdown</td>
-                            <td><span class="badge badge-red">Yes</span></td>
-                            <td>Predefined list</td>
+                            <td>Group website</td>
+                            <td>Bug, error, permission</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_BUG_ERROR_PERMISSION</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">INTRANET_LOGON</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>Business Justification</td>
-                            <td>Textarea</td>
-                            <td><span class="badge badge-red">Yes</span></td>
-                            <td>Minimum 20 characters</td>
+                            <td>Intranet</td>
+                            <td>Permission</td>
+                            <td><span class="badge badge-amber">INTRANET_PERMISSION</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td>Access Duration</td>
-                            <td>Number</td>
-                            <td><span class="badge badge-gray">No</span></td>
-                            <td>1-365 days</td>
+                            <td>Intranet</td>
+                            <td>Bug, error</td>
+                            <td><span class="badge badge-amber">INTRANET_BUG_ERROR</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
 
-            <div class="section" id="result">
-                <h2>9. System Output & Integration</h2>
-
-                <h3>9.1. User Submission Example</h3>
-                <div class="code-block">
-                    <pre>User Input:
-  Service Group: IT Infrastructure
-  Ticket Type: Access Request
-  Issue Type: VPN Access → New VPN Account
-  VPN Username: john.doe
-  Department: Engineering
-  Justification: Required for remote work access to development servers</pre>
-                </div>
-
-                <h3>9.2. System JSON Response</h3>
-                <div class="json-output">
-                    <pre>{
-  "ticket_id": "TKT-2024-001234",
-  "status": "submitted",
-  "created_at": "2024-12-14 10:30:00",
-  
-  "user": {
-    "id": 12345,
-    "name": "John Doe",
-    "email": "john.doe@company.com",
-    "department": "Engineering"
-  },
-  
-  "classification": {
-    "service_group": {
-      "id": 1,
-      "code": "IT_INFRA",
-      "name": "IT Infrastructure"
-    },
-    "ticket_type": {
-      "id": 5,
-      "code": "ACCESS_REQ",
-      "name": "Access Request"
-    },
-    "issue_type": {
-      "id": 12,
-      "code": "VPN_NEW",
-      "name": "New VPN Account",
-      "parent_code": "VPN_ACCESS"
-    }
-  },
-  
-  "routing": {
-    "assigned_to": {
-      "type": "team",
-      "id": 3,
-      "name": "L1 IT Support",
-      "level": 1
-    },
-    "priority": "high",
-    "routing_rule_applied": "VPN Access Routing"
-  },
-  
-  "approval": {
-    "required": true,
-    "approvers": [
-      {
-        "level": 1,
-        "role": "IT Manager",
-        "user_id": 789,
-        "name": "Sarah Johnson",
-        "status": "pending"
-      }
-    ]
-  },
-  
-  "sla": {
-    "policy_id": 2,
-    "policy_name": "High Priority SLA",
-    "first_response": {
-      "target_minutes": 120,
-      "deadline": "2024-12-14 12:30:00"
-    },
-    "resolution": {
-      "target_hours": 8,
-      "deadline": "2024-12-14 18:30:00"
-    }
-  },
-  
-  "escalation": {
-    "enabled": true,
-    "levels": [
-      {
-        "level": 1,
-        "team": "L1 IT Support",
-        "time_limit_hours": 4
-      },
-      {
-        "level": 2,
-        "team": "L2 Network Team",
-        "time_limit_hours": 8
-      }
-    ]
-  },
-  
-  "workflow": {
-    "current_state": "pending_approval",
-    "next_states": ["approved", "rejected"],
-    "can_close": false
-  },
-  
-  "custom_fields": {
-    "vpn_username": "john.doe",
-    "department": "Engineering",
-    "access_duration": null,
-    "business_justification": "Required for remote work access to development servers"
-  }
-}</pre>
-                </div>
-
-                <h3>9.3. Developer Integration Examples</h3>
-
-                <h4>Automatic Assignment Implementation</h4>
-                <div class="code-block">
-                    <pre>// PHP Laravel Example
-$response = TicketSystem::submit($ticketData);
-$ticketId = $response['ticket_id'];
-
-// Auto-assign to team
-Ticket::create([
-    'ticket_id' => $ticketId,
-    'assigned_team_id' => $response['routing']['assigned_to']['id'],
-    'priority' => $response['routing']['priority'],
-    'status' => $response['status']
-]);
-
-// Set SLA deadlines
-SLA::create([
-    'ticket_id' => $ticketId,
-    'first_response_deadline' => $response['sla']['first_response']['deadline'],
-    'resolution_deadline' => $response['sla']['resolution']['deadline']
-]);</pre>
-                </div>
-
-                <h4>Approval Workflow Implementation</h4>
-                <div class="code-block">
-                    <pre>// Handle approval routing
-if ($response['approval']['required']) {
-    foreach ($response['approval']['approvers'] as $approver) {
-        Approval::create([
-            'ticket_id' => $ticketId,
-            'approver_id' => $approver['user_id'],
-            'level' => $approver['level'],
-            'status' => 'pending'
-        ]);
-        
-        // Send notification
-        Notification::send($approver['user_id'], [
-            'type' => 'approval_request',
-            'ticket_id' => $ticketId
-        ]);
-    }
-}</pre>
-                </div>
-
-                <h4>SLA Monitoring Implementation</h4>
-                <div class="code-block">
-                    <pre>// Background job for SLA monitoring
-public function checkSLABreach() {
-    $tickets = Ticket::where('status', '!=', 'closed')
-                     ->with('sla')
-                     ->get();
-    
-    foreach ($tickets as $ticket) {
-        if (now() > $ticket->sla->first_response_deadline 
-            && !$ticket->first_response_sent) {
-            // Breach detected - notify management
-            $this->notifySLABreach($ticket, 'first_response');
-        }
-        
-        if (now() > $ticket->sla->resolution_deadline 
-            && $ticket->status != 'resolved') {
-            // Resolution SLA breach
-            $this->notifySLABreach($ticket, 'resolution');
-        }
-    }
-}</pre>
-                </div>
-
-                <h4>Auto-Escalation Implementation</h4>
-                <div class="code-block">
-                    <pre>// Automated escalation based on time limits
-public function checkEscalation($ticketId) {
-    $ticket = Ticket::with(['escalation', 'routing'])->find($ticketId);
-    $currentLevel = $ticket->routing->level;
-    $timeInLevel = now()->diffInHours($ticket->last_level_change);
-    
-    $escalationRule = $ticket->escalation->levels
-        ->where('level', $currentLevel)
-        ->first();
-    
-    if ($timeInLevel >= $escalationRule->time_limit_hours) {
-        $nextLevel = $currentLevel + 1;
-        $nextTeam = $ticket->escalation->levels
-            ->where('level', $nextLevel)
-            ->first();
-        
-        // Escalate ticket
-        $ticket->update([
-            'assigned_team_id' => $nextTeam->team_id,
-            'level' => $nextLevel,
-            'last_level_change' => now()
-        ]);
-        
-        // Notify both teams
-        $this->notifyEscalation($ticket, $currentLevel, $nextLevel);
-    }
-}</pre>
-                </div>
-            </div>
-
-            <div class="section" id="workflows">
-                <h2>7. Workflow Automation</h2>
-                <p>Workflows define the ticket lifecycle, including states, transitions, and business rules for state
-                    changes.</p>
-
-                <h3>7.1. Standard Workflow States</h3>
-                <table>
-                    <thead>
                         <tr>
-                            <th>State</th>
-                            <th>Description</th>
-                            <th>Allowed Transitions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="badge badge-blue">New</span></td>
-                            <td>Ticket just created</td>
-                            <td>In Progress, Pending Approval</td>
+                            <td>M365</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">M365_LOGON</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Group IT</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-amber">Pending Approval</span></td>
-                            <td>Awaiting approval</td>
-                            <td>Approved, Rejected</td>
+                            <td>M365</td>
+                            <td>Email delegation</td>
+                            <td><span class="badge badge-amber">M365_EMAIL_DELEGATION</span></td>
+                            <td>Group IT </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-blue">In Progress</span></td>
-                            <td>Being worked on</td>
-                            <td>Resolved, On Hold, Escalated</td>
+                            <td>M365</td>
+                            <td>License assignment</td>
+                            <td><span class="badge badge-amber">M365_LICENSE_ASSIGNMENT</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-amber">On Hold</span></td>
-                            <td>Waiting for information</td>
-                            <td>In Progress, Cancelled</td>
+                            <td>SharePoint</td>
+                            <td>Creation / Permission</td>
+                            <td><span class="badge badge-amber">SHAREPOINT_CREATION_PERMISSION</span></td>
+                            <td>Group IT </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-green">Resolved</span></td>
-                            <td>Solution provided</td>
-                            <td>Closed, Reopened</td>
+                            <td>Navision</td>
+                            <td>User permission</td>
+                            <td><span class="badge badge-amber">NAVISION_USER_PERMISSION</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Finance</td>
+                            <td>Group IS</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-green">Closed</span></td>
-                            <td>Ticket completed</td>
-                            <td>Reopened (conditional)</td>
+                            <td>Navision</td>
+                            <td>Bug / error</td>
+                            <td><span class="badge badge-amber">NAVISION_BUG_ERROR</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h3>7.2. Workflow Transition Rules</h3>
-                <div class="info-box">
-                    <h4>Example: VPN Access Request Workflow</h4>
-                    <div class="flow-diagram">
-                        New
-                        ↓
-                        Pending Approval (IT Manager)
-                        ↓ (Approved)
-                        In Progress (L1 IT Support)
-                        ↓
-                        Resolved (VPN account created)
-                        ↓
-                        Closed (User confirmed access)
-                    </div>
-                </div>
+                <h3>13.2. Approval Rules</h3>
+                <p>
+                Approval Rules determine whether approval is required before ticket processing, depending on whether the ticket is assigned to the local IT country or another country.
+                </p>
 
-                <h3>7.3. Conditional Transitions</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>From State</th>
-                            <th>To State</th>
-                            <th>Condition</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>In Progress</td>
-                            <td>Escalated</td>
-                            <td>Time limit exceeded</td>
-                            <td>Auto-assign to L2 team</td>
-                        </tr>
-                        <tr>
-                            <td>Resolved</td>
-                            <td>Closed</td>
-                            <td>User confirmation received</td>
-                            <td>Update SLA metrics</td>
-                        </tr>
-                        <tr>
-                            <td>On Hold</td>
-                            <td>Cancelled</td>
-                            <td>No response for 7 days</td>
-                            <td>Send final notification</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section" id="sla">
-                <h2>8. SLA Configuration</h2>
-                <p>Service Level Agreements define response and resolution time commitments based on ticket priority and
-                    type.</p>
-
-                <h3>8.1. SLA Policies</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Policy Name</th>
-                            <th>Priority</th>
-                            <th>First Response</th>
-                            <th>Resolution Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Critical SLA</td>
-                            <td><span class="badge badge-red">Critical</span></td>
-                            <td>30 minutes</td>
-                            <td>4 hours</td>
-                        </tr>
-                        <tr>
-                            <td>High Priority SLA</td>
-                            <td><span class="badge badge-amber">High</span></td>
-                            <td>2 hours</td>
-                            <td>8 hours</td>
-                        </tr>
-                        <tr>
-                            <td>Medium Priority SLA</td>
-                            <td><span class="badge badge-blue">Medium</span></td>
-                            <td>4 hours</td>
-                            <td>24 hours</td>
-                        </tr>
-                        <tr>
-                            <td>Low Priority SLA</td>
-                            <td><span class="badge badge-gray">Low</span></td>
-                            <td>8 hours</td>
-                            <td>72 hours</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>8.2. SLA Assignment Rules</h3>
-                <p>SLA policies are automatically assigned based on issue type classification and business rules.</p>
-
-                <div class="code-block">
-                    <pre>SLA Assignment Logic:
-
-IF issue_type = "Network Problem" → Critical SLA
-IF issue_type = "VPN Access" → High Priority SLA
-IF issue_type = "Software Installation" → Medium Priority SLA
-IF issue_type = "General Inquiry" → Low Priority SLA
-
-Custom Rules:
-- VIP users → Upgrade SLA by one level
-- After-hours tickets → Extended SLA (×1.5)
-- Holidays → Extended SLA (×2.0)</pre>
-                </div>
-
-                <h3>8.3. SLA Monitoring & Alerts</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Alert Type</th>
-                            <th>Trigger Point</th>
-                            <th>Recipients</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Warning Alert</td>
-                            <td>75% of SLA time elapsed</td>
-                            <td>Assigned agent, Team lead</td>
-                            <td>Priority notification</td>
-                        </tr>
-                        <tr>
-                            <td>Critical Alert</td>
-                            <td>90% of SLA time elapsed</td>
-                            <td>Agent, Manager, Director</td>
-                            <td>Escalation preparation</td>
-                        </tr>
-                        <tr>
-                            <td>Breach Alert</td>
-                            <td>SLA deadline exceeded</td>
-                            <td>All stakeholders</td>
-                            <td>Incident report generated</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="warning-box">
-                    <h4>SLA Breach Management</h4>
-                    <p>When SLA is breached:</p>
-                    <ul>
-                        <li>Automatic notification to management chain</li>
-                        <li>Incident report generated with root cause analysis</li>
-                        <li>Performance metrics updated for team/agent</li>
-                        <li>Optional automatic escalation to next level</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="section" id="benefits">
-                <h2>10. Business Benefits</h2>
-
-                <h3>10.1. Operational Efficiency</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th>Before Implementation</th>
-                            <th>After Implementation</th>
-                            <th>Improvement</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Average Assignment Time</td>
-                            <td>15-30 minutes</td>
-                            <td>Instant (automated)</td>
-                            <td><span class="badge badge-green">95% faster</span></td>
-                        </tr>
-                        <tr>
-                            <td>SLA Compliance Rate</td>
-                            <td>60-70%</td>
-                            <td>90-95%</td>
-                            <td><span class="badge badge-green">+30% improvement</span></td>
-                        </tr>
-                        <tr>
-                            <td>First Response Time</td>
-                            <td>4-6 hours</td>
-                            <td>1-2 hours</td>
-                            <td><span class="badge badge-green">70% faster</span></td>
-                        </tr>
-                        <tr>
-                            <td>Resolution Time</td>
-                            <td>48-72 hours</td>
-                            <td>12-24 hours</td>
-                            <td><span class="badge badge-green">65% faster</span></td>
-                        </tr>
-                        <tr>
-                            <td>Ticket Misrouting Rate</td>
-                            <td>20-25%</td>
-                            <td>2-5%</td>
-                            <td><span class="badge badge-green">85% reduction</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>10.2. Key Business Value</h3>
-                <ul>
-                    <li><strong>Reduced Manual Effort:</strong> Automated classification and routing eliminates 80% of
-                        manual triage work</li>
-                    <li><strong>Improved User Satisfaction:</strong> Faster response times and consistent service
-                        delivery</li>
-                    <li><strong>Better Resource Utilization:</strong> Intelligent routing ensures optimal workload
-                        distribution</li>
-                    <li><strong>Enhanced Compliance:</strong> Comprehensive audit trails and approval workflows</li>
-                    <li><strong>Data-Driven Insights:</strong> Rich analytics from structured ticket data</li>
-                    <li><strong>Scalability:</strong> Handle increasing ticket volumes without proportional staff
-                        increase</li>
-                </ul>
-
-                <h3>10.3. ROI Analysis</h3>
-                <div class="success-box">
-                    <h4>Typical Return on Investment</h4>
-                    <p><strong>Cost Savings (Annual):</strong></p>
-                    <ul>
-                        <li>Reduced administrative overhead: 40-50% time savings</li>
-                        <li>Decreased escalation costs: 30% reduction in senior staff involvement</li>
-                        <li>Lower SLA penalty costs: 85% reduction in breach incidents</li>
-                        <li>Improved productivity: 25-35% increase in tickets resolved per agent</li>
-                    </ul>
-                    <p><strong>Implementation Timeline:</strong> 4-8 weeks for full deployment</p>
-                    <p><strong>Payback Period:</strong> Typically 6-9 months</p>
-                </div>
-
-                <h3>10.4. Comparative Analysis</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Aspect</th>
-                            <th>Manual Process</th>
-                            <th>Automated System</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Ticket Assignment</td>
-                            <td>Manual review and assignment</td>
-                            <td>Instant automated routing</td>
-                        </tr>
-                        <tr>
-                            <td>Priority Setting</td>
-                            <td>Subjective, inconsistent</td>
-                            <td>Rule-based, consistent</td>
-                        </tr>
-                        <tr>
-                            <td>SLA Tracking</td>
-                            <td>Manual tracking, prone to oversight</td>
-                            <td>Real-time monitoring with alerts</td>
-                        </tr>
-                        <tr>
-                            <td>Escalation</td>
-                            <td>Manual identification and routing</td>
-                            <td>Automatic escalation based on rules</td>
-                        </tr>
-                        <tr>
-                            <td>Approval Process</td>
-                            <td>Email chains, delayed responses</td>
-                            <td>Automated workflow with notifications</td>
-                        </tr>
-                        <tr>
-                            <td>Reporting</td>
-                            <td>Manual data compilation</td>
-                            <td>Real-time dashboards and analytics</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section">
-                <h2>11. Implementation Checklist</h2>
-
-                <h3>Phase 1: Foundation Setup</h3>
-                <ol class="step-list">
-                    <li>Define Service Groups (2-4 primary groups)</li>
-                    <li>Create Ticket Types for each Service Group (3-5 types per group)</li>
-                    <li>Define Issue Types with hierarchical structure (5-10 issues per ticket type)</li>
-                    <li>Document classification taxonomy</li>
-                </ol>
-
-                <h3>Phase 2: Team Structure</h3>
-                <ol class="step-list">
-                    <li>Create Support Teams with level assignments (L1, L2, L3)</li>
-                    <li>Assign team members and define roles</li>
-                    <li>Map teams to Service Groups</li>
-                    <li>Define escalation paths between teams</li>
-                </ol>
-
-                <h3>Phase 3: Business Rules</h3>
-                <ol class="step-list">
-                    <li>Configure Routing Rules (minimum 1 rule per issue type)</li>
-                    <li>Setup Approval Rules for sensitive requests</li>
-                    <li>Define Escalation Rules with time limits</li>
-                    <li>Create Custom Fields for data collection</li>
-                    <li>Test rule logic with sample scenarios</li>
-                </ol>
-
-                <h3>Phase 4: Workflow & SLA</h3>
-                <ol class="step-list">
-                    <li>Define workflow states and transitions</li>
-                    <li>Configure SLA policies based on priority</li>
-                    <li>Setup SLA assignment rules</li>
-                    <li>Configure monitoring and alert thresholds</li>
-                </ol>
-
-                <h3>Phase 5: Testing & Validation</h3>
-                <ol class="step-list">
-                    <li>Create test scenarios covering all issue types</li>
-                    <li>Validate routing accuracy</li>
-                    <li>Test approval workflows</li>
-                    <li>Verify SLA calculations</li>
-                    <li>Test escalation mechanisms</li>
-                    <li>Conduct user acceptance testing</li>
-                </ol>
-
-                <h3>Phase 6: Deployment</h3>
-                <ol class="step-list">
-                    <li>Train support teams on new system</li>
-                    <li>Conduct end-user training sessions</li>
-                    <li>Deploy to production environment</li>
-                    <li>Monitor initial performance</li>
-                    <li>Collect feedback and iterate</li>
-                </ol>
-            </div>
-
-            <div class="section">
-                <h2>12. Best Practices</h2>
-
-                <h3>12.1. Classification Design</h3>
-                <ul>
-                    <li>Keep Service Groups broad and stable (rarely change)</li>
-                    <li>Use descriptive, user-friendly names for Ticket Types</li>
-                    <li>Limit Issue Type hierarchy to 2-3 levels maximum</li>
-                    <li>Review and refine classification quarterly based on usage patterns</li>
-                </ul>
-
-                <h3>12.2. Routing Rules</h3>
-                <ul>
-                    <li>Start with basic rules, add complexity as needed</li>
-                    <li>Avoid overlapping rules that may cause conflicts</li>
-                    <li>Document rule logic for future reference</li>
-                    <li>Review routing accuracy monthly and adjust rules</li>
-                </ul>
-
-                <h3>12.3. SLA Management</h3>
-                <ul>
-                    <li>Set realistic SLA targets based on historical data</li>
-                    <li>Build in buffer time for complex issues</li>
-                    <li>Consider business hours vs. calendar hours</li>
-                    <li>Account for holidays and special circumstances</li>
-                </ul>
-
-                <h3>12.4. Change Management</h3>
-                <ul>
-                    <li>Communicate system changes to all stakeholders</li>
-                    <li>Provide adequate training before major updates</li>
-                    <li>Maintain version control for rule configurations</li>
-                    <li>Document all configuration changes with rationale</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>13. System Integration Points</h2>
-
-                <h3>13.1. API Endpoints</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Endpoint</th>
-                            <th>Method</th>
-                            <th>Purpose</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>/api/tickets/submit</td>
-                            <td>POST</td>
-                            <td>Submit new ticket and receive routing/SLA data</td>
-                        </tr>
-                        <tr>
-                            <td>/api/tickets/{id}/status</td>
-                            <td>PUT</td>
-                            <td>Update ticket status</td>
-                        </tr>
-                        <tr>
-                            <td>/api/tickets/{id}/escalate</td>
-                            <td>POST</td>
-                            <td>Manual escalation trigger</td>
-                        </tr>
-                        <tr>
-                            <td>/api/approvals/{id}/action</td>
-                            <td>POST</td>
-                            <td>Approve or reject ticket</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>13.2. Webhook Events</h3>
-                <ul>
-                    <li><strong>ticket.created</strong> - New ticket submitted</li>
-                    <li><strong>ticket.assigned</strong> - Ticket assigned to team/agent</li>
-                    <li><strong>ticket.escalated</strong> - Ticket escalated to higher level</li>
-                    <li><strong>sla.warning</strong> - SLA warning threshold reached</li>
-                    <li><strong>sla.breached</strong> - SLA deadline exceeded</li>
-                    <li><strong>approval.required</strong> - Approval action needed</li>
-                    <li><strong>ticket.resolved</strong> - Ticket marked as resolved</li>
-                    <li><strong>ticket.closed</strong> - Ticket closed</li>
-                </ul>
-            </div>
-
+<div class="info-box">
+    <h4>Approval Rules Example: Ticket Assignment</h4>
+    <div class="flow-diagram">
+        Ticket Created
+            → Assigned to Local IT Country?
+                Yes → No Approval Required
+                No → Approval Required
+    </div>
+</div>
         </div>
 
-        <div class="footer">
-            <p><strong>IT Ticket System</strong> - Enterprise Service Management Platform</p>
-            <p style="color: white;">For technical support or implementation assistance, please contact your system administrator</p>
-            <p style="margin-top: 12px; font-size: 0.9em;">© 2024 - Confidential & Proprietary</p>
-        </div>
     </div>
 </body>
 

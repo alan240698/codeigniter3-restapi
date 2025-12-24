@@ -65,14 +65,14 @@
     <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-clock"></i> SLA Configuration Progress
-            <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Create Issue Types first in Service Structure tab</span>
+            <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Create IT Service first in Service Structure tab</span>
         </h4>
         <div class="progress-steps" style="display: flex; gap: 15px;">
-            <div id="sla-step-issue-types" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
+            <div id="sla-step-it_services" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
                 <div class="step-icon" style="font-size: 24px; margin-bottom: 8px;">
                     <i class="fas fa-list"></i>
                 </div>
-                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Issue Types</div>
+                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">IT Service</div>
                 <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
                 <div class="step-status" style="font-size: 12px; opacity: 0.8;">🔒 Required</div>
             </div>
@@ -92,7 +92,7 @@
                 </div>
                 <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Mappings</div>
                 <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
-                <div class="step-status" style="font-size: 12px; opacity: 0.8;">Link to issues</div>
+                <div class="step-status" style="font-size: 12px; opacity: 0.8;">Link to it services</div>
             </div>
         </div>
     </div>
@@ -108,7 +108,7 @@
                     <i class="fas fa-plus"></i> Add SLA Policy
                 </button>
                 <small id="hintSLAPolicy" class="help-text" style="display: block; margin-top: 8px; color: #f59e0b; font-size: 13px;">
-                    <i class="fas fa-info-circle"></i> Create Issue Types first (Service Structure tab)
+                    <i class="fas fa-info-circle"></i> Create IT Service first (Service Structure tab)
                 </small>
             </div>
         </div>
@@ -143,10 +143,10 @@
         </div>
     </div>
 
-    <!-- Issue Type SLA Mapping Section -->
+    <!-- IT Service SLA Mapping Section -->
     <div class="card">
         <div class="card-header">
-            <h3><i class="fas fa-link"></i> Issue Type SLA Mapping</h3>
+            <h3><i class="fas fa-link"></i> IT Service SLA Mapping</h3>
             <div>
                 <button id="btnAddSLAMapping" class="btn btn-primary" disabled
                         onclick="SLAMappingManager.openAddMapping()"
@@ -160,9 +160,9 @@
         </div>
 
         <div class="filter-section">
-            <select id="filterMappingIssueType" onchange="SLAMappingManager.filterMappings()"
+            <select id="filterMappingItService" onchange="SLAMappingManager.filterMappings()"
                 style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                <option value="">All Issue Types</option>
+                <option value="">All IT Service</option>
             </select>
         </div>
 
@@ -170,7 +170,7 @@
             <thead>
                 <tr>
                     <th style="width: 50px;">#</th>
-                    <th>Issue Type</th>
+                    <th>IT Service</th>
                     <th>SLA Policy</th>
                     <th>Priority</th>
                     <th>Response Time</th>
@@ -280,9 +280,9 @@
             <input type="hidden" id="mappingId">
             
             <div class="form-group">
-                <label>Issue Type <span class="required">*</span></label>
-                <select id="mappingIssueType">
-                    <option value="">Select Issue Type</option>
+                <label>IT Service <span class="required">*</span></label>
+                <select id="mappingItService">
+                    <option value="">Select IT Service</option>
                 </select>
             </div>
 
@@ -307,7 +307,7 @@
                     <div style="flex: 1;">
                         <strong style="color: #92400e; display: block; margin-bottom: 5px;">Note:</strong>
                         <p style="font-size: 13px; color: #92400e; margin: 0;">
-                            Each issue type can only have ONE active SLA policy. If you assign a new policy, 
+                            Each IT Service can only have ONE active SLA policy. If you assign a new policy, 
                             the previous one will be automatically deactivated.
                         </p>
                     </div>
@@ -499,7 +499,7 @@ const SLAManager = {
 
                 <div class="sla-card-footer">
                     <div style="font-size: 12px; color: #9ca3af;">
-                        <i class="fas fa-ticket"></i> ${policy.issue_types_count || 0} issue types
+                        <i class="fas fa-ticket"></i> ${policy.it_service_count || 0} IT Service
                     </div>
                     <div class="sla-card-actions">
                         <button class="btn btn-sm btn-primary" onclick="SLAManager.editPolicy(${policy.id})">
@@ -624,15 +624,15 @@ const SLAManager = {
 // SLA MAPPING MANAGER
 const SLAMappingManager = {
     baseUrl: '<?= base_url() ?>',
-    filterIssueType: '',
+    filterItService: '',
 
     async loadMappings() {
         try {
             const params = new URLSearchParams({
-                issue_type_id: this.filterIssueType
+                it_service_id: this.filterItService
             });
 
-            const response = await fetch(`${this.baseUrl}issue-type-sla?${params}`);
+            const response = await fetch(`${this.baseUrl}it-service-sla?${params}`);
             const data = await response.json();
 
             if (data.success) {
@@ -661,7 +661,7 @@ const SLAMappingManager = {
         tbody.innerHTML = mappings.map((mapping, index) => `
             <tr>
                 <td>${index + 1}</td>
-                <td><strong>${mapping.issue_type_name}</strong></td>
+                <td><strong>${mapping.it_service_name}</strong></td>
                 <td>${mapping.sla_policy_name}</td>
                 <td><span class="priority-${mapping.priority}">${mapping.priority.toUpperCase()}</span></td>
                 <td>${mapping.first_response_hours ? mapping.first_response_hours + 'h' : '-'}</td>
@@ -684,7 +684,7 @@ const SLAMappingManager = {
     openAddMapping() {
         document.getElementById('modalMappingTitle').textContent = 'Add SLA Mapping';
         document.getElementById('mappingId').value = '';
-        document.getElementById('mappingIssueType').value = '';
+        document.getElementById('mappingItService').value = '';
         document.getElementById('mappingSLAPolicy').value = '';
         document.getElementById('mappingStatus').value = '1';
         document.getElementById('modalSLAMapping').classList.add('active');
@@ -692,14 +692,14 @@ const SLAMappingManager = {
 
     async editMapping(id) {
         try {
-            const response = await fetch(`${this.baseUrl}issue-type-sla/show/${id}`);
+            const response = await fetch(`${this.baseUrl}it-service-sla/show/${id}`);
             const data = await response.json();
 
             if (data.success) {
                 const mapping = data.data;
                 document.getElementById('modalMappingTitle').textContent = 'Edit SLA Mapping';
                 document.getElementById('mappingId').value = mapping.id;
-                document.getElementById('mappingIssueType').value = mapping.issue_type_id;
+                document.getElementById('mappingItService').value = mapping.it_service_id;
                 document.getElementById('mappingSLAPolicy').value = mapping.sla_policy_id;
                 document.getElementById('mappingStatus').value = mapping.is_active ? '1' : '0';
                 document.getElementById('modalSLAMapping').classList.add('active');
@@ -712,18 +712,18 @@ const SLAMappingManager = {
     async saveMapping() {
         const id = document.getElementById('mappingId').value;
         const formData = {
-            issue_type_id: document.getElementById('mappingIssueType').value,
+            it_service_id: document.getElementById('mappingItService').value,
             sla_policy_id: document.getElementById('mappingSLAPolicy').value,
             is_active: document.getElementById('mappingStatus').value === '1' ? 1 : 0
         };
 
-        if (!formData.issue_type_id || !formData.sla_policy_id) {
-            TicketNotifier.showValidationError('Please select both Issue Type and SLA Policy');
+        if (!formData.it_service_id || !formData.sla_policy_id) {
+            TicketNotifier.showValidationError('Please select both IT Service and SLA Policy');
             return;
         }
 
         try {
-            const url = id ? `${this.baseUrl}issue-type-sla/update/${id}` : `${this.baseUrl}issue-type-sla/store`;
+            const url = id ? `${this.baseUrl}it-service-sla/update/${id}` : `${this.baseUrl}it-service-sla/store`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -748,7 +748,7 @@ const SLAMappingManager = {
         const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this SLA mapping?', 'Yes, proceed'); if (!confirmed) return;
 
         try {
-            const response = await fetch(`${this.baseUrl}issue-type-sla/delete/${id}`, {
+            const response = await fetch(`${this.baseUrl}it-service-sla/delete/${id}`, {
                 method: 'POST'
             });
 
@@ -763,13 +763,13 @@ const SLAMappingManager = {
     },
 
     filterMappings() {
-        this.filterIssueType = document.getElementById('filterMappingIssueType').value;
+        this.filterItService = document.getElementById('filterMappingItService').value;
         this.loadMappings();
     },
 
-    async loadIssueTypesDropdown() {
+    async loadItServicesDropdown() {
         try {
-            const response = await fetch(`${this.baseUrl}issue-types/all-group-type`);
+            const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
             const data = await response.json();
 
             if (data.success) {
@@ -777,13 +777,13 @@ const SLAMappingManager = {
                     `<option value="${it.id}">${it.name}</option>`
                 ).join('');
 
-                document.getElementById('filterMappingIssueType').innerHTML = 
-                    '<option value="">All Issue Types</option>' + options;
-                document.getElementById('mappingIssueType').innerHTML = 
-                    '<option value="">Select Issue Type</option>' + options;
+                document.getElementById('filterMappingItService').innerHTML = 
+                    '<option value="">All IT Service</option>' + options;
+                document.getElementById('mappingItService').innerHTML = 
+                    '<option value="">Select IT Service</option>' + options;
             }
         } catch (error) {
-            console.error('Error loading issue types:', error);
+            console.error('Error loading IT Service:', error);
         }
     },
 
@@ -816,8 +816,8 @@ const SLASmartUX = {
     
     async checkPrerequisites() {
         try {
-            // Check Issue Types
-            const itResponse = await fetch(`${this.baseUrl}issue-types/all-group-type`);
+            // Check IT Service
+            const itResponse = await fetch(`${this.baseUrl}it-services/all-group-type`);
             const itData = await itResponse.json();
             const itCount = itData.data ? itData.data.length : 0;
             
@@ -827,7 +827,7 @@ const SLASmartUX = {
             const slaCount = slaData.data ? slaData.data.length : 0;
             
             // Check Mappings
-            const mapResponse = await fetch(`${this.baseUrl}issue-type-sla`);
+            const mapResponse = await fetch(`${this.baseUrl}it-service-sla`);
             const mapData = await mapResponse.json();
             const mapCount = mapData.data ? mapData.data.length : 0;
             
@@ -844,8 +844,8 @@ const SLASmartUX = {
     },
     
     updateProgress(itCount, slaCount, mapCount) {
-        // Issue Types step
-        const itStep = document.getElementById('sla-step-issue-types');
+        // IT Service step
+        const itStep = document.getElementById('sla-step-it_services');
         if (itStep) {
             itStep.querySelector('.step-count').textContent = itCount;
             if (itCount > 0) {
@@ -938,7 +938,7 @@ async function initSlaTab() {
             SLASmartUX.checkPrerequisites(),
             SLAManager.loadPolicies(),
             SLAMappingManager.loadMappings(),
-            SLAMappingManager.loadIssueTypesDropdown(),
+            SLAMappingManager.loadItServicesDropdown(),
             SLAMappingManager.loadSLAPoliciesDropdown()
         ]);
         console.log('✅ SLA Tab fully loaded');

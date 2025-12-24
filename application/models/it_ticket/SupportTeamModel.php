@@ -111,7 +111,7 @@ class SupportTeamModel extends CI_Model
         $this->db->join($this->table_members . ' m', 't.id = m.team_id AND m.is_active = 1', 'left');
         $this->db->where('t.id', $id);
         $this->db->group_by('t.id');
-        
+
         return $this->db->get()->row();
     }
 
@@ -148,7 +148,7 @@ class SupportTeamModel extends CI_Model
     public function is_code_exists($code, $exclude_id = null)
     {
         $this->db->where('code', strtoupper($code));
-        
+
         if ($exclude_id !== null) {
             $this->db->where('id !=', $exclude_id);
         }
@@ -185,25 +185,65 @@ class SupportTeamModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-public function get_team_members($team_id)
-{
-    $this->db->select("m.*, 'Employee Name' AS employee_name", false);
-    $this->db->from($this->table_members . ' m');
-    $this->db->where('m.team_id', $team_id);
-    $this->db->order_by('m.role', 'DESC');
-    $this->db->order_by('m.joined_at', 'ASC');
+    public function get_team_members($team_id)
+    {
+        $this->db->select("
+        m.*,
+        CONCAT(htm.fname, ' ', htm.lname) AS employee_name,
+        htm.fname AS employee_firstname,
+        htm.lname AS employee_lastname,
+        htm.arche_email AS employee_email,
+        htm.phonework AS employee_phone,
+        htm.country AS employee_country,
+        hmd.code AS employee_department,
+        hmof.offices AS employee_office
+    ", false);
+        $this->db->from($this->table_members . ' m');
 
-    return $this->db->get()->result();
-}
+        // Join HR tables to get employee details
+        $this->db->join('hr_table_main AS htm', 'm.employee_id = htm.ide', 'left');
+        $this->db->join('hr_table_contract AS htc', 'htm.ide = htc.id_e AND CURDATE() BETWEEN htc.cfrom AND htc.cto AND htc.tdate IS NULL', 'left');
+        $this->db->join('hr_menu_job_title AS hmjt', 'htm.job_title_id = hmjt.idjt', 'left');
+        $this->db->join('hr_menu_department AS hmd', 'hmjt.dept = hmd.id', 'left');
+        $this->db->join('hr_menu_offices AS hmof', 'htm.working_location = hmof.idf', 'left');
 
-public function get_member($id)
-{
-    $this->db->select("m.*, 'Employee Name' AS employee_name", false);
-    $this->db->from($this->table_members . ' m');
-    $this->db->where('m.id', $id);
+        $this->db->where('m.team_id', $team_id);
+        $this->db->order_by('m.role', 'DESC');
+        $this->db->order_by('m.joined_at', 'ASC');
 
-    return $this->db->get()->row();
-}
+        return $this->db->get()->result();
+    }
+
+    public function get_member($id)
+    {
+        $this->db->select("
+        m.*,
+        CONCAT(htm.fname, ' ', htm.lname) AS employee_name,
+        htm.fname AS employee_firstname,
+        htm.lname AS employee_lastname,
+        htm.arche_email AS employee_email,
+        htm.phonework AS employee_phone,
+        htm.country AS employee_country,
+        hmd.code AS employee_department,
+        hmof.offices AS employee_office,
+        CONCAT(mgr.fname, ' ', mgr.lname) AS employee_manager_name,
+        mgr.arche_email AS employee_manager_email
+    ", false);
+        $this->db->from($this->table_members . ' m');
+
+        // Join HR tables to get employee details
+        $this->db->join('hr_table_main AS htm', 'm.employee_id = htm.ide', 'left');
+        $this->db->join('hr_table_contract AS htc', 'htm.ide = htc.id_e AND CURDATE() BETWEEN htc.cfrom AND htc.cto AND htc.tdate IS NULL', 'left');
+        $this->db->join('hr_menu_job_title AS hmjt', 'htm.job_title_id = hmjt.idjt', 'left');
+        $this->db->join('hr_menu_department AS hmd', 'hmjt.dept = hmd.id', 'left');
+        $this->db->join('hr_menu_offices AS hmof', 'htm.working_location = hmof.idf', 'left');
+        $this->db->join('hr_table_direct_manager AS htdm', 'htm.ide = htdm.id_e AND htdm.is_main = 1', 'left');
+        $this->db->join('hr_table_main AS mgr', 'htdm.id_m = mgr.ide', 'left');
+
+        $this->db->where('m.id', $id);
+
+        return $this->db->get()->row();
+    }
 
 
     /**
@@ -241,7 +281,7 @@ public function get_member($id)
         $this->db->where('team_id', $team_id);
         $this->db->where('employee_id', $employee_id);
         $this->db->where('is_active', 1);
-        
+
         if ($exclude_id !== null) {
             $this->db->where('id !=', $exclude_id);
         }
@@ -261,7 +301,7 @@ public function get_member($id)
         $this->db->where('m.employee_id', $employee_id);
         $this->db->order_by('m.is_active', 'DESC');
         $this->db->order_by('m.joined_at', 'DESC');
-        
+
         return $this->db->get()->result();
     }
 
@@ -273,7 +313,7 @@ public function get_member($id)
         $this->db->where('team_id', $team_id);
         $this->db->where('role', $role);
         $this->db->where('is_active', 1);
-        
+
         return $this->db->get($this->table_members)->result();
     }
 
@@ -327,7 +367,7 @@ public function get_member($id)
     public function get_teams_by_level($support_level, $status = 'active')
     {
         $this->db->where('support_level', $support_level);
-        
+
         if (!empty($status)) {
             $this->db->where('status', $status);
         }
@@ -342,7 +382,7 @@ public function get_member($id)
     public function get_teams_by_country($country, $status = 'active')
     {
         $this->db->where('country', $country);
-        
+
         if (!empty($status)) {
             $this->db->where('status', $status);
         }
@@ -362,7 +402,7 @@ public function get_member($id)
         }
 
         $newStatus = $current->status === 'active' ? 'inactive' : 'active';
-        
+
         return $this->update_team($id, [
             'status' => $newStatus,
             'updated_at' => date('Y-m-d H:i:s')
@@ -375,8 +415,21 @@ public function get_member($id)
      */
     public function get_available_members($team_id, $min_role = null)
     {
-        $this->db->select('m.*, "Employee Name" as employee_name');
+        $this->db->select("
+            m.*,
+            CONCAT(htm.fname, ' ', htm.lname) AS employee_name,
+            htm.arche_email AS employee_email,
+            htm.phonework AS employee_phone,
+            hmd.code AS employee_department
+        ", false);
         $this->db->from($this->table_members . ' m');
+
+        // Join HR tables to get employee details
+        $this->db->join('hr_table_main AS htm', 'm.employee_id = htm.ide', 'left');
+        $this->db->join('hr_table_contract AS htc', 'htm.ide = htc.id_e AND CURDATE() BETWEEN htc.cfrom AND htc.cto AND htc.tdate IS NULL', 'left');
+        $this->db->join('hr_menu_job_title AS hmjt', 'htm.job_title_id = hmjt.idjt', 'left');
+        $this->db->join('hr_menu_department AS hmd', 'hmjt.dept = hmd.id', 'left');
+
         $this->db->where('m.team_id', $team_id);
         $this->db->where('m.is_active', 1);
 
@@ -394,7 +447,7 @@ public function get_member($id)
         }
 
         $this->db->order_by('m.role', 'DESC');
-        
+
         return $this->db->get()->result();
     }
 }

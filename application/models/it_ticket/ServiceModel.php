@@ -3,9 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class ServiceModel extends CI_Model
 {
-    private $table_groups = 'it_ticket_service_groups';
-    private $table_types = 'it_ticket_types';
-    private $table_issues = 'it_ticket_issue_types';
+    private $table_groups               = 'it_ticket_service_groups';
+    private $table_types                = 'it_ticket_types';
+    private $table_it_ticket_services   = 'it_ticket_services';
 
     /*
     |--------------------------------------------------------------------------
@@ -215,96 +215,94 @@ class ServiceModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-   public function get_ticket_types_paginated($page = 1, $perPage = 10, $search = null, $serviceGroupId = null, $status = null)
-{
-    // ---------------------
-    // 1. Query đếm tổng
-    // ---------------------
-    $this->db->from($this->table_types . ' tt');
-    $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
+    public function get_ticket_types_paginated($page = 1, $perPage = 10, $search = null, $serviceGroupId = null, $status = null)
+    {
+        $this->db->from($this->table_types . ' tt');
+        $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
 
-    if (!empty($search)) {
-        $this->db->group_start();
-        $this->db->like('tt.name', $search);
-        $this->db->or_like('tt.code', $search);
-        $this->db->or_like('tt.description', $search);
-        $this->db->group_end();
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('tt.name', $search);
+            $this->db->or_like('tt.code', $search);
+            $this->db->or_like('tt.description', $search);
+            $this->db->group_end();
+        }
+
+        if (!empty($serviceGroupId)) {
+            $this->db->where('tt.service_group_id', $serviceGroupId);
+        }
+
+        if (!empty($status)) {
+            $this->db->where('tt.status', $status);
+        }
+
+        $total = $this->db->count_all_results();
+
+        $this->db->select("
+            tt.id,
+            tt.service_group_id,
+            tt.code,
+            tt.icon,
+            tt.color,
+            tt.description,
+            tt.sort_order,
+            tt.status,
+            tt.created_at,
+            tt.updated_at,
+            tt.name,
+            CONCAT('[', sg.name, '] - ', tt.name) AS dropdown_type_name,
+            sg.name as service_group_name,
+            sg.icon as service_group_icon
+        ", false);
+
+        $this->db->from($this->table_types . ' tt');
+        $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('tt.name', $search);
+            $this->db->or_like('tt.code', $search);
+            $this->db->or_like('tt.description', $search);
+            $this->db->group_end();
+        }
+
+        if (!empty($serviceGroupId)) {
+            $this->db->where('tt.service_group_id', $serviceGroupId);
+        }
+
+        if (!empty($status)) {
+            $this->db->where('tt.status', $status);
+        }
+
+        $offset = ($page - 1) * $perPage;
+        $this->db->order_by('tt.created_at', 'DESC');
+        $this->db->limit($perPage, $offset);
+
+        $data = $this->db->get()->result();
+
+        return [
+            'data' => $data,
+            'total' => $total
+        ];
     }
 
-    if (!empty($serviceGroupId)) {
-        $this->db->where('tt.service_group_id', $serviceGroupId);
+    /**
+     * Get all service groups (for dropdown)
+     * @param string $status
+     * @return array
+     */
+    public function get_all_service_groups($status = 'active')
+    {
+        $this->db->select('id, name, icon');
+        $this->db->from($this->table_groups);
+
+        if (!empty($status)) {
+            $this->db->where('status', $status);
+        }
+
+        $this->db->order_by('sort_order', 'ASC');
+        return $this->db->get()->result();
     }
-
-    if (!empty($status)) {
-        $this->db->where('tt.status', $status);
-    }
-
-    $total = $this->db->count_all_results();
-
-    $this->db->select("
-        tt.id,
-        tt.service_group_id,
-        tt.code,
-        tt.icon,
-        tt.color,
-        tt.description,
-        tt.sort_order,
-        tt.status,
-        tt.created_at,
-        tt.updated_at,
-        tt.name,
-        CONCAT('[', sg.name, '] - ', tt.name) AS dropdown_type_name,
-        sg.name as service_group_name,
-        sg.icon as service_group_icon
-    ", false);
-    $this->db->from($this->table_types . ' tt');
-    $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
-
-    if (!empty($search)) {
-        $this->db->group_start();
-        $this->db->like('tt.name', $search);
-        $this->db->or_like('tt.code', $search);
-        $this->db->or_like('tt.description', $search);
-        $this->db->group_end();
-    }
-
-    if (!empty($serviceGroupId)) {
-        $this->db->where('tt.service_group_id', $serviceGroupId);
-    }
-
-    if (!empty($status)) {
-        $this->db->where('tt.status', $status);
-    }
-
-    $offset = ($page - 1) * $perPage;
-    $this->db->order_by('tt.created_at', 'DESC');
-    $this->db->limit($perPage, $offset);
-
-    $data = $this->db->get()->result();
-
-    return [
-        'data' => $data,
-        'total' => $total
-    ];
-}
-
-/**
- * Get all service groups (for dropdown)
- * @param string $status
- * @return array
- */
-public function get_all_service_groups($status = 'active')
-{
-    $this->db->select('id, name, icon');
-    $this->db->from($this->table_groups);
-
-    if (!empty($status)) {
-        $this->db->where('status', $status);
-    }
-
-    $this->db->order_by('sort_order', 'ASC');
-    return $this->db->get()->result();
-}
 
     /**
      * Get single ticket type by ID
@@ -317,7 +315,7 @@ public function get_all_service_groups($status = 'active')
         $this->db->from($this->table_types . ' tt');
         $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
         $this->db->where('tt.id', $id);
-        
+
         return $this->db->get()->row();
     }
 
@@ -376,231 +374,176 @@ public function get_all_service_groups($status = 'active')
     }
 
     /**
-     * Check if ticket type has issue types
+     * Check if ticket type has it services
      * @param int $ticket_type_id Ticket type ID
      * @return bool
      */
-    public function ticket_type_has_issues($ticket_type_id)
+    public function ticket_type_has_it_service($ticket_type_id)
     {
         $this->db->where('ticket_type_id', $ticket_type_id);
-        $count = $this->db->count_all_results($this->table_issues);
+        $count = $this->db->count_all_results($this->table_it_ticket_services);
         return $count > 0;
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ISSUE TYPES - CRUD OPERATIONS
+    | IT SERVICE - CRUD OPERATIONS
     |--------------------------------------------------------------------------
     */
 
     /**
-     * Get paginated issue types with filters
+     * Get paginated it services with filters
      * @param int $page Current page
      * @param int $perPage Items per page
      * @param string|null $search Search query
      * @param int|null $ticketTypeId Filter by ticket type
      * @return array ['data' => array, 'total' => int]
      */
-public function get_issue_types_paginated($page = 1, $perPage = 10, $search = null, $ticketTypeId = null)
-{
-    /* ================= COUNT QUERY ================= */
-    $this->db->from($this->table_issues . ' it');
-    $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
+    public function get_it_services_paginated($page = 1, $perPage = 10, $search = null, $ticketTypeId = null)
+    {
+        /* ================= COUNT QUERY ================= */
+        $this->db->from($this->table_it_ticket_services . ' it');
+        $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
 
-    if (!empty($search)) {
-        $this->db->group_start();
-        $this->db->like('it.name', $search);
-        $this->db->or_like('it.code', $search);
-        $this->db->or_like('it.description', $search);
-        $this->db->group_end();
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('it.name', $search);
+            $this->db->or_like('it.code', $search);
+            $this->db->or_like('it.description', $search);
+            $this->db->group_end();
+        }
+
+        if (!empty($ticketTypeId)) {
+            $this->db->where('it.ticket_type_id', $ticketTypeId);
+        }
+
+        $total = $this->db->count_all_results();
+
+        /* ================= DATA QUERY ================= */
+        $this->db->select('it.*, tt.name AS ticket_type_name, parent.name AS parent_name');
+        $this->db->from($this->table_it_ticket_services . ' it');
+        $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' parent', 'it.parent_id = parent.id', 'left');
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('it.name', $search);
+            $this->db->or_like('it.code', $search);
+            $this->db->or_like('it.description', $search);
+            $this->db->group_end();
+        }
+
+        if (!empty($ticketTypeId)) {
+            $this->db->where('it.ticket_type_id', $ticketTypeId);
+        }
+
+        $offset = ($page - 1) * $perPage;
+
+        $this->db->order_by('it.parent_id IS NOT NULL', 'ASC', false);
+        $this->db->order_by('it.parent_id', 'ASC');
+        $this->db->order_by('it.name', 'ASC');
+
+        $this->db->limit($perPage, $offset);
+
+        $data = $this->db->get()->result();
+
+        return [
+            'data'  => $data,
+            'total' => $total
+        ];
     }
 
-    if (!empty($ticketTypeId)) {
-        $this->db->where('it.ticket_type_id', $ticketTypeId);
+    public function get_all_group_type($groupId = null)
+    {
+        $this->db->select("
+            it.id,
+            it.name,
+            it.code,
+            tt.name AS ticket_type_name
+        ", false);
+
+        $this->db->from($this->table_it_ticket_services . ' it');
+        $this->db->join(
+            $this->table_types . ' tt',
+            'it.ticket_type_id = tt.id',
+            'left'
+        );
+
+        // Only active it services
+        $this->db->where('it.status', 'active');
+
+        if (!empty($groupId)) {
+            $this->db->where('tt.service_group_id', $groupId);
+        }
+
+        $this->db->order_by('tt.name', 'ASC');
+        $this->db->order_by('it.name', 'ASC');
+
+        return $this->db->get()->result();
     }
-
-    $total = $this->db->count_all_results();
-
-
-
-    /* ================= DATA QUERY ================= */
-    $this->db->select('it.*, tt.name AS ticket_type_name, parent.name AS parent_name');
-    $this->db->from($this->table_issues . ' it');
-    $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
-    $this->db->join($this->table_issues . ' parent', 'it.parent_id = parent.id', 'left');
-
-    if (!empty($search)) {
-        $this->db->group_start();
-        $this->db->like('it.name', $search);
-        $this->db->or_like('it.code', $search);
-        $this->db->or_like('it.description', $search);
-        $this->db->group_end();
-    }
-
-    if (!empty($ticketTypeId)) {
-        $this->db->where('it.ticket_type_id', $ticketTypeId);
-    }
-
-    $offset = ($page - 1) * $perPage;
-
-    // 👉 ORDER: parent trước, child sau (KHÔNG dùng CASE)
-    $this->db->order_by('it.parent_id IS NOT NULL', 'ASC', false);
-    $this->db->order_by('it.parent_id', 'ASC');
-    $this->db->order_by('it.name', 'ASC');
-
-    $this->db->limit($perPage, $offset);
-
-    $data = $this->db->get()->result();
-
-    return [
-        'data'  => $data,
-        'total' => $total
-    ];
-}
-
-
-    // /**
-    //  * Get all issue types by ticket type (for dropdown)
-    //  * @param int|null $ticketTypeId Filter by ticket type
-    //  * @return array
-    //  */
-    // public function get_all_group_type($ticketTypeId = null)
-    // {
-    //     $this->db->select('it.*, tt.name as ticket_type_name, parent.name as parent_name');
-    //     $this->db->from($this->table_issues . ' it');
-    //     $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
-    //     $this->db->join($this->table_issues . ' parent', 'it.parent_id = parent.id', 'left');
-
-    //     if (!empty($ticketTypeId)) {
-    //         $this->db->where('it.ticket_type_id', $ticketTypeId);
-    //     }
-
-    //     $this->db->order_by('CASE WHEN it.parent_id IS NULL THEN 0 ELSE 1 END', 'ASC');
-    //     $this->db->order_by('it.parent_id', 'ASC');
-    //     $this->db->order_by('it.name', 'ASC');
-        
-    //     return $this->db->get()->result();
-    // }
-
-// public function get_all_group_type($groupId = null)
-// {
-//     $this->db->select("
-//         CONCAT(g.id, '-', COALESCE(t.id, 0)) AS id,
-//         CONCAT(g.name, 
-//                CASE WHEN t.name IS NOT NULL THEN CONCAT(' - ', t.name) ELSE '' END
-//         ) AS name
-//     ", false);
-
-//     $this->db->from($this->table_groups . ' g');
-//     $this->db->join($this->table_types . ' t', 't.service_group_id = g.id', 'left');
-
-//     if (!empty($groupId)) {
-//         $this->db->where('g.id', $groupId);
-//     }
-
-//     $this->db->order_by('g.name', 'ASC');
-//     $this->db->order_by('t.name', 'ASC');
-
-//     return $this->db->get()->result();
-// }
-
-public function get_all_group_type($groupId = null)
-{
-    // Query from it_ticket_issue_types (NOT it_ticket_types!)
-    $this->db->select("
-        it.id,
-        it.name,
-        it.code,
-        tt.name AS ticket_type_name
-    ", false);
-
-    $this->db->from($this->table_issues . ' it');
-    $this->db->join(
-        $this->table_types . ' tt',
-        'it.ticket_type_id = tt.id',
-        'left'
-    );
-
-    // Only active issue types
-    $this->db->where('it.status', 'active');
-
-    if (!empty($groupId)) {
-        $this->db->where('tt.service_group_id', $groupId);
-    }
-
-    $this->db->order_by('tt.name', 'ASC');
-    $this->db->order_by('it.name', 'ASC');
-
-    return $this->db->get()->result();
-}
-
-
-
-
-
 
     /**
-     * Get single issue type by ID
-     * @param int $id Issue type ID
+     * Get single it service by ID
+     * @param int $id it service ID
      * @return object|null
      */
-    public function get_issue_type($id)
+    public function get_it_service($id)
     {
         $this->db->select('it.*, tt.name as ticket_type_name, parent.name as parent_name');
-        $this->db->from($this->table_issues . ' it');
+        $this->db->from($this->table_it_ticket_services . ' it');
         $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
-        $this->db->join($this->table_issues . ' parent', 'it.parent_id = parent.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' parent', 'it.parent_id = parent.id', 'left');
         $this->db->where('it.id', $id);
         
         return $this->db->get()->row();
     }
 
     /**
-     * Create new issue type
-     * @param array $data Issue type data
+     * Create new it service
+     * @param array $data it service data
      * @return int Insert ID
      */
-    public function create_issue_type($data)
+    public function create_it_service($data)
     {
-        $this->db->insert($this->table_issues, $data);
+        $this->db->insert($this->table_it_ticket_services, $data);
         return $this->db->insert_id();
     }
 
     /**
-     * Update issue type
-     * @param int $id Issue type ID
+     * Update it service
+     * @param int $id it service ID
      * @param array $data Update data
      * @return bool
      */
-    public function update_issue_type($id, $data)
+    public function update_it_ticket($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update($this->table_issues, $data);
+        return $this->db->update($this->table_it_ticket_services, $data);
     }
 
     /**
-     * Delete issue type (cascade delete children)
-     * @param int $id Issue type ID
+     * Delete it service (cascade delete children)
+     * @param int $id It service ID
      * @return bool
      */
-    public function delete_issue_type($id)
+    public function delete_it_ticket($id)
     {
         // First, delete all children
         $this->db->where('parent_id', $id);
-        $this->db->delete($this->table_issues);
+        $this->db->delete($this->table_it_ticket_services);
 
         // Then delete the parent
         $this->db->where('id', $id);
-        return $this->db->delete($this->table_issues);
+        return $this->db->delete($this->table_it_ticket_services);
     }
 
     /**
-     * Check if issue type code exists
+     * Check if it service code exists
      * @param string $code Code to check
      * @param int|null $exclude_id Exclude this ID
      * @return bool
      */
-    public function is_issue_type_code_exists($code, $exclude_id = null)
+    public function is_it_service_code_exists($code, $exclude_id = null)
     {
         $this->db->where('code', strtoupper($code));
         
@@ -608,31 +551,31 @@ public function get_all_group_type($groupId = null)
             $this->db->where('id !=', $exclude_id);
         }
 
-        $count = $this->db->count_all_results($this->table_issues);
+        $count = $this->db->count_all_results($this->table_it_ticket_services);
         return $count > 0;
     }
 
     /**
-     * Check if issue type has children (sub-issues)
-     * @param int $issue_type_id Issue type ID
+     * Check if it service has children (sub-it-service)
+     * @param int $it_service_id
      * @return bool
      */
-    public function issue_type_has_children($issue_type_id)
+    public function it_service_has_children($it_service_id)
     {
-        $this->db->where('parent_id', $issue_type_id);
-        $count = $this->db->count_all_results($this->table_issues);
+        $this->db->where('parent_id', $it_service_id);
+        $count = $this->db->count_all_results($this->table_it_ticket_services);
         return $count > 0;
     }
 
     /**
-     * Get children of an issue type
-     * @param int $parent_id Parent issue type ID
+     * Get children of an it service
+     * @param int $parent_id Parent it service ID
      * @return array
      */
-    public function get_issue_type_children($parent_id)
+    public function get_it_service_children($parent_id)
     {
         $this->db->where('parent_id', $parent_id);
         $this->db->order_by('name', 'ASC');
-        return $this->db->get($this->table_issues)->result();
+        return $this->db->get($this->table_it_ticket_services)->result();
     }
 }

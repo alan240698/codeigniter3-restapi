@@ -24,11 +24,11 @@
                 <div class="step-status" style="font-size: 12px; opacity: 0.8;">Locked</div>
             </div>
 
-            <div id="step-issue-types" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
+            <div id="step-it-services" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
                 <div class="step-icon" style="margin-bottom: 8px;">
                     <i class="fas fa-list"></i>
                 </div>
-                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Issue Types</div>
+                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">IT Services</div>
                 <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
                 <div class="step-status" style="font-size: 12px; opacity: 0.8;">Locked</div>
             </div>
@@ -168,46 +168,46 @@
         </div>
     </div>
 
-    <!-- Issue Types Section -->
+    <!-- IT Services Section -->
     <div class="card">
         <div class="card-header">
-            <h3><i class="fas fa-list-tree"></i> Issue Types</h3>
+            <h3><i class="fas fa-list-tree"></i> IT Services</h3>
             <div>
-                <button id="btnAddIssueType" class="btn btn-primary-it-ticket" disabled
-                    onclick="IssueTypeManager.openAddIssueType()"
+                <button id="btnAddItService" class="btn btn-primary-it-ticket" disabled
+                    onclick="ItServiceManager.openAddItService()"
                     style="opacity: 0.5; cursor: not-allowed;">
-                    <i class="fas fa-plus"></i> Add Issue Type
+                    <i class="fas fa-plus"></i> Add IT Service
                 </button>
-                <small id="hintIssueType" class="help-text" style="display: block; margin-top: 8px; color: #f59e0b; font-size: 13px;">
+                <small id="hintItService" class="help-text" style="display: block; margin-top: 8px; color: #f59e0b; font-size: 13px;">
                     <i class="fas fa-info-circle"></i> Create at least 1 Ticket Type first
                 </small>
             </div>
         </div>
 
-        <!-- Search & Filter for Issue Types -->
+        <!-- Search & Filter for It Services -->
         <div class="filter-section" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <div style="flex: 1;">
-                <input type="text" id="searchIssueType" placeholder="Search issue types..."
+                <input type="text" id="searchItService" placeholder="Search it services..."
                     style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
-                    oninput="IssueTypeManager.searchIssueTypes(this.value)">
+                    oninput="ItServiceManager.searchItServices(this.value)">
             </div>
             <div>
-                <select id="filterIssueTypeTicketType" onchange="IssueTypeManager.filterIssueTypes()"
+                <select id="filterItServiceTicketType" onchange="ItServiceManager.filterItServices()"
                     style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 200px;">
                     <option value="">All Ticket Types</option>
                 </select>
             </div>
         </div>
 
-        <div id="issueTypesTree">
+        <div id="itServicesTree">
             <div style="text-align: center; padding: 40px;">
                 <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
-                <p style="margin-top: 10px; color: #6b7280;">Loading issue types...</p>
+                <p style="margin-top: 10px; color: #6b7280;">Loading it services...</p>
             </div>
         </div>
 
-        <!-- Pagination for Issue Types -->
-        <div id="issueTypesPagination" class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; /*padding: 15px; background: #f9fafb;*/ border-radius: 8px;">
+        <!-- Pagination for It Services -->
+        <div id="itServicesPagination" class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; /*padding: 15px; background: #f9fafb;*/ border-radius: 8px;">
             <div class="pagination-info" style="color: #6b7280; font-size: 14px;">
                 Showing <strong id="itShowingStart">0</strong> to <strong id="itShowingEnd">0</strong> of <strong id="itTotal">0</strong> entries
             </div>
@@ -306,12 +306,12 @@
     </div>
 </div>
 
-<!-- MODAL: Add/Edit Issue Type -->
-<div id="modalIssueType" class="modal">
+<!-- MODAL: Add/Edit It Service -->
+<div id="modalItService" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 id="modalIssueTypeTitle">Add Issue Type</h3>
-            <button class="modal-close" onclick="IssueTypeManager.closeModal()">×</button>
+            <h3 id="modalItServiceTitle">Add IT Service</h3>
+            <button class="modal-close" onclick="ItServiceManager.closeModal()">×</button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="itId">
@@ -323,8 +323,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Issue Name <span class="required">*</span></label>
-                <input type="text" id="itName" placeholder="Enter issue name">
+                <label>IT Service Name <span class="required">*</span></label>
+                <input type="text" id="itName" placeholder="Enter it service name">
             </div>
             <div class="form-group">
                 <label>Code <span class="required">*</span></label>
@@ -344,8 +344,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="IssueTypeManager.closeModal()">Cancel</button>
-            <button class="btn btn-primary-it-ticket" onclick="IssueTypeManager.saveIssueType()">
+            <button class="btn btn-secondary" onclick="ItServiceManager.closeModal()">Cancel</button>
+            <button class="btn btn-primary-it-ticket" onclick="ItServiceManager.saveItService()">
                 <i class="fas fa-save"></i> Save
             </button>
         </div>
@@ -969,7 +969,7 @@
                     this.closeModal();
                     await this.loadTicketTypes();
                     await SmartUXManager.checkPrerequisites();
-                    await IssueTypeManager.loadTicketTypesDropdown();
+                    await ItServiceManager.loadTicketTypesDropdown();
                 } else {
                     TicketNotifier.showError(data.message || 'Error saving ticket type');
                 }
@@ -993,7 +993,7 @@
                     TicketNotifier.showSuccess('Ticket Type deleted successfully', async () => {
                         await this.loadTicketTypes();
                         await SmartUXManager.checkPrerequisites();
-                        await IssueTypeManager.loadTicketTypesDropdown();
+                        await ItServiceManager.loadTicketTypesDropdown();
                     });
                 } else {
                     TicketNotifier.showError(data.message || 'Error deleting ticket type')
@@ -1009,8 +1009,8 @@
         }
     };
 
-    // ==================== ISSUE TYPES MANAGER ====================
-    const IssueTypeManager = {
+    // ==================== IT SERVICES MANAGER ====================
+    const ItServiceManager = {
         baseUrl: '<?= base_url() ?>',
         currentPage: 1,
         perPage: 10,
@@ -1019,7 +1019,7 @@
         filterTicketType: '',
 
         init() {
-            this.validator = new FormValidationManager(ValidationRulesServiceGroup.issueType);
+            this.validator = new FormValidationManager(ValidationRulesServiceGroup.itService);
         
             this.validator.setupFormValidation([
                 { fieldId: 'itTicketType', fieldName: 'ticket_type_id' },
@@ -1028,11 +1028,11 @@
                 { fieldId: 'itDesc', fieldName: 'description' }
             ]);
 
-            this.loadIssueTypes();
+            this.loadItServices();
             this.loadTicketTypesDropdown();
         },
 
-        async loadIssueTypes() {
+        async loadItServices() {
             try {
                 const params = new URLSearchParams({
                     page: this.currentPage,
@@ -1041,17 +1041,17 @@
                     ticket_type_id: this.filterTicketType
                 });
 
-                const response = await fetch(`${this.baseUrl}issue-types?${params}`);
+                const response = await fetch(`${this.baseUrl}it-services?${params}`);
                 const data = await response.json();
 
                 if (data.success) {
                     this.totalItems = data.total;
-                    this.renderIssueTypes(data.data);
+                    this.renderItServices(data.data);
                     this.renderPagination();
                 }
             } catch (error) {
-                console.error('Error loading issue types:', error);
-                document.getElementById('issueTypesTree').innerHTML = `
+                console.error('Error loading it services:', error);
+                document.getElementById('itServicesTree').innerHTML = `
                     <div style="text-align: center; padding: 40px; color: #ef4444;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 48px;"></i>
                         <p style="margin-top: 10px;">Error loading data</p>
@@ -1062,11 +1062,11 @@
 
         async loadTicketTypesDropdown() {
             try {
-                const response = await fetch(`${this.baseUrl}issue-types/all-group-type`);
+                const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
                 const data = await response.json();
 
                 if (data.success) {
-                    const filterSelect = document.getElementById('filterIssueTypeTicketType');
+                    const filterSelect = document.getElementById('filterItServiceTicketType');
                     const modalSelect = document.getElementById('itTicketType');
 
                     const options = data.data.map(tt =>
@@ -1081,22 +1081,22 @@
             }
         },
 
-        renderIssueTypes(issueTypes) {
-            const container = document.getElementById('issueTypesTree');
+        renderItServices(itServices) {
+            const container = document.getElementById('itServicesTree');
 
-            if (issueTypes.length === 0) {
+            if (itServices.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: #6b7280;">
                         <i class="fas fa-inbox" style="font-size: 48px; opacity: 0.5;"></i>
-                        <p style="margin-top: 10px;">No issue types found</p>
+                        <p style="margin-top: 10px;">No it services found</p>
                     </div>
                 `;
                 return;
             }
 
             // Group by parent
-            const parents = issueTypes.filter(it => !it.parent_id);
-            const children = issueTypes.filter(it => it.parent_id);
+            const parents = itServices.filter(it => !it.parent_id);
+            const children = itServices.filter(it => it.parent_id);
 
             container.innerHTML = parents.map(parent => {
                 const parentChildren = children.filter(c => c.parent_id === parent.id);
@@ -1110,13 +1110,13 @@
                             <span class="badge badge-warning" style="margin-left: 5px;">${parent.input_type}</span>
                         </div>
                         <div class="action-buttons">
-                            <button class="btn btn-sm btn-primary-it-ticket" onclick="IssueTypeManager.editIssueType(${parent.id})">
+                            <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${parent.id})">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-success-it-ticket" onclick="IssueTypeManager.openAddSubIssue(${parent.id})">
-                                <i class="fas fa-plus"></i> Sub-Issue
+                            <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id})">
+                                <i class="fas fa-plus"></i> Sub-It-Service
                             </button>
-                            <button class="btn btn-sm btn-danger-it-ticket" onclick="IssueTypeManager.deleteIssueType(${parent.id})">
+                            <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${parent.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -1131,10 +1131,10 @@
                                             <span class="badge badge-info" style="margin-left: 10px;">${child.code}</span>
                                         </div>
                                         <div class="action-buttons">
-                                            <button class="btn btn-sm btn-primary-it-ticket" onclick="IssueTypeManager.editIssueType(${child.id})">
+                                            <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${child.id})">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-danger-it-ticket" onclick="IssueTypeManager.deleteIssueType(${child.id})">
+                                            <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${child.id})">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -1159,21 +1159,21 @@
             let buttons = '';
 
             buttons += `<button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
-                            onclick="IssueTypeManager.goToPage(${this.currentPage - 1})">
+                            onclick="ItServiceManager.goToPage(${this.currentPage - 1})">
                             <i class="fas fa-chevron-left"></i>
                         </button>`;
 
             for (let i = 1; i <= totalPages; i++) {
                 if (i === 1 || i === totalPages || (i >= this.currentPage - 1 && i <= this.currentPage + 1)) {
                     buttons += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
-                    onclick="IssueTypeManager.goToPage(${i})">${i}</button>`;
+                    onclick="ItServiceManager.goToPage(${i})">${i}</button>`;
                 } else if (i === this.currentPage - 2 || i === this.currentPage + 2) {
                     buttons += `<span style="padding: 8px;">...</span>`;
                 }
             }
 
             buttons += `<button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
-                            onclick="IssueTypeManager.goToPage(${this.currentPage + 1})">
+                            onclick="ItServiceManager.goToPage(${this.currentPage + 1})">
                             <i class="fas fa-chevron-right"></i>
                         </button>`;
 
@@ -1182,23 +1182,23 @@
 
         goToPage(page) {
             this.currentPage = page;
-            this.loadIssueTypes();
+            this.loadItServices();
         },
 
-        searchIssueTypes(query) {
+        searchItServices(query) {
             this.searchQuery = query;
             this.currentPage = 1;
-            this.loadIssueTypes();
+            this.loadItServices();
         },
 
-        filterIssueTypes() {
-            this.filterTicketType = document.getElementById('filterIssueTypeTicketType').value;
+        filterItServices() {
+            this.filterTicketType = document.getElementById('filterItServiceTicketType').value;
             this.currentPage = 1;
-            this.loadIssueTypes();
+            this.loadItServices();
         },
 
-        openAddIssueType() {
-            document.getElementById('modalIssueTypeTitle').textContent = 'Add Issue Type';
+        openAddItService() {
+            document.getElementById('modalItServiceTitle').textContent = 'Add IT Service';
             document.getElementById('itId').value = '';
             document.getElementById('itParentId').value = '';
             document.getElementById('itTicketType').value = '';
@@ -1209,11 +1209,11 @@
 
             this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc']);
 
-            document.getElementById('modalIssueType').classList.add('active');
+            document.getElementById('modalItService').classList.add('active');
         },
 
-        openAddSubIssue(parentId) {
-            document.getElementById('modalIssueTypeTitle').textContent = 'Add Sub-Issue';
+        openAddSubItService(parentId) {
+            document.getElementById('modalItServiceTitle').textContent = 'Add Sub-It-Service';
             document.getElementById('itId').value = '';
             document.getElementById('itParentId').value = parentId;
             document.getElementById('itTicketType').value = '';
@@ -1221,17 +1221,17 @@
             document.getElementById('itCode').value = '';
             document.getElementById('itInputType').value = 'text';
             document.getElementById('itDesc').value = '';
-            document.getElementById('modalIssueType').classList.add('active');
+            document.getElementById('modalItService').classList.add('active');
         },
 
-        async editIssueType(id) {
+        async editItService(id) {
             try {
-                const response = await fetch(`${this.baseUrl}issue-types/show/${id}`);
+                const response = await fetch(`${this.baseUrl}it-services/show/${id}`);
                 const data = await response.json();
 
                 if (data.success) {
                     const it = data.data;
-                    document.getElementById('modalIssueTypeTitle').textContent = 'Edit Issue Type';
+                    document.getElementById('modalItServiceTitle').textContent = 'Edit IT Service';
                     document.getElementById('itId').value = it.id;
                     document.getElementById('itParentId').value = it.parent_id || '';
                     document.getElementById('itTicketType').value = it.ticket_type_id;
@@ -1239,14 +1239,14 @@
                     document.getElementById('itCode').value = it.code;
                     document.getElementById('itInputType').value = it.input_type;
                     document.getElementById('itDesc').value = it.description || '';
-                    document.getElementById('modalIssueType').classList.add('active');
+                    document.getElementById('modalItService').classList.add('active');
                 }
             } catch (error) {
-                TicketNotifier.showError('Error loading issue type');
+                TicketNotifier.showError('Error loading it service');
             }
         },
 
-        async saveIssueType() {
+        async saveItService() {
             const id = document.getElementById('itId').value;
 
             const formData = {
@@ -1271,7 +1271,7 @@
             }
 
             try {
-                const url = id ? `${this.baseUrl}issue-types/update/${id}` : `${this.baseUrl}issue-types/store`;
+                const url = id ? `${this.baseUrl}it-services/update/${id}` : `${this.baseUrl}it-services/store`;
                 const method = 'POST';
 
                 const response = await fetch(url, {
@@ -1285,37 +1285,37 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    TicketNotifier.showSuccess(id ? 'Issue Type updated successfully' : 'Issue Type created successfully');
+                    TicketNotifier.showSuccess(id ? 'It Service updated successfully' : 'It Service created successfully');
                     this.closeModal();
-                    await this.loadIssueTypes();
+                    await this.loadItServices();
                     await SmartUXManager.checkPrerequisites();
                 } else {
-                    TicketNotifier.showError(data.message || 'Error saving issue type');
+                    TicketNotifier.showError(data.message || 'Error saving it service');
                 }
             } catch (error) {
-                TicketNotifier.showError('Error saving issue type');
+                TicketNotifier.showError('Error saving it service');
             }
         },
 
-        async deleteIssueType(id) {
-            const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this issue type?', 'Yes, proceed');
+        async deleteItService(id) {
+            const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this it service?', 'Yes, proceed');
             if (!confirmed) return;
 
             try {
-                const response = await fetch(`${this.baseUrl}issue-types/delete/${id}`, {
+                const response = await fetch(`${this.baseUrl}it-services/delete/${id}`, {
                     method: 'POST'
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    TicketNotifier.showSuccess('Issue Type deleted successfully', async () => {
-                        await this.loadIssueTypes();
+                    TicketNotifier.showSuccess('IT Service deleted successfully', async () => {
+                        await this.loadItServices();
                         await SmartUXManager.checkPrerequisites();
                     });
                 }
             } catch (error) {
-                TicketNotifier.showError('Error deleting issue type');
+                TicketNotifier.showError('Error deleting it service');
             }
         },
 
@@ -1334,7 +1334,7 @@
                         '<option value="">Select Ticket Type</option>' + options;
 
                     // Populate filter dropdown
-                    document.getElementById('filterIssueTypeTicketType').innerHTML =
+                    document.getElementById('filterItServiceTicketType').innerHTML =
                         '<option value="">All Ticket Types</option>' + options;
                 }
             } catch (error) {
@@ -1344,7 +1344,7 @@
 
         closeModal() {
             this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc']);
-            document.getElementById('modalIssueType').classList.remove('active');
+            document.getElementById('modalItService').classList.remove('active');
         }
     };
 
@@ -1364,8 +1364,8 @@
                 const ttData = await ttResponse.json();
                 const ttCount = ttData.data ? ttData.data.length : 0;
 
-                // Check Issue Types
-                const itResponse = await fetch(`${this.baseUrl}issue-types`);
+                // Check IT Services
+                const itResponse = await fetch(`${this.baseUrl}it-services`);
                 const itData = await itResponse.json();
                 const itCount = itData.data ? itData.data.length : 0;
 
@@ -1409,8 +1409,8 @@
                 }
             }
 
-            // Issue Types step
-            const itStep = document.getElementById('step-issue-types');
+            // IT Services step
+            const itStep = document.getElementById('step-it-services');
             if (itStep) {
                 itStep.querySelector('.step-count').textContent = itCount;
                 if (ttCount > 0) {
@@ -1445,21 +1445,21 @@
                 }
             }
 
-            // Issue Type button
-            const btnAddIssueType = document.getElementById('btnAddIssueType');
-            const hintIssueType = document.getElementById('hintIssueType');
+            // IT Service Type button
+            const btnAddItService = document.getElementById('btnAddItService');
+            const hintItService = document.getElementById('hintItService');
 
-            if (btnAddIssueType && hintIssueType) {
+            if (btnAddItService && hintItService) {
                 if (ttCount > 0) {
-                    btnAddIssueType.disabled = false;
-                    btnAddIssueType.style.opacity = '1';
-                    btnAddIssueType.style.cursor = 'pointer';
-                    hintIssueType.style.display = 'none';
+                    btnAddItService.disabled = false;
+                    btnAddItService.style.opacity = '1';
+                    btnAddItService.style.cursor = 'pointer';
+                    hintItService.style.display = 'none';
                 } else {
-                    btnAddIssueType.disabled = true;
-                    btnAddIssueType.style.opacity = '0.5';
-                    btnAddIssueType.style.cursor = 'not-allowed';
-                    hintIssueType.style.display = 'block';
+                    btnAddItService.disabled = true;
+                    btnAddItService.style.opacity = '0.5';
+                    btnAddItService.style.cursor = 'not-allowed';
+                    hintItService.style.display = 'block';
                 }
             }
         }
@@ -1483,7 +1483,7 @@
                 SmartUXManager.checkPrerequisites(),
                 ServiceManager.init(),
                 TicketTypeManager.init(),
-                IssueTypeManager.init()
+                ItServiceManager.init()
             ]);
 
             console.log('Services Tab fully loaded');

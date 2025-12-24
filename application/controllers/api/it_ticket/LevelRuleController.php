@@ -12,8 +12,8 @@ class LevelRuleController extends CI_Controller
     public function index()
     {
         try {
-            $issueTypeId = $this->input->get('issue_type_id');
-            $rules = $this->RulesModel->get_level_rules($issueTypeId);
+            $itServiceId = $this->input->get('it_service_id');
+            $rules = $this->RulesModel->get_level_rules($itServiceId);
             $this->_response(['success' => true, 'data' => $rules]);
         } catch (Exception $e) {
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
@@ -40,8 +40,8 @@ class LevelRuleController extends CI_Controller
             $rawInput = file_get_contents('php://input');
             $input = json_decode($rawInput, true);
 
-            if (empty($input['issue_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Issue Type is required'], 400);
+            if (empty($input['it_service_id'])) {
+                $this->_response(['success' => false, 'message' => 'It Service is required'], 400);
                 return;
             }
 
@@ -56,13 +56,13 @@ class LevelRuleController extends CI_Controller
             }
 
             // Check duplicate level number
-            if ($this->RulesModel->level_number_exists($input['issue_type_id'], $input['level_number'])) {
-                $this->_response(['success' => false, 'message' => 'Level number already exists for this issue type'], 400);
+            if ($this->RulesModel->level_number_exists($input['it_service_id'], $input['level_number'])) {
+                $this->_response(['success' => false, 'message' => 'Level number already exists for this It Service'], 400);
                 return;
             }
 
             $data = [
-                'issue_type_id' => $input['issue_type_id'],
+                'service_id' => $input['it_service_id'],
                 'level_number' => $input['level_number'],
                 'level_name' => $input['level_name'],
                 'support_team_id' => $input['support_team_id'] ?? null,
@@ -106,7 +106,7 @@ class LevelRuleController extends CI_Controller
             }
 
             // Check duplicate level number (exclude current)
-            if ($this->RulesModel->level_number_exists($existing->issue_type_id, $input['level_number'], $id)) {
+            if ($this->RulesModel->level_number_exists($existing->it_service_id, $input['level_number'], $id)) {
                 $this->_response(['success' => false, 'message' => 'Level number already exists'], 400);
                 return;
             }
@@ -159,12 +159,12 @@ class LevelRuleController extends CI_Controller
     }
 
     /**
-     * GET /level-rules/by-issue-type/{issue_type_id}
+     * GET /level-rules/by-it-service/{it_service_id}
      */
-    public function get_by_issue_type($issueTypeId)
+    public function get_by_it_service($itServiceId)
     {
         try {
-            $rules = $this->RulesModel->get_level_rules($issueTypeId);
+            $rules = $this->RulesModel->get_level_rules($itServiceId);
             $this->_response(['success' => true, 'data' => $rules]);
         } catch (Exception $e) {
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
