@@ -91,7 +91,7 @@ class CustomFieldController extends CI_Controller
             }
 
             $data = [
-                'service_id' => $input['it_service_id'],
+                'it_service_id' => $input['it_service_id'],
                 'field_name' => $input['field_name'],
                 'field_label' => $input['field_label'],
                 'field_type' => $input['field_type'],

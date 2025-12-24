@@ -103,7 +103,7 @@ class RoutingRuleController extends CI_Controller
             }
 
             $data = [
-                'service_id' => $input['it_service_id'],
+                'it_service_id' => $input['it_service_id'],
                 'rule_name' => $input['rule_name'],
                 'priority' => $input['priority'] ?? 100,
                 'conditions' => $input['conditions'] ?? null,

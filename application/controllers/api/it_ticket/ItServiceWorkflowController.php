@@ -106,7 +106,7 @@ class ItServiceWorkflowController extends CI_Controller
             }
 
             $data = [
-                'service_id' => $input['it_service_id'],
+                'it_service_id' => $input['it_service_id'],
                 'workflow_id' => $input['workflow_id'],
                 'is_active' => $input['is_active'] ?? 1,
                 'created_at' => date('Y-m-d H:i:s')

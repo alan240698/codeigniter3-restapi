@@ -137,7 +137,7 @@ class TicketController extends CI_Controller
                 'ticket_number' => $ticketNumber,
                 'service_group_id' => $input['service_group_id'],
                 'ticket_type_id' => $input['ticket_type_id'],
-                'service_id' => $input['it_service_id'],
+                'it_service_id' => $input['it_service_id'],
                 'subject' => $input['subject'],
                 'description' => $input['description'],
                 'custom_fields_data' => isset($input['custom_fields']) ? json_encode($input['custom_fields']) : null,

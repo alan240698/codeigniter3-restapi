@@ -65,7 +65,7 @@ class ApprovalRuleController extends CI_Controller
             }
 
             $data = [
-                'service_id' => $input['it_service_id'],
+                'it_service_id' => $input['it_service_id'],
                 'rule_name' => $input['rule_name'],
                 'requires_approval' => $input['requires_approval'] ?? 1,
                 'approval_type' => $input['approval_type'],

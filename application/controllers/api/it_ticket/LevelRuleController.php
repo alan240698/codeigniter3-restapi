@@ -62,7 +62,7 @@ class LevelRuleController extends CI_Controller
             }
 
             $data = [
-                'service_id' => $input['it_service_id'],
+                'it_service_id' => $input['it_service_id'],
                 'level_number' => $input['level_number'],
                 'level_name' => $input['level_name'],
                 'support_team_id' => $input['support_team_id'] ?? null,
