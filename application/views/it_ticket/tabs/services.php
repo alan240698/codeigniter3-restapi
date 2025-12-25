@@ -1109,7 +1109,7 @@
                 const parentChildren = children.filter(c => c.parent_id === parent.id);
 
                 return `
-                    <div style="padding: 15px; background: antiquewhite; /* border-left: 4px solid #3b82f6;*/ margin-bottom: 8px; border-radius: 8px;">
+                    <div style="padding: 15px; border: 1px solid #3b82f6; /* background: antiquewhite;  border-left: 4px solid #3b82f6;*/ margin-bottom: 8px; border-radius: 8px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <strong>${parent.name}</strong>
