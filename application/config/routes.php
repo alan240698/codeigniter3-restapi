@@ -294,6 +294,25 @@ $route['custom-fields/delete/(:num)'] = 'api/it_ticket/CustomFieldController/del
 
 /*
 |--------------------------------------------------------------------------
+| IT TICKET - EMAIL TEMPLATES API (REST)
+|--------------------------------------------------------------------------
+*/
+
+// EMAIL TEMPLATES
+$route['email-templates'] = 'api/it_ticket/EmailTemplateController/index';
+$route['email-templates/show/(:num)'] = 'api/it_ticket/EmailTemplateController/show/$1';
+$route['email-templates/store'] = 'api/it_ticket/EmailTemplateController/store';
+$route['email-templates/update/(:num)'] = 'api/it_ticket/EmailTemplateController/update/$1';
+$route['email-templates/delete/(:num)'] = 'api/it_ticket/EmailTemplateController/delete/$1';
+$route['email-templates/render/(:num)'] = 'api/it_ticket/EmailTemplateController/render/$1';
+$route['email-templates/create-instance'] = 'api/it_ticket/EmailTemplateController/create_instance';
+
+// PUBLIC TEMPLATE VIEWING (No authentication required)
+$route['template/view/(:any)'] = 'TemplateViewController/view/$1';
+$route['template/action/(:any)'] = 'TemplateViewController/action/$1';
+
+/*
+|--------------------------------------------------------------------------
 | END SUPER ADMIN ROUTES
 |--------------------------------------------------------------------------
 */

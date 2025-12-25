@@ -48,82 +48,106 @@
     </div>
 </div>
 
+
 <!-- MODAL: Add/Edit Template -->
 <div id="modalTemplate" class="modal">
-    <div class="modal-content" style="max-width: 900px;">
+    <div class="modal-content" style="max-width: 1400px;">
         <div class="modal-header">
             <h3 id="modalTemplateTitle">Add Email Template</h3>
             <button class="modal-close" onclick="TemplateManager.closeModal()">×</button>
         </div>
-        <div class="modal-body">
-            <input type="hidden" id="templateId">
-            
-            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="modal-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <!-- LEFT SIDE: Form -->
+            <div class="template-form-section">
+                <input type="hidden" id="templateId">
+                
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Template Name <span class="required">*</span></label>
+                        <input type="text" id="templateName" placeholder="e.g., Ticket Created Notification" oninput="TemplateManager.autoPreview()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Template Code <span class="required">*</span></label>
+                        <input type="text" id="templateCode" placeholder="e.g., TICKET_CREATED" oninput="TemplateManager.autoPreview()">
+                        <small style="color: #6b7280;">Uppercase, underscores only</small>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Template Name <span class="required">*</span></label>
-                    <input type="text" id="templateName" placeholder="e.g., Ticket Created Notification">
+                    <label>Email Subject <span class="required">*</span></label>
+                    <input type="text" id="templateSubject" placeholder="e.g., Ticket #{ticket_number} Created" oninput="TemplateManager.autoPreview()">
+                    <small style="color: #6b7280;">Use variables like {ticket_number}, {requester_name}, etc.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Body <span class="required">*</span></label>
+                    <textarea id="templateBody" rows="12" placeholder="Enter email body..." 
+                        style="font-family: monospace; font-size: 13px;" oninput="TemplateManager.autoPreview()"></textarea>
+                    <small style="color: #6b7280;">Use HTML tags and variables</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Variables (JSON)</label>
+                    <textarea id="templateVariables" rows="4" placeholder='["ticket_number", "requester_name", "subject", "priority"]'
+                        style="font-family: monospace; font-size: 13px;" oninput="TemplateManager.autoPreview()"></textarea>
+                    <small style="color: #6b7280;">List of variables available for this template</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="templateStatus">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE: Live Preview -->
+            <div class="template-preview-section" style="position: sticky; top: 20px; height: fit-content;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 20px; color: white; margin-bottom: 15px;">
+                    <h4 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-eye"></i> 
+                        <span>Live Preview</span>
+                        <span style="margin-left: auto; font-size: 12px; opacity: 0.8;">Auto-updates</span>
+                    </h4>
                 </div>
                 
-                <div class="form-group">
-                    <label>Template Code <span class="required">*</span></label>
-                    <input type="text" id="templateCode" placeholder="e.g., TICKET_CREATED">
-                    <small style="color: #6b7280;">Uppercase, underscores only</small>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Email Subject <span class="required">*</span></label>
-                <input type="text" id="templateSubject" placeholder="e.g., Ticket #{ticket_number} Created">
-                <small style="color: #6b7280;">Use variables like {ticket_number}, {requester_name}, etc.</small>
-            </div>
-
-            <div class="form-group">
-                <label>Email Body <span class="required">*</span></label>
-                <textarea id="templateBody" rows="12" placeholder="Enter email body..."
-                    style="font-family: monospace; font-size: 13px;"></textarea>
-                <small style="color: #6b7280;">Use HTML tags and variables</small>
-            </div>
-
-            <div class="form-group">
-                <label>Available Variables (JSON)</label>
-                <textarea id="templateVariables" rows="4" placeholder='["ticket_number", "requester_name", "subject", "priority"]'
-                    style="font-family: monospace; font-size: 13px;"></textarea>
-                <small style="color: #6b7280;">List of variables available for this template</small>
-            </div>
-
-            <div class="form-group">
-                <label>Status</label>
-                <select id="templateStatus">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-
-            <!-- Preview Section -->
-            <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin-top: 20px;">
-                <h4 style="margin-bottom: 15px; color: #374151;">
-                    <i class="fas fa-eye"></i> Template Preview
-                </h4>
-                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
-                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb;">
-                        <strong style="color: #6b7280; font-size: 12px;">SUBJECT:</strong>
-                        <div id="previewSubject" style="font-size: 14px; font-weight: 600; margin-top: 5px;">
-                            Preview subject here...
+                <div style="background: white; border: 2px solid #e5e7eb; border-radius: 8px; padding: 20px; max-height: 600px; overflow-y: auto;">
+                    <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb;">
+                        <strong style="color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Subject</strong>
+                        <div id="previewSubject" style="font-size: 16px; font-weight: 600; margin-top: 8px; color: #1f2937;">
+                            Enter subject to see preview...
                         </div>
                     </div>
-                    <div id="previewBody" style="font-size: 14px; line-height: 1.6; color: #374151;">
-                        Preview body here...
+                    <div>
+                        <strong style="color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Body</strong>
+                        <div id="previewBody" style="font-size: 14px; line-height: 1.8; color: #374151; margin-top: 8px;">
+                            Enter body to see preview...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Variable Helper -->
+                <div style="background: #f9fafb; border-radius: 8px; padding: 15px; margin-top: 15px; border: 1px solid #e5e7eb;">
+                    <strong style="color: #374151; font-size: 12px; display: block; margin-bottom: 8px;">
+                        <i class="fas fa-info-circle"></i> Available Variables
+                    </strong>
+                    <div id="variablesList" style="display: flex; flex-wrap: wrap; gap: 5px; font-size: 11px;">
+                        <span class="variable-tag">{ticket_number}</span>
+                        <span class="variable-tag">{requester_name}</span>
+                        <span class="variable-tag">{subject}</span>
+                        <span class="variable-tag">{priority}</span>
+                        <span class="variable-tag">{status}</span>
+                        <span class="variable-tag">{assigned_to}</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="TemplateManager.closeModal()">Cancel</button>
-            <button class="btn btn-secondary" onclick="TemplateManager.previewTemplate()">
-                <i class="fas fa-eye"></i> Update Preview
-            </button>
             <button class="btn btn-primary" onclick="TemplateManager.saveTemplate()">
-                <i class="fas fa-save"></i> Save
+                <i class="fas fa-save"></i> Save Template
             </button>
         </div>
     </div>
@@ -272,7 +296,7 @@ const TemplateManager = {
                 document.getElementById('modalTemplate').classList.add('active');
             }
         } catch (error) {
-            ITTicketUI.showError('Error loading template');
+            TicketNotifier.showError('Error loading template');
         }
     },
 
@@ -288,7 +312,7 @@ const TemplateManager = {
         };
 
         if (!formData.template_name || !formData.template_code || !formData.subject || !formData.body) {
-            ITTicketUI.showValidationError('Please fill in required fields');
+            TicketNotifier.showValidationError('Please fill in required fields');
             return;
         }
 
@@ -297,7 +321,7 @@ const TemplateManager = {
             try {
                 JSON.parse(formData.variables);
             } catch (e) {
-                ITTicketUI.showValidationError('Invalid JSON format in variables');
+                TicketNotifier.showValidationError('Invalid JSON format in variables');
                 return;
             }
         }
@@ -313,19 +337,19 @@ const TemplateManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess(id ? 'Template updated successfully' : 'Template created successfully');
+                TicketNotifier.showSuccess(id ? 'Template updated successfully' : 'Template created successfully');
                 this.closeModal();
                 this.loadTemplates();
             } else {
-                ITTicketUI.showError(data.message || 'Error saving template');
+                TicketNotifier.showError(data.message || 'Error saving template');
             }
         } catch (error) {
-            ITTicketUI.showError('Error saving template');
+            TicketNotifier.showError('Error saving template');
         }
     },
 
     async deleteTemplate(id) {
-        const confirmed = await ITTicketUI.confirm('Confirm Action', 'Are you sure you want to delete this template?', 'Yes, proceed'); if (!confirmed) return;
+        const confirmed = await TicketNotifier.confirm('Confirm Action', 'Are you sure you want to delete this template?', 'Yes, proceed'); if (!confirmed) return;
 
         try {
             const response = await fetch(`${this.baseUrl}email-templates/delete/${id}`, {
@@ -335,11 +359,24 @@ const TemplateManager = {
             const data = await response.json();
 
             if (data.success) {
-                ITTicketUI.showSuccess('Template deleted successfully', () => this.loadTemplates());
+                TicketNotifier.showSuccess('Template deleted successfully', () => this.loadTemplates());
             }
         } catch (error) {
-            ITTicketUI.showError('Error deleting template');
+            TicketNotifier.showError('Error deleting template');
         }
+    },
+
+    // Auto preview with debouncing
+    autoPreview() {
+        // Clear existing timeout
+        if (this.previewTimeout) {
+            clearTimeout(this.previewTimeout);
+        }
+
+        // Set new timeout for debouncing (300ms delay)
+        this.previewTimeout = setTimeout(() => {
+            this.previewTemplate();
+        }, 300);
     },
 
     previewTemplate() {
@@ -357,8 +394,8 @@ const TemplateManager = {
             status: 'In Progress'
         };
 
-        let previewSubject = subject;
-        let previewBody = body;
+        let previewSubject = subject || 'Enter subject to see preview...';
+        let previewBody = body || 'Enter body to see preview...';
 
         Object.keys(sampleData).forEach(key => {
             const regex = new RegExp(`{${key}}`, 'g');
