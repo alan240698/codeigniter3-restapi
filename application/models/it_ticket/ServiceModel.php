@@ -456,10 +456,17 @@ class ServiceModel extends CI_Model
     public function get_all_group_type($groupId = null)
     {
         $this->db->select("
+            sg.id AS service_group_id,
+            sg.name AS service_group_name,
+            sg.sort_order AS service_group_sort,
             it.id,
             it.name,
             it.code,
-            tt.name AS ticket_type_name
+            it.parent_id,
+            it.input_type,
+            it.sort_order,
+            tt.id AS ticket_type_id,
+            tt.service_group_id
         ", false);
 
         $this->db->from($this->table_it_ticket_services . ' it');
@@ -468,18 +475,28 @@ class ServiceModel extends CI_Model
             'it.ticket_type_id = tt.id',
             'left'
         );
+        $this->db->join(
+            $this->table_groups . ' sg',
+            'tt.service_group_id = sg.id',
+            'left'
+        );
 
-        // Only active it services
+        // Only active records
         $this->db->where('it.status', 'active');
+        $this->db->where('sg.status', 'active');
 
         if (!empty($groupId)) {
             $this->db->where('tt.service_group_id', $groupId);
         }
 
-        $this->db->order_by('tt.name', 'ASC');
+        // Order by service group first, then parent, then sort_order
+        $this->db->order_by('sg.sort_order', 'ASC');
+        $this->db->order_by('sg.name', 'ASC');
+        $this->db->order_by('it.parent_id', 'ASC');
+        $this->db->order_by('it.sort_order', 'ASC');
         $this->db->order_by('it.name', 'ASC');
 
-        return $this->db->get()->result();
+        return $this->db->get()->result_array();
     }
 
     /**

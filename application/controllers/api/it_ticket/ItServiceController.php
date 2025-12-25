@@ -77,7 +77,105 @@ class ItServiceController extends CI_Controller
      */
     public function get_all_with_groups()
     {
-        return $this->get_all();
+        return $this->get_all_dropdown();
+    }
+
+    public function get_all_dropdown()
+    {
+        try {
+            $itServices = $this->ServiceModel->get_all_group_type();
+            
+            // Organize by service group
+            $groupedData = [];
+            
+            foreach ($itServices as $service) {
+                $groupId = $service['service_group_id'];
+                $groupName = $service['service_group_name'];
+                
+                if (!isset($groupedData[$groupId])) {
+                    $groupedData[$groupId] = [
+                        'id' => $groupId,
+                        'name' => $groupName,
+                        'sort_order' => $service['service_group_sort'],
+                        'services' => []
+                    ];
+                }
+                
+                // Add service to group
+                $groupedData[$groupId]['services'][] = $service;
+            }
+            
+            // Build hierarchical structure
+            $hierarchicalData = [];
+            
+            foreach ($groupedData as $group) {
+                // Separate parents and children within each group
+                $parents = [];
+                $children = [];
+                
+                foreach ($group['services'] as $service) {
+                    if (empty($service['parent_id'])) {
+                        $parents[] = $service;
+                    } else {
+                        if (!isset($children[$service['parent_id']])) {
+                            $children[$service['parent_id']] = [];
+                        }
+                        $children[$service['parent_id']][] = $service;
+                    }
+                }
+                
+                // Build the structure for this group
+                $groupData = [
+                    'id' => $group['id'],
+                    'name' => $group['name'],
+                    'type' => 'group',
+                    'level' => 0,
+                    'services' => []
+                ];
+                
+                foreach ($parents as $parent) {
+                    $parentData = [
+                        'id' => $parent['id'],
+                        'name' => $parent['name'],
+                        'code' => $parent['code'],
+                        'input_type' => $parent['input_type'],
+                        'parent_id' => $parent['parent_id'],
+                        'type' => 'service',
+                        'level' => 1,
+                        'children' => []
+                    ];
+                    
+                    // Add children if exist
+                    if (isset($children[$parent['id']])) {
+                        foreach ($children[$parent['id']] as $child) {
+                            $parentData['children'][] = [
+                                'id' => $child['id'],
+                                'name' => $child['name'],
+                                'code' => $child['code'],
+                                'input_type' => $child['input_type'],
+                                'parent_id' => $child['parent_id'],
+                                'type' => 'sub_service',
+                                'level' => 2
+                            ];
+                        }
+                    }
+                    
+                    $groupData['services'][] = $parentData;
+                }
+                
+                $hierarchicalData[] = $groupData;
+            }
+
+            $this->_response([
+                'success' => true,
+                'data' => $hierarchicalData
+            ]);
+        } catch (Exception $e) {
+            $this->_response([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

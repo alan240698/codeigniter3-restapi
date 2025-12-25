@@ -342,6 +342,13 @@
                 <label>Description</label>
                 <textarea id="itDesc" placeholder="Enter description"></textarea>
             </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="itStatus">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="ItServiceManager.closeModal()">Cancel</button>
@@ -685,7 +692,6 @@
                     await SmartUXManager.checkPrerequisites();
                     await TicketTypeManager.loadServiceGroupsDropdown();
                 } else {
-                    debugger;
                     TicketNotifier.showError(data.message || 'Error saving service group');
                 }
             } catch (error) {
@@ -739,7 +745,7 @@
     const TicketTypeManager = {
         baseUrl: '<?= base_url() ?>',
         currentPage: 1,
-        perPage: 2,
+        perPage: 5,
         totalItems: 0,
         searchQuery: '',
         filterServiceGroup: '',
@@ -1013,19 +1019,20 @@
     const ItServiceManager = {
         baseUrl: '<?= base_url() ?>',
         currentPage: 1,
-        perPage: 10,
+        perPage: 50,
         totalItems: 0,
         searchQuery: '',
         filterTicketType: '',
 
         init() {
             this.validator = new FormValidationManager(ValidationRulesServiceGroup.itService);
-        
+
             this.validator.setupFormValidation([
                 { fieldId: 'itTicketType', fieldName: 'ticket_type_id' },
                 { fieldId: 'itName', fieldName: 'name' },
                 { fieldId: 'itCode', fieldName: 'code', autoUppercase: true },
-                { fieldId: 'itDesc', fieldName: 'description' }
+                { fieldId: 'itDesc', fieldName: 'description' },
+                { fieldId: 'itInputType', fieldName: 'input_type' }
             ]);
 
             this.loadItServices();
@@ -1102,47 +1109,47 @@
                 const parentChildren = children.filter(c => c.parent_id === parent.id);
 
                 return `
-                <div style="padding: 15px; background: antiquewhite; /* border-left: 4px solid #3b82f6;*/ margin-bottom: 8px; border-radius: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <strong>${parent.name}</strong>
-                            <span class="badge badge-info" style="margin-left: 10px;">${parent.code}</span>
-                            <span class="badge badge-warning" style="margin-left: 5px;">${parent.input_type}</span>
+                    <div style="padding: 15px; background: antiquewhite; /* border-left: 4px solid #3b82f6;*/ margin-bottom: 8px; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${parent.name}</strong>
+                                <span class="badge badge-info" style="margin-left: 10px;">${parent.code}</span>
+                                <span class="badge badge-warning" style="margin-left: 5px;">${parent.input_type}</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${parent.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.ticket_type_id})">
+                                    <i class="fas fa-plus"></i> Sub-It-Service
+                                </button>
+                                <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${parent.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${parent.id})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id})">
-                                <i class="fas fa-plus"></i> Sub-It-Service
-                            </button>
-                            <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${parent.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
 
-                    ${parentChildren.map(child => `
-                        <div class="tree-item level-2">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <i class="fas fa-arrow-turn-down-right" style="color: #9ca3af; margin-right: 10px;"></i>
-                                            <strong>${child.name}</strong>
-                                            <span class="badge badge-info" style="margin-left: 10px;">${child.code}</span>
-                                        </div>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${child.id})">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${child.id})">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
+                        ${parentChildren.map(child => `
+                            <div class="tree-item level-2">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <i class="fas fa-arrow-turn-down-right" style="color: #9ca3af; margin-right: 10px;"></i>
+                                        <strong>${child.name}</strong>
+                                        <span class="badge badge-info" style="margin-left: 10px;">${child.code}</span>
+                                    </div>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${child.id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${child.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            `).join('')}
-                        </div>
-            `;
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             }).join('');
         },
 
@@ -1206,17 +1213,29 @@
             document.getElementById('itCode').value = '';
             document.getElementById('itInputType').value = 'text';
             document.getElementById('itDesc').value = '';
+            document.getElementById('itStatus').value = 'active';
 
-            this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc']);
+            this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc', 'itInputType']);
 
             document.getElementById('modalItService').classList.add('active');
         },
 
-        openAddSubItService(parentId) {
+        openAddSubItService(parentId, ticketTypeId) {
             document.getElementById('modalItServiceTitle').textContent = 'Add Sub-It-Service';
             document.getElementById('itId').value = '';
             document.getElementById('itParentId').value = parentId;
-            document.getElementById('itTicketType').value = '';
+            const select = document.getElementById('itTicketType');
+
+            [...select.options].forEach(option => {
+                option.style.display =
+                    option.value === ticketTypeId || option.value === ''
+                        ? 'block'
+                        : 'none';
+            });
+
+            select.value = ticketTypeId;
+            select.disabled = true;
+
             document.getElementById('itName').value = '';
             document.getElementById('itCode').value = '';
             document.getElementById('itInputType').value = 'text';
@@ -1239,6 +1258,7 @@
                     document.getElementById('itCode').value = it.code;
                     document.getElementById('itInputType').value = it.input_type;
                     document.getElementById('itDesc').value = it.description || '';
+                    document.getElementById('itStatus').value = it.status;
                     document.getElementById('modalItService').classList.add('active');
                 }
             } catch (error) {
@@ -1255,14 +1275,16 @@
                 name: document.getElementById('itName').value,
                 code: document.getElementById('itCode').value,
                 input_type: document.getElementById('itInputType').value,
-                description: document.getElementById('itDesc').value
+                description: document.getElementById('itDesc').value,
+                status: document.getElementById('itStatus').value
             };
 
             const fieldMap = { 
                 ticket_type_id: 'itTicketType',
                 name: 'itName', 
                 code: 'itCode', 
-                description: 'itDesc' 
+                description: 'itDesc',
+                input_type: 'itInputType'
             };
 
             if (!this.validator.validateAndShowErrors(formData, fieldMap)) {
@@ -1343,7 +1365,17 @@
         },
 
         closeModal() {
-            this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc']);
+            this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc', 'itInputType']);
+
+             const select = document.getElementById('itTicketType');
+
+            select.value = '';
+            [...select.options].forEach(option => {
+                option.style.display = 'block';
+            });
+
+            select.disabled = false;
+
             document.getElementById('modalItService').classList.remove('active');
         }
     };

@@ -77,6 +77,43 @@
             font-weight: 500;
             margin: 0;
         }
+
+        /* Service Group Headers */
+        select option.service-group-header {
+            font-weight: bold;
+            color: #1e40af;
+            background: #eff6ff;
+            padding: 6px 10px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Parent Services (have children) - cannot choose */
+        select option.service-parent {
+            font-weight: 600;
+            color: #4b5563;
+            padding-left: 20px;
+            background: #f9fafb;
+        }
+
+        /* Child Services - can choose */
+        select option.service-child {
+            padding-left: 40px;
+            color: #111827;
+        }
+
+        /* Leaf Services (no children) - can choose */
+        select option.service-leaf {
+            padding-left: 20px;
+            color: #111827;
+            font-weight: 500;
+        }
+
+        /* Hover effect */
+        select option:not([disabled]):hover {
+            background: #3b82f6 !important;
+            color: white !important;
+        }
     </style>
 
     <!-- Smart UX: Setup Progress Indicator -->
@@ -397,7 +434,6 @@
             <div class="form-group">
                 <label>State Type <span class="required">*</span></label>
                 <select id="stateType">
-                    <option value="initial">Initial (Starting state)</option>
                     <option value="intermediate">Intermediate (Working state)</option>
                     <option value="final">Final (Completed)</option>
                     <option value="cancelled">Cancelled</option>
@@ -458,10 +494,9 @@
                 <input type="text" id="transName" placeholder="e.g., Start Working, Resolve, Close">
             </div>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label>From State</label>
                 <select id="transFromState">
-                    <option value="">Any State (Initial transition)</option>
                 </select>
                 <small style="color: #6b7280; display: block; margin-top: 5px;">
                     Leave empty for initial state creation
@@ -473,6 +508,26 @@
                 <select id="transToState">
                     <option value="">Select state</option>
                 </select>
+            </div> -->
+
+            <div class="form-group">
+                <label>From State <span class="required">*</span></label>
+                <select id="transFromState" required>
+                    <option value="">Select from state</option>
+                </select>
+                <small id="transitionHelperText" style="color: #6b7280; display: block; margin-top: 5px;">
+                    <!-- Dynamic helper text will appear here -->
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>To State <span class="required">*</span></label>
+                <select id="transToState" disabled required>
+                    <option value="">Select from state first</option>
+                </select>
+                <small id="transitionWarningText" style="color: #dc2626; display: none; margin-top: 5px;">
+                    <!-- Dynamic warning text will appear here -->
+                </small>
             </div>
 
             <div class="form-group">
@@ -493,7 +548,7 @@
                 <textarea id="transConditions" placeholder='{"priority": "high", "requires_approval": true}'
                     style="font-family: monospace; font-size: 13px;"></textarea>
                 <small style="color: #6b7280; display: block; margin-top: 5px;">
-                    Optional: JSON rules for this transition
+                    Optional: JSON rules for this transition {&quot;priority&quot;: &quot;high&quot;, &quot;requires_approval&quot;: true}
                 </small>
             </div>
 
@@ -1210,6 +1265,35 @@
         currentWorkflowId: null,
         states: [],
 
+        init() {
+            this.validator = new FormValidationManager(ValidationRulesWorkflows?.transitions);
+            this.validator.setupFormValidation([{
+                    fieldId: 'transName',
+                    fieldName: 'name'
+                },
+                {
+                    fieldId: 'transFromState',
+                    fieldName: 'from_state_id',
+                },
+                {
+                    fieldId: 'transToState',
+                    fieldName: 'to_state_id',
+                },
+                {
+                    fieldId: 'transRequiredRole',
+                    fieldName: 'required_role',
+                },
+                {
+                    fieldId: 'transConditions',
+                    fieldName: 'conditions'
+                },
+                {
+                    fieldId: 'transDesc',
+                    fieldName: 'description'
+                }
+            ]);
+        },
+
         async loadTransitions(workflowId) {
             this.currentWorkflowId = workflowId;
 
@@ -1219,8 +1303,14 @@
                 const statesData = await statesResponse.json();
 
                 if (statesData.success) {
-                    this.states = statesData.data;
+                    this.states = statesData.data.map(state => ({
+                        ...state,
+                        type: state.state_type
+                    }));
+
+                    console.log('States loaded:', this.states);
                     this.updateStateDropdowns();
+                    this.setupStateChangeHandlers();
                 }
 
                 // Load transitions
@@ -1228,6 +1318,7 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    this.transitions = data.data; // Store transitions for filtering
                     this.renderTransitions(data.data);
                     this.renderTransitionsVisualizer(data.data);
                 }
@@ -1236,16 +1327,131 @@
             }
         },
 
-        updateStateDropdowns() {
+        setupStateChangeHandlers() {
             const fromSelect = document.getElementById('transFromState');
             const toSelect = document.getElementById('transToState');
+            const helperText = document.getElementById('transitionHelperText');
+            const warningText = document.getElementById('transitionWarningText');
+
+            fromSelect.addEventListener('change', (e) => {
+                const fromStateId = e.target.value;
+                // debugger;
+                if (!fromStateId) {
+                    // Reset to state dropdown when from state is cleared
+                    toSelect.disabled = true;
+                    toSelect.innerHTML = '<option value="">Select from state first</option>';
+                    helperText.textContent = '';
+                    warningText.style.display = 'none';
+                    return;
+                }
+
+                // Enable to state dropdown
+                toSelect.disabled = false;
+                
+                // Get the selected from state
+                const fromState = this.states.find(s => s.id == fromStateId);
+                
+                // Get available transitions from this state
+                const availableToStates = this.getAvailableToStates(fromStateId);
+                
+                // Update helper text
+                helperText.textContent = `Select the state to transition from "${fromState.name}"`;
+                // debugger;
+                // Populate to state dropdown with only valid options
+                if (availableToStates.length === 0) {
+                    toSelect.innerHTML = '<option value="">No valid transitions available</option>';
+                    warningText.textContent = `No transitions can be created from "${fromState.name}" state.`;
+                    warningText.style.display = 'block';
+                } else {
+                    const options = availableToStates.map(state =>
+                        `<option value="${state.id}">${state.name} (${state.code})</option>`
+                    ).join('');
+                    
+                    toSelect.innerHTML = '<option value="">Select to state</option>' + options;
+                    warningText.style.display = 'none';
+                }
+            });
+
+            // Optional: Clear warning when to state is selected
+            toSelect.addEventListener('change', () => {
+                if (toSelect.value) {
+                    warningText.style.display = 'none';
+                }
+            });
+        },
+
+        getAvailableToStates(fromStateId) {
+            const fromState = this.states.find(s => s.id == fromStateId);
+            if (!fromState) return [];
+
+            // Get already existing transitions from this state
+            const existingTransitions = (this.transitions || [])
+                .filter(t => t.from_state_id == fromStateId)
+                .map(t => t.to_state_id);
+
+            // Get state_type from database
+            const fromStateType = fromState.state_type || fromState.type;
+
+            // Filter out invalid transitions based on business logic
+            return this.states.filter(state => {
+                const toStateType = state.state_type || state.type;
+
+                // Can't transition to itself
+                if (state.id == fromStateId) return false;
+
+                // Can't create duplicate transitions
+                if (existingTransitions.includes(state.id)) return false;
+
+                // State type specific rules based on state_type from database
+                
+                // Initial state can transition to intermediate states only
+                if (fromStateType === 'initial') {
+                    return toStateType === 'intermediate';
+                }
+
+                // Intermediate states (processing, pending) can transition to:
+                // - Other intermediate states
+                // - Final states (solved, closed)
+                if (fromStateType === 'intermediate') {
+                    return toStateType === 'intermediate' || toStateType === 'final';
+                }
+
+                // Final states (solved, closed)
+                if (fromStateType === 'final') {
+                    // Check if current state is 'solved' by checking state name or code
+                    const fromStateName = fromState.name.toLowerCase();
+                    const fromStateCode = (fromState.code || '').toLowerCase();
+                    
+                    // If this is 'solved' state, allow transition to 'closed'
+                    if (fromStateName.includes('solved') || fromStateCode === 'solved') {
+                        const toStateName = state.name.toLowerCase();
+                        const toStateCode = (state.code || '').toLowerCase();
+                        
+                        // Only allow transition to 'closed' state
+                        return toStateName.includes('closed') || toStateCode === 'closed';
+                    }
+                    
+                    // Other final states (like 'closed') cannot transition anywhere
+                    return false;
+                }
+
+                return false;
+            });
+        },
+
+        updateStateDropdowns() {
+            const fromSelect = document.getElementById('transFromState');
 
             const options = this.states.map(state =>
                 `<option value="${state.id}">${state.name} (${state.code})</option>`
             ).join('');
 
-            fromSelect.innerHTML = '<option value="">Any State (Initial transition)</option>' + options;
-            toSelect.innerHTML = '<option value="">Select state</option>' + options;
+            fromSelect.innerHTML = '<option value="">Select from state</option>' + options;
+
+            // To state will be populated dynamically based on from state selection
+            const toSelect = document.getElementById('transToState');
+            toSelect.disabled = true;
+            toSelect.innerHTML = '<option value="">Select from state first</option>';
         },
 
         renderTransitions(transitions) {
@@ -1345,6 +1551,8 @@
             document.getElementById('transRequiredRole').value = '';
             document.getElementById('transConditions').value = '';
             document.getElementById('transDesc').value = '';
+
+            this.validator.reset(['transName', 'transFromState', 'transToState', 'transRequiredRole', 'transConditions', 'transDesc']);
             document.getElementById('modalTransition').classList.add('active');
         },
 
@@ -1385,8 +1593,17 @@
                 description: document.getElementById('transDesc').value
             };
 
-            if (!formData.name || !formData.to_state_id) {
-                TicketNotifier.showValidationError('Please fill in required fields');
+            const fieldMap = {
+                name: 'transName',
+                from_state_id: 'transFromState',
+                to_state_id: 'transToState',
+                required_role: 'transRequiredRole',
+                conditions: 'transConditions',
+                description: 'transDesc'
+            };
+
+            if (!this.validator.validateAndShowErrors(formData, fieldMap)) {
+                // TicketNotifier.showValidationError('Please fix all validation errors');
                 return;
             }
 
@@ -1446,6 +1663,7 @@
         },
 
         closeModal() {
+            this.validator.reset(['transName', 'transFromState', 'transToState', 'transRequiredRole', 'transConditions', 'transDesc']);
             document.getElementById('modalTransition').classList.remove('active');
         }
     };
@@ -1607,9 +1825,42 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    const options = data.data.map(it =>
-                        `<option value="${it.id}">${it.name}</option>`
-                    ).join('');
+                    let options = '';
+                    
+                    data.data.forEach((group, index) => {
+                        // Service Group header
+                        options += `<option disabled class="service-group-header">
+                            ━━━ ${group.name.toUpperCase()} ━━━
+                        </option>`;
+                        
+                        group.services.forEach(service => {
+                            const hasChildren = service.children && service.children.length > 0;
+                            
+                            if (hasChildren) {
+                                // Parent with children - not selectable
+                                options += `<option disabled class="service-parent">
+                                    • ${service.name}
+                                </option>`;
+                                
+                                // Children - selectable
+                                service.children.forEach(child => {
+                                    options += `<option value="${child.id}" class="service-child">
+                                        &nbsp;&nbsp;&nbsp;└─ ${child.name}
+                                    </option>`;
+                                });
+                            } else {
+                                // Leaf service - selectable
+                                options += `<option value="${service.id}" class="service-leaf">
+                                    • ${service.name}
+                                </option>`;
+                            }
+                        });
+                        
+                        // Separator between groups (except last one)
+                        if (index < data.data.length - 1) {
+                            options += `<option disabled style="padding: 0; height: 2px; background: #e5e7eb;"></option>`;
+                        }
+                    });
 
                     document.getElementById('filterMappingWorkflowItService').innerHTML =
                         '<option value="">All IT Service</option>' + options;
@@ -1797,6 +2048,7 @@
                 WorkflowsSmartUX.checkPrerequisites(),
                 WorkflowManager.init(),
                 StateManager.init(),
+                TransitionManager.init(),
                 WorkflowManager.loadWorkflows(),
                 WorkflowMappingManager.loadMappings(),
                 WorkflowMappingManager.loadItServicesDropdown(),

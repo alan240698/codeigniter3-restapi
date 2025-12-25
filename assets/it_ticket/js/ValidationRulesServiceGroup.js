@@ -63,12 +63,12 @@ const ValidationRulesServiceGroup = {
         code: {
             required: true,
             minLength: 2,
-            maxLength: 20,
+            maxLength: 30,
             pattern: /^[A-Z0-9_]+$/,
             message: {
                 required: 'Ticket type code is required',
                 minLength: 'Code must be at least 2 characters',
-                maxLength: 'Code must not exceed 20 characters',
+                maxLength: 'Code must not exceed 30 characters',
                 pattern: 'Code must be uppercase letters, numbers and underscores only'
             }
         },
@@ -93,7 +93,7 @@ const ValidationRulesServiceGroup = {
             required: true,
             minLength: 3,
             maxLength: 100,
-            pattern: /^[a-zA-Z0-9\s\-_]+$/,
+            pattern: /^[a-zA-Z0-9\s\-_:,.]+$/,
             message: {
                 required: 'It ticket name is required',
                 minLength: 'Name must be at least 3 characters',
@@ -104,12 +104,12 @@ const ValidationRulesServiceGroup = {
         code: {
             required: true,
             minLength: 2,
-            maxLength: 20,
+            maxLength: 40,
             pattern: /^[A-Z0-9_]+$/,
             message: {
                 required: 'It ticket code is required',
                 minLength: 'Code must be at least 2 characters',
-                maxLength: 'Code must not exceed 20 characters',
+                maxLength: 'Code must not exceed 40 characters',
                 pattern: 'Code must be uppercase letters, numbers and underscores only'
             }
         },
@@ -121,6 +121,12 @@ const ValidationRulesServiceGroup = {
                 minLength: 'Description must be at least 10 characters',
                 maxLength: 'Description must not exceed 500 characters'
             }
-        }
+        },
+        input_type: {
+            required: true,
+            message: {
+                required: 'Please select input type'
+            }
+        },
     }
 };

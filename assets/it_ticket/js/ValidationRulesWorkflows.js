@@ -96,5 +96,52 @@ const ValidationRulesWorkflows = {
                 max: 'SLA hours must not exceed 10000'
             }
         },
+    },
+    transitions: {
+         name: {
+            required: true,
+            minLength: 3,
+            maxLength: 50,
+            pattern: /^[a-zA-Z0-9\s\-_]+$/,
+            message: {
+                required: 'Trans name is required',
+                minLength: 'Trans name must be at least 3 characters',
+                maxLength: 'Trans name must not exceed 50 characters',
+                pattern: 'Name can only contain letters, numbers, spaces, hyphens and underscores'
+            }
+        },
+        from_state_id: {
+            required: true,
+            message: {
+                required: 'Select frome state is required',
+            }
+        },
+        to_state_id: {
+            required: true,
+            message: {
+                required: 'Select to state is required',
+            }
+        },
+        required_role: {
+            required: true,
+            message: {
+                required: 'Select role is required',
+            }
+        },
+        conditions: {
+            required: true,
+            message: {
+                required: 'Please enter conditions',
+            }
+        },
+        description: {
+            required: false,
+            minLength: 10,
+            maxLength: 500,
+            message: {
+                minLength: 'Workflow description must be at least 10 characters',
+                maxLength: 'Workflow description must not exceed 500 characters'
+            }
+        },
     }
 };
