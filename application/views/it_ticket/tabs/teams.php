@@ -608,6 +608,46 @@
         selectedTeamId: null,
 
         init() {
+            this.validator = new FormValidationManager(ValidationRulesTeams.team);
+            this.validator.setupFormValidation([{
+                    fieldId: 'teamName',
+                    fieldName: 'name'
+                },
+                {
+                    fieldId: 'teamCode',
+                    fieldName: 'code',
+                    autoUppercase: true
+                },
+                {
+                    fieldId: 'teamLevel',
+                    fieldName: 'support_level'
+                },
+                {
+                    fieldId: 'teamDepartment',
+                    fieldName: 'department_code',
+                    autoUppercase: true
+                },
+                {
+                    fieldId: 'teamOfficeId',
+                    fieldName: 'office_id'
+                },
+                {
+                    fieldId: 'teamCountry',
+                    fieldName: 'country'
+                },
+                {
+                    fieldId: 'teamManagerId',
+                    fieldName: 'manager_id'
+                },
+                {
+                    fieldId: 'teamEmail',
+                    fieldName: 'email'
+                },
+                {
+                    fieldId: 'teamDesc',
+                    fieldName: 'description'
+                },
+            ]);
             this.loadTeams();
         },
 
@@ -852,7 +892,7 @@
                 name: document.getElementById('teamName').value,
                 code: document.getElementById('teamCode').value,
                 support_level: document.getElementById('teamLevel').value,
-                department_code: document.getElementById('teamDepartment').value || null,
+                department_code: document.getElementById('teamDepartment').value,
                 office_id: document.getElementById('teamOfficeId').value || null,
                 country: document.getElementById('teamCountry').value || null,
                 manager_id: document.getElementById('teamManagerId').value || null,
@@ -861,8 +901,20 @@
                 status: document.getElementById('teamStatus').value
             };
 
-            if (!formData.name || !formData.code || !formData.support_level) {
-                TicketNotifier.showValidationError('Please fill in required fields');
+            const teamFieldMap = {
+                name: 'teamName',
+                code: 'teamCode',
+                support_level: 'teamLevel',
+                department_code: 'teamDepartment',
+                office_id: 'teamOfficeId',
+                country: 'teamCountry',
+                manager_id: 'teamManagerId',
+                email: 'teamEmail',
+                description: 'teamDesc',
+            };
+
+            if (!this.validator.validateAndShowErrors(formData, teamFieldMap)) {
+                // TicketNotifier.showValidationError('Please fix all validation errors');
                 return;
             }
 

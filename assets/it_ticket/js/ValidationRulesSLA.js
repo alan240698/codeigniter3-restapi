@@ -29,7 +29,7 @@ const ValidationRulesSLA = {
             }
         },
         first_response_hours: {
-            required: false,
+            required: true,
             min: 1,
             max: 168,
             message: {
