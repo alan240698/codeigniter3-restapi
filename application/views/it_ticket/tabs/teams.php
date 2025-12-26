@@ -623,6 +623,10 @@
                     fieldName: 'support_level'
                 },
                 {
+                    fieldId: 'teamStatus',
+                    fieldName: 'status'
+                },
+                {
                     fieldId: 'teamDepartment',
                     fieldName: 'department_code',
                     autoUppercase: true

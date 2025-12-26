@@ -40,6 +40,7 @@ const ValidationRulesTeams = {
             maxLength: 20,
             pattern: /^[A-Z0-9_]+$/,
             message: {
+                required: 'Department code is required',
                 maxLength: 'Department code must not exceed 20 characters',
                 pattern: 'Department code can contain uppercase letters, numbers and underscores only'
             }
@@ -49,6 +50,7 @@ const ValidationRulesTeams = {
             required: true,
             numeric: true,
             message: {
+                required: 'Office is required',
                 numeric: 'Office must be a valid number'
             }
         },
@@ -57,14 +59,16 @@ const ValidationRulesTeams = {
             required: true,
             maxLength: 50,
             message: {
+                required: 'Country is required',
                 maxLength: 'Country must not exceed 50 characters'
             }
         },
 
         manager_id: {
-            required: false,
+            required: true,
             numeric: true,
             message: {
+                required: 'Manager is required',
                 numeric: 'Manager must be a valid ID'
             }
         },
