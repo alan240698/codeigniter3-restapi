@@ -109,10 +109,10 @@ const ValidationRulesTeams = {
                 required: 'Please select a team'
             }
         },
-        user_id: {
+        employee_id: {
             required: true,
             message: {
-                required: 'Please select a user'
+                required: 'Please select a employee'
             }
         },
         role: {

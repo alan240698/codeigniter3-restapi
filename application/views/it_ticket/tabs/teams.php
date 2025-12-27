@@ -795,6 +795,18 @@
             this.loadCountries();
             this.loadManagers();
 
+            this.validator.reset([
+                'teamName',
+                'teamCode',
+                'teamLevel',
+                'teamDepartment',
+                'teamOfficeId',
+                'teamCountry',
+                'teamManagerId',
+                'teamEmail',
+                'teamDesc',
+            ]);
+
             document.getElementById('modalTeam').classList.add('active');
         },
 
@@ -1017,6 +1029,17 @@
         },
 
         closeModal() {
+            this.validator.reset([
+                'teamName',
+                'teamCode',
+                'teamLevel',
+                'teamDepartment',
+                'teamOfficeId',
+                'teamCountry',
+                'teamManagerId',
+                'teamEmail',
+                'teamDesc',
+            ]);
             document.getElementById('modalTeam').classList.remove('active');
         },
 
@@ -1036,6 +1059,26 @@
     const MemberManager = {
         baseUrl: '<?= base_url() ?>',
         currentTeamId: null,
+
+        init() {
+            this.validator = new FormValidationManager(ValidationRulesTeams.teamMember);
+
+            this.validator.setupFormValidation([{
+                    fieldId: 'memberTeamId',
+                    fieldName: 'team_id'
+                },
+                {
+                    fieldId: 'memberEmployeeId',
+                    fieldName: 'employee_id',
+                    autoUppercase: true
+                },
+                {
+                    fieldId: 'memberRole',
+                    fieldName: 'role'
+                },
+            ]);
+            this.loadMembers();
+        },
 
         async loadMembers(teamId) {
             this.currentTeamId = teamId;
@@ -1123,6 +1166,12 @@
             document.getElementById('memberStatus').value = '1';
             document.getElementById('memberJoinedDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('employeeDetailsPreview').style.display = 'none';
+
+            this.validator.reset([
+                'memberTeamId',
+                'memberEmployeeId',
+                'memberRole',
+            ]);
             document.getElementById('modalMember').classList.add('active');
         },
 
@@ -1170,8 +1219,14 @@
                 joined_at: document.getElementById('memberJoinedDate').value
             };
 
-            if (!formData.employee_id || !formData.role) {
-                TicketNotifier.showValidationError('Please fill in required fields');
+            const fieldMap = {
+                team_id: 'memberTeamId',
+                employee_id: 'memberEmployeeId',
+                role: 'memberRole',
+            };
+
+            if (!this.validator.validateAndShowErrors(formData, fieldMap)) {
+                // TicketNotifier.showValidationError('Please fix all validation errors');
                 return;
             }
 
@@ -1217,6 +1272,11 @@
         },
 
         closeModal() {
+            this.validator.reset([
+                'memberTeamId',
+                'memberEmployeeId',
+                'memberRole',
+            ]);
             document.getElementById('modalMember').classList.remove('active');
         }
     };
@@ -1343,6 +1403,7 @@
         try {
             // TeamManager.init() calls both checkPrerequisites and loadTeams
             await TeamManager.init();
+            await MemberManager.init();
             console.log('✅ Teams Tab fully loaded');
         } catch (error) {
             console.error('Error initializing Teams Tab:', error);

@@ -345,7 +345,7 @@ class HrEmployeeModel extends CI_Model
         $this->db->where('htc.tdate IS NULL', null, false);
         $this->db->where('htdm.is_main', 1);
 
-        $this->db->order_by('htm.fname', 'ASC');
+        $this->db->order_by('fullname', 'ASC');
 
         return $this->db->get()->result();
     }
