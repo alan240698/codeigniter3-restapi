@@ -118,7 +118,7 @@
     </style>
 
     <!-- Smart UX: Setup Progress Indicator -->
-    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #552b2b 0%, #000000 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-clock"></i> SLA Configuration Progress
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Create IT Service first in Service Structure tab</span>

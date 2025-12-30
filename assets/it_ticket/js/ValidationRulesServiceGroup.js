@@ -42,12 +42,6 @@ const ValidationRulesServiceGroup = {
         }
     },
     ticketType: {
-        service_group_id: {
-            required: true,
-            message: {
-                required: 'Please select a service group'
-            }
-        },
         name: {
             required: true,
             minLength: 3,
@@ -83,10 +77,10 @@ const ValidationRulesServiceGroup = {
         }
     },
     itService: {
-        ticket_type_id: {
+        service_group_id: {
             required: true,
             message: {
-                required: 'Please select a ticket type'
+                required: 'Please select a service group'
             }
         },
         name: {

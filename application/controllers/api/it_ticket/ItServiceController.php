@@ -24,14 +24,16 @@ class ItServiceController extends CI_Controller
             $page = (int)$this->input->get('page') ?: 1;
             $perPage = (int)$this->input->get('per_page') ?: 10;
             $search = $this->input->get('search');
-            $ticketTypeId = $this->input->get('ticket_type_id');
+            $serviceGroupId = $this->input->get('service_group_id');
+            $status = $this->input->get('status');
 
             // Get filtered data
             $result = $this->ServiceModel->get_it_services_paginated(
                 $page,
                 $perPage,
                 $search,
-                $ticketTypeId
+                $serviceGroupId,
+                $status
             );
 
             $this->_response([
@@ -240,7 +242,7 @@ class ItServiceController extends CI_Controller
 
             // Validate input
             $_POST = $input;
-            $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer|callback_check_ticket_type_exists');
+            $this->form_validation->set_rules('service_group_id', 'Service Group', 'required|integer|callback_check_service_group_exists');
             $this->form_validation->set_rules('parent_id', 'Parent It Service', 'callback_check_parent_exists');
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
             $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_it_service_code');
@@ -260,7 +262,7 @@ class ItServiceController extends CI_Controller
 
             // Prepare data
             $data = [
-                'ticket_type_id' => $input['ticket_type_id'],
+                'service_group_id' => $input['service_group_id'],
                 'parent_id' => !empty($input['parent_id']) ? $input['parent_id'] : null,
                 'name' => $input['name'],
                 'code' => strtoupper($input['code']),
@@ -314,7 +316,7 @@ class ItServiceController extends CI_Controller
 
             // Force parent_id
             $input['parent_id'] = $parent_id;
-            $input['ticket_type_id'] = $parent->ticket_type_id;
+            $input['service_group_id'] = $parent->service_group_id;
 
             // Validate input
             $this->form_validation->set_data($input);
@@ -336,7 +338,7 @@ class ItServiceController extends CI_Controller
 
             // Prepare data
             $data = [
-                'ticket_type_id' => $parent->ticket_type_id,
+                'service_group_id' => $parent->service_group_id,
                 'parent_id' => $parent_id,
                 'name' => $input['name'],
                 'code' => strtoupper($input['code']),
@@ -390,7 +392,7 @@ class ItServiceController extends CI_Controller
 
             // Validate input
             $this->form_validation->set_data($input);
-            $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer|callback_check_ticket_type_exists');
+            $this->form_validation->set_rules('service_group_id', 'Service Group', 'required|integer|callback_check_service_group_exists');
             $this->form_validation->set_rules('parent_id', 'Parent It Service', 'callback_check_parent_exists|callback_check_not_self_parent[' . $id . ']');
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
             $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_it_service_code_update[' . $id . ']');
@@ -410,7 +412,7 @@ class ItServiceController extends CI_Controller
 
             // Prepare data
             $data = [
-                'ticket_type_id' => $input['ticket_type_id'],
+                'service_group_id' => $input['service_group_id'],
                 'parent_id' => !empty($input['parent_id']) ? $input['parent_id'] : null,
                 'name' => $input['name'],
                 'code' => strtoupper($input['code']),
@@ -500,13 +502,13 @@ class ItServiceController extends CI_Controller
     }
 
     /**
-     * Custom validation: Check if ticket type exists
+     * Custom validation: Check if service group exists
      */
-    public function check_ticket_type_exists($ticketTypeId)
+    public function check_service_group_exists($serviceGroupId)
     {
-        $ticketType = $this->ServiceModel->get_ticket_type($ticketTypeId);
-        if (!$ticketType) {
-            $this->form_validation->set_message('check_ticket_type_exists', 'Ticket Type does not exist');
+        $serviceGroup = $this->ServiceModel->get_group($serviceGroupId);
+        if (!$serviceGroup) {
+            $this->form_validation->set_message('check_service_group_exists', 'Service group does not exist');
             return false;
         }
         return true;

@@ -81,7 +81,7 @@
     </style>
 
     <!-- Smart UX: Setup Progress Indicator -->
-    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #1c191c 0%, #0a0103 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-clipboard-check"></i> Prerequisites Check
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Complete setup in Service Structure tab first</span>

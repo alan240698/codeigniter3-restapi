@@ -215,10 +215,9 @@ class ServiceModel extends CI_Model
     |--------------------------------------------------------------------------
     */
 
-    public function get_ticket_types_paginated($page = 1, $perPage = 10, $search = null, $serviceGroupId = null, $status = null)
+    public function get_ticket_types_paginated($page = 1, $perPage = 10, $search = null, $status = null)
     {
         $this->db->from($this->table_types . ' tt');
-        $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
 
         if (!empty($search)) {
             $this->db->group_start();
@@ -226,10 +225,6 @@ class ServiceModel extends CI_Model
             $this->db->or_like('tt.code', $search);
             $this->db->or_like('tt.description', $search);
             $this->db->group_end();
-        }
-
-        if (!empty($serviceGroupId)) {
-            $this->db->where('tt.service_group_id', $serviceGroupId);
         }
 
         if (!empty($status)) {
@@ -240,23 +235,18 @@ class ServiceModel extends CI_Model
 
         $this->db->select("
             tt.id,
-            tt.service_group_id,
             tt.code,
+            tt.name,
             tt.icon,
             tt.color,
             tt.description,
             tt.sort_order,
             tt.status,
             tt.created_at,
-            tt.updated_at,
-            tt.name,
-            CONCAT('[', sg.name, '] - ', tt.name) AS dropdown_type_name,
-            sg.name as service_group_name,
-            sg.icon as service_group_icon
+            tt.updated_at
         ", false);
 
         $this->db->from($this->table_types . ' tt');
-        $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
 
         if (!empty($search)) {
             $this->db->group_start();
@@ -266,15 +256,12 @@ class ServiceModel extends CI_Model
             $this->db->group_end();
         }
 
-        if (!empty($serviceGroupId)) {
-            $this->db->where('tt.service_group_id', $serviceGroupId);
-        }
-
         if (!empty($status)) {
             $this->db->where('tt.status', $status);
         }
 
         $offset = ($page - 1) * $perPage;
+        $this->db->order_by('tt.sort_order', 'ASC');
         $this->db->order_by('tt.created_at', 'DESC');
         $this->db->limit($perPage, $offset);
 
@@ -311,9 +298,8 @@ class ServiceModel extends CI_Model
      */
     public function get_ticket_type($id)
     {
-        $this->db->select('tt.*, sg.name as service_group_name, sg.icon as service_group_icon');
+        $this->db->select('tt.*');
         $this->db->from($this->table_types . ' tt');
-        $this->db->join($this->table_groups . ' sg', 'tt.service_group_id = sg.id', 'left');
         $this->db->where('tt.id', $id);
 
         return $this->db->get()->row();
@@ -364,7 +350,6 @@ class ServiceModel extends CI_Model
     public function is_ticket_type_code_exists($code, $service_group_id, $exclude_id = null)
     {
         $this->db->where('code', strtoupper(trim($code)));
-        $this->db->where('service_group_id', (int)$service_group_id);
 
         if (!empty($exclude_id)) {
             $this->db->where('id !=', (int)$exclude_id);
@@ -396,14 +381,15 @@ class ServiceModel extends CI_Model
      * @param int $page Current page
      * @param int $perPage Items per page
      * @param string|null $search Search query
-     * @param int|null $ticketTypeId Filter by ticket type
+     * @param int|null $serviceGroupId Filter by service group
+     * @param string|null $status Filter by status
      * @return array ['data' => array, 'total' => int]
      */
-    public function get_it_services_paginated($page = 1, $perPage = 10, $search = null, $ticketTypeId = null)
+    public function get_it_services_paginated($page = 1, $perPage = 10, $search = null, $serviceGroupId = null, $status = null)
     {
         /* ================= COUNT QUERY ================= */
         $this->db->from($this->table_it_ticket_services . ' it');
-        $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
+        $this->db->join($this->table_groups . ' sg', 'it.service_group_id = sg.id', 'left');
 
         if (!empty($search)) {
             $this->db->group_start();
@@ -413,16 +399,20 @@ class ServiceModel extends CI_Model
             $this->db->group_end();
         }
 
-        if (!empty($ticketTypeId)) {
-            $this->db->where('it.ticket_type_id', $ticketTypeId);
+        if (!empty($serviceGroupId)) {
+            $this->db->where('it.service_group_id', $serviceGroupId);
+        }
+
+        if (!empty($status)) {
+            $this->db->where('it.status', $status);
         }
 
         $total = $this->db->count_all_results();
 
         /* ================= DATA QUERY ================= */
-        $this->db->select('it.*, tt.name AS ticket_type_name, parent.name AS parent_name');
+        $this->db->select('it.*, sg.name AS service_group_name, sg.code AS service_group_code, sg.icon AS service_group_icon, parent.name AS parent_name');
         $this->db->from($this->table_it_ticket_services . ' it');
-        $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
+        $this->db->join($this->table_groups . ' sg', 'it.service_group_id = sg.id', 'left');
         $this->db->join($this->table_it_ticket_services . ' parent', 'it.parent_id = parent.id', 'left');
 
         if (!empty($search)) {
@@ -433,14 +423,20 @@ class ServiceModel extends CI_Model
             $this->db->group_end();
         }
 
-        if (!empty($ticketTypeId)) {
-            $this->db->where('it.ticket_type_id', $ticketTypeId);
+        if (!empty($serviceGroupId)) {
+            $this->db->where('it.service_group_id', $serviceGroupId);
+        }
+
+        if (!empty($status)) {
+            $this->db->where('it.status', $status);
         }
 
         $offset = ($page - 1) * $perPage;
 
+        $this->db->order_by('sg.sort_order', 'ASC');
         $this->db->order_by('it.parent_id IS NOT NULL', 'ASC', false);
         $this->db->order_by('it.parent_id', 'ASC');
+        $this->db->order_by('it.sort_order', 'ASC');
         $this->db->order_by('it.name', 'ASC');
 
         $this->db->limit($perPage, $offset);
@@ -464,20 +460,13 @@ class ServiceModel extends CI_Model
             it.code,
             it.parent_id,
             it.input_type,
-            it.sort_order,
-            tt.id AS ticket_type_id,
-            tt.service_group_id
+            it.sort_order
         ", false);
 
         $this->db->from($this->table_it_ticket_services . ' it');
         $this->db->join(
-            $this->table_types . ' tt',
-            'it.ticket_type_id = tt.id',
-            'left'
-        );
-        $this->db->join(
             $this->table_groups . ' sg',
-            'tt.service_group_id = sg.id',
+            'it.service_group_id = sg.id',
             'left'
         );
 
@@ -486,7 +475,7 @@ class ServiceModel extends CI_Model
         $this->db->where('sg.status', 'active');
 
         if (!empty($groupId)) {
-            $this->db->where('tt.service_group_id', $groupId);
+            $this->db->where('it.service_group_id', $groupId);
         }
 
         // Order by service group first, then parent, then sort_order
@@ -506,9 +495,9 @@ class ServiceModel extends CI_Model
      */
     public function get_it_service($id)
     {
-        $this->db->select('it.*, tt.name as ticket_type_name, parent.name as parent_name');
+        $this->db->select('it.*, sg.name as service_group_name, sg.code as service_group_code, parent.name as parent_name');
         $this->db->from($this->table_it_ticket_services . ' it');
-        $this->db->join($this->table_types . ' tt', 'it.ticket_type_id = tt.id', 'left');
+        $this->db->join($this->table_groups . ' sg', 'it.service_group_id = sg.id', 'left');
         $this->db->join($this->table_it_ticket_services . ' parent', 'it.parent_id = parent.id', 'left');
         $this->db->where('it.id', $id);
         

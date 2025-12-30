@@ -22,7 +22,6 @@ class TicketTypeController extends CI_Controller
             $page = (int)$this->input->get('page') ?: 1;
             $perPage = (int)$this->input->get('per_page') ?: 10;
             $search = $this->input->get('search');
-            $serviceGroupId = $this->input->get('service_group_id');
             $status = $this->input->get('status');
 
             // Get filtered data
@@ -30,7 +29,6 @@ class TicketTypeController extends CI_Controller
                 $page, 
                 $perPage, 
                 $search, 
-                $serviceGroupId, 
                 $status
             );
 
@@ -118,7 +116,6 @@ class TicketTypeController extends CI_Controller
             // Validate input
                             $_POST = $input;
 
-            $this->form_validation->set_rules('service_group_id', 'Service Group', 'required|integer|callback_check_service_group_exists');
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
             $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_ticket_code');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
@@ -137,7 +134,6 @@ class TicketTypeController extends CI_Controller
 
             // Prepare data
             $data = [
-                'service_group_id' => $input['service_group_id'],
                 'name' => $input['name'],
                 'code' => strtoupper($input['code']),
                 'icon' => $input['icon'] ?? null,
@@ -193,7 +189,6 @@ class TicketTypeController extends CI_Controller
 
             // Validate input
              $_POST = $input;
-            $this->form_validation->set_rules('service_group_id', 'Service Group', 'required|integer|callback_check_service_group_exists');
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
             $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_ticket_code_update[' . $id . ']');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
@@ -212,7 +207,6 @@ class TicketTypeController extends CI_Controller
 
             // Prepare data
             $data = [
-                'service_group_id' => $input['service_group_id'],
                 'name' => $input['name'],
                 'code' => strtoupper($input['code']),
                 'icon' => $input['icon'] ?? null,
@@ -306,27 +300,16 @@ class TicketTypeController extends CI_Controller
 
     public function check_unique_ticket_code($code)
     {
-        $serviceGroupId = $this->input->post('service_group_id');
         $excludeId      = $this->input->post('id');
-
-        if (empty($serviceGroupId)) {
-            $this->form_validation->set_message(
-                'check_unique_ticket_code',
-                'Service Group is required'
-            );
-            return false;
-        }
 
         $exists = $this->ServiceModel->is_ticket_type_code_exists(
             $code,
-            $serviceGroupId,
             $excludeId
         );
 
         if ($exists) {
             $this->form_validation->set_message(
-                'check_unique_ticket_code',
-                'Code already exists in this Service Group'
+                'check_unique_ticket_code'
             );
             return false;
         }

@@ -117,7 +117,7 @@
     </style>
 
     <!-- Smart UX: Setup Progress Indicator -->
-    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #060606 0%, #4a1085 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-route"></i> Workflow Setup Progress
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Follow the order below</span>

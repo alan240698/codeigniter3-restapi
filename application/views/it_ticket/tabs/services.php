@@ -1,6 +1,6 @@
 <div id="tab-services" class="tab-content active">
     <!-- Smart UX: Setup Progress Indicator -->
-    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #002fff 0%, #18032dff 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div class="setup-progress-container" style="margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #5a6fc7 0%, #2b0255 100%); border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h4 style="margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-route"></i> Setup Progress
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Follow the order below</span>
@@ -117,20 +117,6 @@
                     style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
                     oninput="TicketTypeManager.searchTicketTypes(this.value)">
             </div>
-            <div>
-                <select id="filterTicketTypeServiceGroup" onchange="TicketTypeManager.filterTicketTypes()"
-                    style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 200px;">
-                    <option value="">All Service Groups</option>
-                </select>
-            </div>
-            <div>
-                <select id="filterTicketTypeStatus" onchange="TicketTypeManager.filterTicketTypes()"
-                    style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
         </div>
 
         <div style="width: 100%; overflow-x: auto;">
@@ -138,7 +124,6 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
-                        <th>Service Group</th>
                         <th>Ticket Type Name</th>
                         <th>Code</th>
                         <th>Description</th>
@@ -192,9 +177,17 @@
                     oninput="ItServiceManager.searchItServices(this.value)">
             </div>
             <div>
-                <select id="filterItServiceTicketType" onchange="ItServiceManager.filterItServices()"
+                <select id="filterItServiceServiceGroup" onchange="ItServiceManager.filterItServices()"
                     style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 200px;">
-                    <option value="">All Ticket Types</option>
+                    <option value="">All Service Group</option>
+                </select>
+            </div>
+            <div>
+                <select id="filterItServiceServiceGroupStatus" onchange="ItServiceManager.filterItServices()"
+                    style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                 </select>
             </div>
         </div>
@@ -272,12 +265,6 @@
         <div class="modal-body">
             <input type="hidden" id="ttId">
             <div class="form-group">
-                <label>Service Group <span class="required">*</span></label>
-                <select id="ttServiceGroup">
-                    <option value="">Select Service Group</option>
-                </select>
-            </div>
-            <div class="form-group">
                 <label>Ticket Type Name <span class="required">*</span></label>
                 <input type="text" id="ttName" placeholder="Enter ticket type name">
             </div>
@@ -317,9 +304,9 @@
             <input type="hidden" id="itId">
             <input type="hidden" id="itParentId">
             <div class="form-group">
-                <label>Ticket Type <span class="required">*</span></label>
-                <select id="itTicketType">
-                    <option value="">Select Ticket Type</option>
+                <label>Service Group <span class="required">*</span></label>
+                <select id="itServiceGroup">
+                    <option value="">Select Service Group</option>
                 </select>
             </div>
             <div class="form-group">
@@ -690,7 +677,7 @@
                     this.closeModal();
                     await this.loadServiceGroups();
                     await SmartUXManager.checkPrerequisites();
-                    await TicketTypeManager.loadServiceGroupsDropdown();
+                    await ItServiceManager.loadServiceGroupsDropdown();
                 } else {
                     TicketNotifier.showError(data.message || 'Error saving service group');
                 }
@@ -714,7 +701,7 @@
                     TicketNotifier.showSuccess('Service Group deleted successfully', async () => {
                         await this.loadServiceGroups();
                         await SmartUXManager.checkPrerequisites();
-                        await TicketTypeManager.loadServiceGroupsDropdown();
+                        await ItServiceManager.loadServiceGroupsDropdown();
                     });
                 } else {
                     TicketNotifier.showError(data.message || 'Error deleting service group')
@@ -748,21 +735,17 @@
         perPage: 5,
         totalItems: 0,
         searchQuery: '',
-        filterServiceGroup: '',
-        filterStatus: '',
 
         init() {
             this.validator = new FormValidationManager(ValidationRulesServiceGroup.ticketType);
 
             this.validator.setupFormValidation([
-                { fieldId: 'ttServiceGroup', fieldName: 'service_group_id' },
                 { fieldId: 'ttName', fieldName: 'name' },
                 { fieldId: 'ttCode', fieldName: 'code', autoUppercase: true },
                 { fieldId: 'ttDesc', fieldName: 'description' }
             ]);
 
             this.loadTicketTypes();
-            this.loadServiceGroupsDropdown();
         },
 
         async loadTicketTypes() {
@@ -771,8 +754,6 @@
                     page: this.currentPage,
                     per_page: this.perPage,
                     search: this.searchQuery,
-                    service_group_id: this.filterServiceGroup,
-                    status: this.filterStatus
                 });
 
                 const response = await fetch(`${this.baseUrl}ticket-types?${params}`);
@@ -786,27 +767,6 @@
             } catch (error) {
                 console.error('Error loading ticket types:', error);
                 ServiceManager.showError('ticketTypesTableBody');
-            }
-        },
-
-        async loadServiceGroupsDropdown() {
-            try {
-                const response = await fetch(`${this.baseUrl}ticket-types/all-group`);
-                const data = await response.json();
-
-                if (data.success) {
-                    const filterSelect = document.getElementById('filterTicketTypeServiceGroup');
-                    const modalSelect = document.getElementById('ttServiceGroup');
-
-                    const options = data.data.map(sg =>
-                        `<option value="${sg.id}">${sg.icon || '📁'} ${sg.name}</option>`
-                    ).join('');
-
-                    filterSelect.innerHTML = '<option value="">All Service Groups</option>' + options;
-                    modalSelect.innerHTML = '<option value="">Select Service Group</option>' + options;
-                }
-            } catch (error) {
-                console.error('Error loading service groups:', error);
             }
         },
 
@@ -829,7 +789,6 @@
             tbody.innerHTML = ticketTypes.map((tt, index) => `
                 <tr>
                     <td>${startIndex + index + 1}</td>
-                    <td>${tt.service_group_icon || '📁'} ${tt.service_group_name}</td>
                     <td>${tt.name}</td>
                     <td><span class="badge badge-info">${tt.code}</span></td>
                     <td>${tt.description || '-'}</td>
@@ -894,8 +853,6 @@
         },
 
         filterTicketTypes() {
-            this.filterServiceGroup = document.getElementById('filterTicketTypeServiceGroup').value;
-            this.filterStatus = document.getElementById('filterTicketTypeStatus').value;
             this.currentPage = 1;
             this.loadTicketTypes();
         },
@@ -903,12 +860,11 @@
         openAddTicketType() {
             document.getElementById('modalTicketTypeTitle').textContent = 'Add Ticket Type';
             document.getElementById('ttId').value = '';
-            document.getElementById('ttServiceGroup').value = '';
             document.getElementById('ttName').value = '';
             document.getElementById('ttCode').value = '';
             document.getElementById('ttDesc').value = '';
             document.getElementById('ttStatus').value = 'active';
-            this.validator.reset(['ttServiceGroup', 'ttName', 'ttCode', 'ttDesc']);
+            this.validator.reset(['ttName', 'ttCode', 'ttDesc']);
 
             document.getElementById('modalTicketType').classList.add('active');
         },
@@ -922,7 +878,6 @@
                     const tt = data.data;
                     document.getElementById('modalTicketTypeTitle').textContent = 'Edit Ticket Type';
                     document.getElementById('ttId').value              = tt.id;
-                    document.getElementById('ttServiceGroup').value    = tt.service_group_id;
                     document.getElementById('ttName').value            = tt.name;
                     document.getElementById('ttCode').value            = tt.code;
                     document.getElementById('ttDesc').value            = tt.description || '';
@@ -937,7 +892,6 @@
         async saveTicketType() {
             const id = document.getElementById('ttId').value;
             const formData = {
-                service_group_id: document.getElementById('ttServiceGroup').value,
                 name: document.getElementById('ttName').value,
                 code: document.getElementById('ttCode').value,
                 description: document.getElementById('ttDesc').value,
@@ -945,7 +899,6 @@
             };
 
             const fieldMap = { 
-                service_group_id: 'ttServiceGroup',
                 name: 'ttName', 
                 code: 'ttCode', 
                 description: 'ttDesc' 
@@ -975,7 +928,6 @@
                     this.closeModal();
                     await this.loadTicketTypes();
                     await SmartUXManager.checkPrerequisites();
-                    await ItServiceManager.loadTicketTypesDropdown();
                 } else {
                     TicketNotifier.showError(data.message || 'Error saving ticket type');
                 }
@@ -1010,7 +962,7 @@
         },
 
         closeModal() {
-            this.validator.reset(['ttServiceGroup', 'ttName', 'ttCode', 'ttDesc']);
+            this.validator.reset(['ttName', 'ttCode', 'ttDesc']);
             document.getElementById('modalTicketType').classList.remove('active');
         }
     };
@@ -1022,13 +974,14 @@
         perPage: 50,
         totalItems: 0,
         searchQuery: '',
-        filterTicketType: '',
+        filterServiceGroup: '',
+        filterServiceGroupStatus: '',
 
         init() {
             this.validator = new FormValidationManager(ValidationRulesServiceGroup.itService);
 
             this.validator.setupFormValidation([
-                { fieldId: 'itTicketType', fieldName: 'ticket_type_id' },
+                { fieldId: 'itServiceGroup', fieldName: 'service_group_id' },
                 { fieldId: 'itName', fieldName: 'name' },
                 { fieldId: 'itCode', fieldName: 'code', autoUppercase: true },
                 { fieldId: 'itDesc', fieldName: 'description' },
@@ -1036,7 +989,7 @@
             ]);
 
             this.loadItServices();
-            this.loadTicketTypesDropdown();
+            this.loadServiceGroupsDropdown();
         },
 
         async loadItServices() {
@@ -1045,7 +998,8 @@
                     page: this.currentPage,
                     per_page: this.perPage,
                     search: this.searchQuery,
-                    ticket_type_id: this.filterTicketType
+                    service_group_id: this.filterServiceGroup,
+                    status: this.filterServiceGroupStatus,
                 });
 
                 const response = await fetch(`${this.baseUrl}it-services?${params}`);
@@ -1067,26 +1021,26 @@
             }
         },
 
-        async loadTicketTypesDropdown() {
-            try {
-                const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
-                const data = await response.json();
+        // async loadTicketTypesDropdown() {
+        //     try {
+        //         const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
+        //         const data = await response.json();
 
-                if (data.success) {
-                    const filterSelect = document.getElementById('filterItServiceTicketType');
-                    const modalSelect = document.getElementById('itTicketType');
+        //         if (data.success) {
+        //             const filterSelect = document.getElementById('filterItServiceServiceGroup');
+        //             const modalSelect = document.getElementById('itServiceGroup');
 
-                    const options = data.data.map(tt =>
-                        `<option value="${tt.id}">${tt.name}</option>`
-                    ).join('');
+        //             const options = data.data.map(tt =>
+        //                 `<option value="${tt.id}">${tt.name}</option>`
+        //             ).join('');
 
-                    filterSelect.innerHTML = '<option value="">All Ticket Types</option>' + options;
-                    modalSelect.innerHTML = '<option value="">Select Ticket Type</option>' + options;
-                }
-            } catch (error) {
-                console.error('Error loading ticket types:', error);
-            }
-        },
+        //             filterSelect.innerHTML = '<option value="">All Service Group</option>' + options;
+        //             modalSelect.innerHTML = '<option value="">Select Service Group</option>' + options;
+        //         }
+        //     } catch (error) {
+        //         console.error('Error loading ticket types:', error);
+        //     }
+        // },
 
         renderItServices(itServices) {
             const container = document.getElementById('itServicesTree');
@@ -1120,7 +1074,7 @@
                                 <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${parent.id})">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.ticket_type_id})">
+                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.service_group_id})">
                                     <i class="fas fa-plus"></i> Sub-It-Service
                                 </button>
                                 <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${parent.id})">
@@ -1199,7 +1153,8 @@
         },
 
         filterItServices() {
-            this.filterTicketType = document.getElementById('filterItServiceTicketType').value;
+            this.filterServiceGroup = document.getElementById('filterItServiceServiceGroup').value;
+            this.filterServiceGroupStatus = document.getElementById('filterItServiceServiceGroupStatus').value;
             this.currentPage = 1;
             this.loadItServices();
         },
@@ -1208,32 +1163,32 @@
             document.getElementById('modalItServiceTitle').textContent = 'Add IT Service';
             document.getElementById('itId').value = '';
             document.getElementById('itParentId').value = '';
-            document.getElementById('itTicketType').value = '';
+            document.getElementById('itServiceGroup').value = '';
             document.getElementById('itName').value = '';
             document.getElementById('itCode').value = '';
             document.getElementById('itInputType').value = 'text';
             document.getElementById('itDesc').value = '';
             document.getElementById('itStatus').value = 'active';
 
-            this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc', 'itInputType']);
+            this.validator.reset(['itServiceGroup', 'itName', 'itCode', 'itDesc', 'itInputType']);
 
             document.getElementById('modalItService').classList.add('active');
         },
 
-        openAddSubItService(parentId, ticketTypeId) {
+        openAddSubItService(parentId, serviceGroupId) {
             document.getElementById('modalItServiceTitle').textContent = 'Add Sub-It-Service';
             document.getElementById('itId').value = '';
             document.getElementById('itParentId').value = parentId;
-            const select = document.getElementById('itTicketType');
+            const select = document.getElementById('itServiceGroup');
 
             [...select.options].forEach(option => {
                 option.style.display =
-                    option.value === ticketTypeId || option.value === ''
+                    option.value === serviceGroupId || option.value === ''
                         ? 'block'
                         : 'none';
             });
 
-            select.value = ticketTypeId;
+            select.value = serviceGroupId;
             select.disabled = true;
 
             document.getElementById('itName').value = '';
@@ -1253,7 +1208,7 @@
                     document.getElementById('modalItServiceTitle').textContent = 'Edit IT Service';
                     document.getElementById('itId').value = it.id;
                     document.getElementById('itParentId').value = it.parent_id || '';
-                    document.getElementById('itTicketType').value = it.ticket_type_id;
+                    document.getElementById('itServiceGroup').value = it.service_group_id;
                     document.getElementById('itName').value = it.name;
                     document.getElementById('itCode').value = it.code;
                     document.getElementById('itInputType').value = it.input_type;
@@ -1270,7 +1225,7 @@
             const id = document.getElementById('itId').value;
 
             const formData = {
-                ticket_type_id: document.getElementById('itTicketType').value,
+                service_group_id: document.getElementById('itServiceGroup').value,
                 parent_id: document.getElementById('itParentId').value || null,
                 name: document.getElementById('itName').value,
                 code: document.getElementById('itCode').value,
@@ -1280,7 +1235,7 @@
             };
 
             const fieldMap = { 
-                ticket_type_id: 'itTicketType',
+                service_group_id: 'itServiceGroup',
                 name: 'itName', 
                 code: 'itCode', 
                 description: 'itDesc',
@@ -1341,33 +1296,31 @@
             }
         },
 
-        async loadTicketTypesDropdown() {
+        async loadServiceGroupsDropdown() {
             try {
-                const response = await fetch(`${this.baseUrl}ticket-types`);
+                const response = await fetch(`${this.baseUrl}ticket-types/all-group`);
                 const data = await response.json();
 
                 if (data.success) {
-                    const options = data.data.map(tt =>
-                        `<option value="${tt.id}">${tt.dropdown_type_name}</option>`
+                    const filterSelect = document.getElementById('filterItServiceServiceGroup');
+                    const modalSelect = document.getElementById('itServiceGroup');
+
+                    const options = data.data.map(sg =>
+                        `<option value="${sg.id}">${sg.icon || '📁'} ${sg.name}</option>`
                     ).join('');
 
-                    // Populate modal dropdown
-                    document.getElementById('itTicketType').innerHTML =
-                        '<option value="">Select Ticket Type</option>' + options;
-
-                    // Populate filter dropdown
-                    document.getElementById('filterItServiceTicketType').innerHTML =
-                        '<option value="">All Ticket Types</option>' + options;
+                    filterSelect.innerHTML = '<option value="">All Service Groups</option>' + options;
+                    modalSelect.innerHTML = '<option value="">Select Service Group</option>' + options;
                 }
             } catch (error) {
-                console.error('Error loading ticket types dropdown:', error);
+                console.error('Error loading service groups:', error);
             }
         },
 
         closeModal() {
-            this.validator.reset(['itTicketType', 'itName', 'itCode', 'itDesc', 'itInputType']);
+            this.validator.reset(['itServiceGroup', 'itName', 'itCode', 'itDesc', 'itInputType']);
 
-             const select = document.getElementById('itTicketType');
+             const select = document.getElementById('itServiceGroup');
 
             select.value = '';
             [...select.options].forEach(option => {
@@ -1464,17 +1417,17 @@
             const hintTicketType = document.getElementById('hintTicketType');
 
             if (btnAddTicketType && hintTicketType) {
-                if (sgCount > 0) {
+                // if (sgCount > 0) {
                     btnAddTicketType.disabled = false;
                     btnAddTicketType.style.opacity = '1';
                     btnAddTicketType.style.cursor = 'pointer';
                     hintTicketType.style.display = 'none';
-                } else {
-                    btnAddTicketType.disabled = true;
-                    btnAddTicketType.style.opacity = '0.5';
-                    btnAddTicketType.style.cursor = 'not-allowed';
-                    hintTicketType.style.display = 'block';
-                }
+                // } else {
+                //     btnAddTicketType.disabled = true;
+                //     btnAddTicketType.style.opacity = '0.5';
+                //     btnAddTicketType.style.cursor = 'not-allowed';
+                //     hintTicketType.style.display = 'block';
+                // }
             }
 
             // IT Service Type button
@@ -1482,7 +1435,7 @@
             const hintItService = document.getElementById('hintItService');
 
             if (btnAddItService && hintItService) {
-                if (ttCount > 0) {
+                if (sgCount > 0) {
                     btnAddItService.disabled = false;
                     btnAddItService.style.opacity = '1';
                     btnAddItService.style.cursor = 'pointer';
