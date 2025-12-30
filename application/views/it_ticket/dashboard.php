@@ -749,16 +749,16 @@
 
 <body>
     <!-- Top Header -->
-    <div class="top-header">
+    <!-- <div class="top-header">
         <h1><i class="fas fa-cogs"></i> Admin Panel</h1>
         <p>IT Ticket System Configuration & Management</p>
-    </div>
+    </div> -->
 
     <!-- Main Container -->
     <div class="main-container-ticket">
 
         <!-- Stats Section -->
-        <div class="stats-section">
+        <!-- <div class="stats-section">
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-card-header">
@@ -813,7 +813,6 @@
                 </div>
             </div>
 
-            <!-- Chart -->
             <div class="chart-container">
                 <div class="chart-header">
                     <h3><i class="fas fa-chart-line"></i> System Overview & Performance</h3>
@@ -824,7 +823,7 @@
                     <span style="margin-left: 20px;">Statistical chart</span>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Tab Navigation -->
         <div class="tab-navigation">

@@ -6,15 +6,6 @@
             <span style="font-size: 12px; opacity: 0.8; font-weight: normal; margin-left: auto;">Follow the order below</span>
         </h4>
         <div class="progress-steps" style="display: flex; gap: 15px; flex-wrap: wrap;">
-            <div id="step-service-groups" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; transition: all 0.3s ease;">
-                <div class="step-icon" style="margin-bottom: 8px;">
-                    <i class="fas fa-folder"></i>
-                </div>
-                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Service Groups</div>
-                <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
-                <div class="step-status" style="font-size: 12px; opacity: 0.8;">Start here</div>
-            </div>
-
             <div id="step-ticket-types" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
                 <div class="step-icon" style="margin-bottom: 8px;">
                     <i class="fas fa-ticket"></i>
@@ -24,6 +15,15 @@
                 <div class="step-status" style="font-size: 12px; opacity: 0.8;">Locked</div>
             </div>
 
+            <div id="step-service-groups" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; transition: all 0.3s ease;">
+                <div class="step-icon" style="margin-bottom: 8px;">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Service Groups</div>
+                <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
+                <div class="step-status" style="font-size: 12px; opacity: 0.8;">Start here</div>
+            </div>
+
             <div id="step-it-services" class="progress-step" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; opacity: 0.5; transition: all 0.3s ease;">
                 <div class="step-icon" style="margin-bottom: 8px;">
                     <i class="fas fa-list"></i>
@@ -31,65 +31,6 @@
                 <div class="step-title" style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">IT Services</div>
                 <div class="step-count" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</div>
                 <div class="step-status" style="font-size: 12px; opacity: 0.8;">Locked</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Service Groups Section -->
-    <div class="card">
-        <div class="card-header">
-            <h3></i> Service Groups</h3>
-            <button class="btn btn-primary-it-ticket" onclick="ServiceManager.openAddServiceGroup()">
-                <i class="fas fa-plus"></i> Add Service Group
-            </button>
-        </div>
-
-        <!-- Search & Filter for Service Groups -->
-        <div class="filter-section" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-            <div style="flex: 1;">
-                <input type="text" id="searchServiceGroup" placeholder="Search service groups..."
-                    style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
-                    oninput="ServiceManager.searchServiceGroups(this.value)">
-            </div>
-            <div>
-                <select id="filterServiceGroupStatus" onchange="ServiceManager.filterServiceGroups()"
-                    style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-        </div>
-        <div style="width: 100%; overflow-x: auto;">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">#</th>
-                        <th>Icon</th>
-                        <th>Name</th>
-                        <th>Code</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th style="width: 180px;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="serviceGroupsTableBody">
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px;">
-                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
-                            <p style="margin-top: 10px; color: #6b7280;">Loading service groups...</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- Pagination for Service Groups -->
-        <div id="serviceGroupsPagination" class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; /*padding: 15px; background: #f9fafb;*/ border-radius: 8px;">
-            <div class="pagination-info" style="color: #6b7280; font-size: 14px;">
-                Showing <strong id="sgShowingStart">0</strong> to <strong id="sgShowingEnd">0</strong> of <strong id="sgTotal">0</strong> entries
-            </div>
-            <div class="pagination-buttons" id="sgPaginationButtons">
-                <!-- Pagination buttons will be inserted here -->
             </div>
         </div>
     </div>
@@ -148,6 +89,65 @@
                 Showing <strong id="ttShowingStart">0</strong> to <strong id="ttShowingEnd">0</strong> of <strong id="ttTotal">0</strong> entries
             </div>
             <div class="pagination-buttons" id="ttPaginationButtons">
+                <!-- Pagination buttons will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Groups Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3></i> Service Groups</h3>
+            <button class="btn btn-primary-it-ticket" onclick="ServiceManager.openAddServiceGroup()">
+                <i class="fas fa-plus"></i> Add Service Group
+            </button>
+        </div>
+
+        <!-- Search & Filter for Service Groups -->
+        <div class="filter-section" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1;">
+                <input type="text" id="searchServiceGroup" placeholder="Search service groups..."
+                    style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
+                    oninput="ServiceManager.searchServiceGroups(this.value)">
+            </div>
+            <div>
+                <select id="filterServiceGroupStatus" onchange="ServiceManager.filterServiceGroups()"
+                    style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+        </div>
+        <div style="width: 100%; overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Icon</th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="serviceGroupsTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
+                            <p style="margin-top: 10px; color: #6b7280;">Loading service groups...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination for Service Groups -->
+        <div id="serviceGroupsPagination" class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; /*padding: 15px; background: #f9fafb;*/ border-radius: 8px;">
+            <div class="pagination-info" style="color: #6b7280; font-size: 14px;">
+                Showing <strong id="sgShowingStart">0</strong> to <strong id="sgShowingEnd">0</strong> of <strong id="sgTotal">0</strong> entries
+            </div>
+            <div class="pagination-buttons" id="sgPaginationButtons">
                 <!-- Pagination buttons will be inserted here -->
             </div>
         </div>
