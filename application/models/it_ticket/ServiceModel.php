@@ -134,14 +134,14 @@ class ServiceModel extends CI_Model
     }
 
     /**
-     * Check if service group has related ticket types
+     * Check if service group has related it service
      * @param int $group_id Service group ID
      * @return bool
      */
-    public function group_has_ticket_types($group_id)
+    public function group_has_it_service($group_id)
     {
         $this->db->where('service_group_id', $group_id);
-        $count = $this->db->count_all_results($this->table_types);
+        $count = $this->db->count_all_results($this->table_it_ticket_services);
         return $count > 0;
     }
 
@@ -356,18 +356,6 @@ class ServiceModel extends CI_Model
         }
 
         return $this->db->count_all_results($this->table_types) > 0;
-    }
-
-    /**
-     * Check if ticket type has it services
-     * @param int $ticket_type_id Ticket type ID
-     * @return bool
-     */
-    public function ticket_type_has_it_service($ticket_type_id)
-    {
-        $this->db->where('ticket_type_id', $ticket_type_id);
-        $count = $this->db->count_all_results($this->table_it_ticket_services);
-        return $count > 0;
     }
 
     /*

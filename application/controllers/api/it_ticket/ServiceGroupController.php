@@ -232,10 +232,10 @@ class ServiceGroupController extends CI_Controller
             }
 
             // Check if has ticket types
-            if ($this->ServiceModel->group_has_ticket_types($id)) {
+            if ($this->ServiceModel->group_has_it_service($id)) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Cannot delete service group with existing ticket types'
+                    'message' => 'Cannot delete service group with existing it service'
                 ], 400);
                 return;
             }

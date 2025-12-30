@@ -1063,45 +1063,89 @@
                 const parentChildren = children.filter(c => c.parent_id === parent.id);
 
                 return `
-                    <div style="padding: 15px; border: 1px solid #3b82f6; /* background: antiquewhite;  border-left: 4px solid #3b82f6;*/ margin-bottom: 8px; border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong>${parent.name}</strong>
-                                <span class="badge badge-info" style="margin-left: 10px;">${parent.code}</span>
-                                <span class="badge badge-warning" style="margin-left: 5px;">${parent.input_type}</span>
+                    <div style="margin-bottom: 16px; border: 1px solid #e5e7eb; background: #ffffff; border-radius: 8px; overflow: hidden;">
+                        <!-- Parent Row -->
+                        <div style="padding: 16px 20px; background: #fafbfc; display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; font-size: 15px; color: #111827; margin-bottom: 8px;">
+                                    ${parent.name}
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px;">
+                                    <span style="color: #6b7280;">
+                                        <i class="fas fa-hashtag" style="font-size: 10px; opacity: 0.6;"></i> ${parent.code}
+                                    </span>
+                                    <span style="color: #d1d5db;">•</span>
+                                    <span style="color: #6b7280;">
+                                        <i class="fas fa-tag" style="font-size: 10px; opacity: 0.6;"></i> ${parent.input_type}
+                                    </span>
+                                    ${parent.service_group_name ? `
+                                        <span style="color: #d1d5db;">•</span>
+                                        <span style="color: #2563eb;">
+                                            <i class="fas fa-layer-group" style="font-size: 10px;"></i> ${parent.service_group_name}
+                                        </span>
+                                    ` : ''}
+                                    ${parentChildren.length > 0 ? `
+                                        <span style="color: #d1d5db;">•</span>
+                                        <span style="color: #059669; font-weight: 500;">
+                                            ${parentChildren.length} sub-service${parentChildren.length > 1 ? 's' : ''}
+                                        </span>
+                                    ` : ''}
+                                </div>
                             </div>
-                            <div class="action-buttons">
-                                <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${parent.id})">
+                            <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                                <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${parent.id})" 
+                                        style="padding: 7px 12px; font-size: 13px;" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.service_group_id})">
-                                    <i class="fas fa-plus"></i> Sub-It-Service
+                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.service_group_id})" 
+                                        style="padding: 7px 12px; font-size: 13px;" title="Add Sub-Service">
+                                    <i class="fas fa-plus"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${parent.id})">
+                                <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${parent.id})" 
+                                        style="padding: 7px 12px; font-size: 13px;" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
 
-                        ${parentChildren.map(child => `
-                            <div class="tree-item level-2">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <i class="fas fa-arrow-turn-down-right" style="color: #9ca3af; margin-right: 10px;"></i>
-                                        <strong>${child.name}</strong>
-                                        <span class="badge badge-info" style="margin-left: 10px;">${child.code}</span>
+                        <!-- Children List -->
+                        ${parentChildren.length > 0 ? `
+                            <div style="padding: 8px 20px 12px;">
+                                ${parentChildren.map((child, index) => `
+                                    <div style="padding: 12px 16px; margin-top: 8px; background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                                        <div style="flex: 1; min-width: 0; display: flex; align-items: start; gap: 10px;">
+                                            <i class="fas fa-level-up-alt" style="color: #9ca3af; font-size: 11px; transform: rotate(90deg); margin-top: 4px; flex-shrink: 0;"></i>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="font-weight: 500; font-size: 14px; color: #374151; margin-bottom: 6px;">
+                                                    ${child.name}
+                                                </div>
+                                                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 11px;">
+                                                    <span style="color: #6b7280;">
+                                                        <i class="fas fa-hashtag" style="font-size: 9px; opacity: 0.6;"></i> ${child.code}
+                                                    </span>
+                                                    ${child.service_group_name ? `
+                                                        <span style="color: #d1d5db;">•</span>
+                                                        <span style="color: #2563eb;">
+                                                            <i class="fas fa-layer-group" style="font-size: 9px;"></i> ${child.service_group_name}
+                                                        </span>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                                            <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${child.id})" 
+                                                    style="padding: 6px 10px; font-size: 12px;" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${child.id})" 
+                                                    style="padding: 6px 10px; font-size: 12px;" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-sm btn-primary-it-ticket" onclick="ItServiceManager.editItService(${child.id})">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger-it-ticket" onclick="ItServiceManager.deleteItService(${child.id})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                `).join('')}
                             </div>
-                        `).join('')}
+                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -1290,6 +1334,8 @@
                         await this.loadItServices();
                         await SmartUXManager.checkPrerequisites();
                     });
+                } else {
+                    TicketNotifier.showError(data.has_children ? 'This it service has sub-it-service' : data.message);
                 }
             } catch (error) {
                 TicketNotifier.showError('Error deleting it service');
