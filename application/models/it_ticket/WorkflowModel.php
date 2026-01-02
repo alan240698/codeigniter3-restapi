@@ -419,12 +419,13 @@ public function get_it_service_workflow_mappings($itServiceId = null)
         COUNT(ws.id) as states_count
     ');
     $this->db->from($this->table_it_service_workflows . ' itw');
-    $this->db->join('it_ticket_services it', 'itw.id = it.id', 'left');
+    $this->db->join('it_ticket_services it', 'itw.it_service_id = it.id', 'left');
     $this->db->join($this->table_workflows . ' w', 'itw.workflow_id = w.id', 'left');
     $this->db->join($this->table_states . ' ws', 'w.id = ws.workflow_id', 'left');
+    $this->db->join($this->table_transitions . ' wt', 'w.id = wt.workflow_id', 'left');
 
     if ($itServiceId) {
-        $this->db->where('itw.id', $itServiceId);
+        $this->db->where('itw.it_service_id', $itServiceId);
     }
 
     $this->db->group_by('itw.id');
@@ -458,7 +459,7 @@ public function get_active_workflow_by_it_service($itServiceId)
     $this->db->from($this->table_it_service_workflows . ' itw');
     $this->db->join($this->table_workflows . ' w', 'itw.workflow_id = w.id', 'left');
     $this->db->join($this->table_states . ' ws', 'w.id = ws.workflow_id', 'left');
-    $this->db->where('itw.id', $itServiceId);
+    $this->db->where('itw.it_service_id', $itServiceId);
     $this->db->where('itw.is_active', 1);
     $this->db->group_by('itw.id');
 
@@ -470,7 +471,7 @@ public function get_active_workflow_by_it_service($itServiceId)
  */
 public function get_mapping_by_it_service_and_workflow($itServiceId, $workflowId)
 {
-    $this->db->where('id', $itServiceId);
+    $this->db->where('it_service_id', $itServiceId);
     $this->db->where('workflow_id', $workflowId);
     return $this->db->get($this->table_it_service_workflows)->row();
 }
@@ -507,7 +508,7 @@ public function delete_it_service_workflow($id)
  */
 public function deactivate_it_service_workflows($itServiceId, $excludeId = null)
 {
-    $this->db->where('id', $itServiceId);
+    $this->db->where('it_service_id', $itServiceId);
     $this->db->where('is_active', 1);
 
     if ($excludeId !== null) {
@@ -527,7 +528,7 @@ public function mapping_has_active_tickets($mappingId)
         return false;
     }
 
-    $this->db->where('id', $mapping->id);
+    $this->db->where('it_service_id', $mapping->it_service_id);
     $this->db->where('workflow_id', $mapping->workflow_id);
     $this->db->where_in('status', ['open', 'in_progress', 'pending']); // Adjust status values as needed
     
@@ -560,15 +561,15 @@ public function get_workflow_mapping_stats()
     $stats['inactive_mappings'] = $this->db->count_all_results($this->table_it_service_workflows);
 
     // Mapped it services (distinct)
-    $this->db->select('DISTINCT id');
+    $this->db->select('DISTINCT it_service_id');
     $this->db->where('is_active', 1);
     $stats['mapped_it_services'] = $this->db->count_all_results($this->table_it_service_workflows);
 
     // Unmapped it services
     $this->db->select('COUNT(*) as count');
     $this->db->from('it_ticket_services it');
-    $this->db->join($this->table_it_service_workflows . ' itw', 'it.id = itw.id AND itw.is_active = 1', 'left');
-    $this->db->where('itw.id IS NULL');
+    $this->db->join($this->table_it_service_workflows . ' itw', 'it.id = itw.it_service_id AND itw.is_active = 1', 'left');
+    $this->db->where('itw.it_service_id IS NULL');
     $result = $this->db->get()->row();
     $stats['unmapped_it_services'] = $result ? $result->count : 0;
 
@@ -590,7 +591,7 @@ public function get_it_services_with_workflows()
         itw.is_active as has_workflow
     ');
     $this->db->from('it_ticket_services it');
-    $this->db->join($this->table_it_service_workflows . ' itw', 'it.id = itw.id AND itw.is_active = 1', 'left');
+    $this->db->join($this->table_it_service_workflows . ' itw', 'it.id = itw.it_service_id AND itw.is_active = 1', 'left');
     $this->db->join($this->table_workflows . ' w', 'itw.workflow_id = w.id', 'left');
     $this->db->order_by('it.name', 'ASC');
 
@@ -618,7 +619,7 @@ public function bulk_assign_workflow($itServiceIds, $workflowId)
         } else {
             // Create new mapping
             $this->create_it_service_workflow([
-                'id' => $itServiceId,
+                'it_service_id' => $itServiceId,
                 'workflow_id' => $workflowId,
                 'is_active' => 1,
                 'created_at' => date('Y-m-d H:i:s')

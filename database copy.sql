@@ -666,3 +666,79 @@ CREATE TABLE IF NOT EXISTS `it_ticket_template_actions` (
   KEY `idx_instance_id` (`instance_id`),
   KEY `idx_action_type` (`action_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- PHASE 7: SOLUTION MANAGEMENT TABLES
+-- Bảng quản lý solutions với history và versioning
+-- ============================================
+
+-- 27. Ticket Solutions (depends on: it_ticket_tickets)
+CREATE TABLE `it_ticket_solutions` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ticket_id` INT UNSIGNED NOT NULL,
+  `solution_text` TEXT NOT NULL,
+  `solution_type` ENUM('temporary', 'permanent', 'workaround') NOT NULL DEFAULT 'permanent',
+  `is_approved` TINYINT(1) NOT NULL DEFAULT 0,
+  `approved_by` INT UNSIGNED DEFAULT NULL,
+  `approved_at` DATETIME DEFAULT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `version` INT NOT NULL DEFAULT 1,
+  `parent_solution_id` INT UNSIGNED DEFAULT NULL COMMENT 'For revisions',
+  `provided_by` INT UNSIGNED NOT NULL,
+  `provided_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_ticket` (`ticket_id`),
+  INDEX `idx_is_active` (`is_active`),
+  INDEX `idx_is_approved` (`is_approved`),
+  INDEX `idx_provided_by` (`provided_by`),
+  INDEX `idx_parent_solution` (`parent_solution_id`),
+  INDEX `idx_version` (`ticket_id`, `version`),
+  CONSTRAINT `fk_solutions_ticket` FOREIGN KEY (`ticket_id`) 
+    REFERENCES `it_ticket_tickets` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_solutions_parent` FOREIGN KEY (`parent_solution_id`) 
+    REFERENCES `it_ticket_solutions` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Ticket solutions with history and versioning';
+
+-- 28. Solution Attachments (depends on: it_ticket_solutions)
+CREATE TABLE `it_ticket_solution_attachments` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `solution_id` INT UNSIGNED NOT NULL,
+  `filename` VARCHAR(255) NOT NULL,
+  `original_filename` VARCHAR(255) NOT NULL,
+  `file_path` VARCHAR(500) NOT NULL,
+  `file_size` INT UNSIGNED NOT NULL,
+  `mime_type` VARCHAR(100) NOT NULL,
+  `uploaded_by` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_solution` (`solution_id`),
+  INDEX `idx_uploaded_by` (`uploaded_by`),
+  CONSTRAINT `fk_solution_attachments_solution` FOREIGN KEY (`solution_id`) 
+    REFERENCES `it_ticket_solutions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Solution attachments (screenshots, docs, configs)';
+
+-- ============================================
+-- PHASE 8: ALTER EXISTING TABLES
+-- Thêm fields mới vào bảng đã tồn tại
+-- ============================================
+
+-- Add active_solution_id to tickets table (hybrid approach)
+ALTER TABLE `it_ticket_tickets`
+ADD COLUMN `active_solution_id` INT UNSIGNED DEFAULT NULL 
+COMMENT 'Reference to current active solution'
+AFTER `solution_provided_by`;
+
+ALTER TABLE `it_ticket_tickets`
+ADD CONSTRAINT `fk_tickets_active_solution` 
+FOREIGN KEY (`active_solution_id`) 
+REFERENCES `it_ticket_solutions` (`id`) 
+ON DELETE SET NULL;
+
+-- Add requires_solution to IT Services table
+ALTER TABLE `it_ticket_services`
+ADD COLUMN `requires_solution` TINYINT(1) NOT NULL DEFAULT 1 
+COMMENT 'Require solution before close' 
+AFTER `status`;

@@ -24,11 +24,11 @@ class RulesModel extends CI_Model
             st.name as target_team_name
         ');
         $this->db->from($this->table_routing . ' rr');
-        $this->db->join($this->table_it_ticket_services . ' it', 'rr.id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'rr.it_service_id = it.id', 'left');
         $this->db->join($this->table_teams . ' st', 'rr.target_team_id = st.id', 'left');
 
         if (!empty($it_service_id)) {
-            $this->db->where('rr.id', $it_service_id);
+            $this->db->where('rr.it_service_id', $it_service_id);
         }
 
         if (!empty($status)) {
@@ -104,10 +104,10 @@ class RulesModel extends CI_Model
             it.name as it_service_name
         ');
         $this->db->from($this->table_approval . ' ar');
-        $this->db->join($this->table_it_ticket_services . ' it', 'ar.id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'ar.it_service_id = it.id', 'left');
 
         if (!empty($it_service_id)) {
-            $this->db->where('ar.id', $it_service_id);
+            $this->db->where('ar.it_service_id', $it_service_id);
         }
 
         $this->db->order_by('ar.created_at', 'DESC');
@@ -166,14 +166,14 @@ class RulesModel extends CI_Model
             st.support_level
         ');
         $this->db->from($this->table_level . ' lr');
-        $this->db->join($this->table_it_ticket_services . ' it', 'lr.id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'lr.it_service_id = it.id', 'left');
         $this->db->join($this->table_teams . ' st', 'lr.support_team_id = st.id', 'left');
 
         if (!empty($it_service_id)) {
-            $this->db->where('lr.id', $it_service_id);
+            $this->db->where('lr.it_service_id', $it_service_id);
         }
 
-        $this->db->order_by('lr.id', 'ASC');
+        $this->db->order_by('lr.it_service_id', 'ASC');
         $this->db->order_by('lr.level_number', 'ASC');
         
         return $this->db->get()->result();
@@ -257,7 +257,7 @@ class RulesModel extends CI_Model
             it.name as it_service_name
         ');
         $this->db->from($this->table_custom_fields . ' cf');
-        $this->db->join($this->table_it_ticket_services . ' it', 'cf.id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'cf.it_service_id = it.id', 'left');
 
         if (!empty($it_service_id)) {
             $this->db->where('cf.id', $it_service_id);

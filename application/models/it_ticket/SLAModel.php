@@ -176,11 +176,11 @@ public function get_all_sla_policies($status = 'active')
             sp.business_hours_only
         ');
         $this->db->from($this->table_mappings . ' its');
-        $this->db->join($this->table_it_ticket_services . ' it', 'its.id = it.id', 'left');
+        $this->db->join($this->table_it_ticket_services . ' it', 'its.it_service_id = it.id', 'left');
         $this->db->join($this->table_policies . ' sp', 'its.sla_policy_id = sp.id', 'left');
 
         if (!empty($it_service_id)) {
-            $this->db->where('its.id', $it_service_id);
+            $this->db->where('its.it_service_id', $it_service_id);
         }
 
         $this->db->order_by('its.is_active', 'DESC');
@@ -213,7 +213,7 @@ public function get_all_sla_policies($status = 'active')
         ');
         $this->db->from($this->table_mappings . ' its');
         $this->db->join($this->table_policies . ' sp', 'its.sla_policy_id = sp.id');
-        $this->db->where('its.id', $it_service_id);
+        $this->db->where('its.it_service_id', $it_service_id);
         $this->db->where('its.is_active', 1);
         $this->db->where('sp.status', 'active');
         
@@ -252,7 +252,7 @@ public function get_all_sla_policies($status = 'active')
      */
     public function deactivate_all_for_it_service($it_service_id)
     {
-        $this->db->where('id', $it_service_id);
+        $this->db->where('it_service_id', $it_service_id);
         return $this->db->update($this->table_mappings, ['is_active' => 0]);
     }
 
