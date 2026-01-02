@@ -313,6 +313,23 @@ $route['template/action/(:any)'] = 'TemplateViewController/action/$1';
 
 /*
 |--------------------------------------------------------------------------
+| USER TICKET INTERFACE
+|--------------------------------------------------------------------------
+*/
+
+// User Ticket Pages
+$route['my-tickets'] = 'it_ticket/user/UserTicket/index';
+$route['my-tickets/create'] = 'it_ticket/user/UserTicket/create';
+$route['my-tickets/store'] = 'it_ticket/user/UserTicket/store';
+$route['my-tickets/(:num)'] = 'it_ticket/user/UserTicket/show/$1';
+
+// AJAX Endpoints for User Interface
+$route['my-tickets/service-data'] = 'it_ticket/user/UserTicket/get_service_data';
+$route['my-tickets/services-by-group/(:num)'] = 'it_ticket/user/UserTicket/get_services_by_group/$1';
+$route['my-tickets/custom-fields/(:num)'] = 'it_ticket/user/UserTicket/get_custom_fields/$1';
+
+/*
+|--------------------------------------------------------------------------
 | END SUPER ADMIN ROUTES
 |--------------------------------------------------------------------------
 */
@@ -321,9 +338,37 @@ $route['default_controller'] = 'arche_ticket/ticket/index';
 // $route['arche_ticket']        = 'arche_ticket/ticket/index';
 // $route['arche_ticket/create'] = 'arche_ticket/ticket/create';
 
+
+/*
+|--------------------------------------------------------------------------  
+| USER TICKET ROUTES
+|--------------------------------------------------------------------------  
+*/
+$route['my-tickets'] = 'it_ticket/user/UserTicket/index';
+$route['my-tickets/create'] = 'it_ticket/user/UserTicket/create';
+$route['my-tickets/store'] = 'it_ticket/user/UserTicket/store';
+$route['my-tickets/(:num)'] = 'it_ticket/user/UserTicket/show/$1';
+$route['my-tickets/services-by-group/(:num)'] = 'it_ticket/user/UserTicket/get_services_by_group/$1';
+$route['my-tickets/custom-fields/(:num)'] = 'it_ticket/user/UserTicket/get_custom_fields/$1';
+
+/*
+|--------------------------------------------------------------------------  
+| TICKET MANAGEMENT ROUTES (Multi-Tab System)
+|--------------------------------------------------------------------------  
+*/
+// View Page
+$route['ticket-management'] = 'it_ticket/TicketManagementViewController/index';
+
+// API Endpoints
+$route['api/it_ticket/ticket-management/my-created'] = 'api/it_ticket/TicketManagementController/my_created';
+$route['api/it_ticket/ticket-management/my-assigned'] = 'api/it_ticket/TicketManagementController/my_assigned';
+$route['api/it_ticket/ticket-management/my-team'] = 'api/it_ticket/TicketManagementController/my_team';
+$route['api/it_ticket/ticket-management/counts'] = 'api/it_ticket/TicketManagementController/counts';
+
 // Arche ticket
 $route['tickets'] = "arche_ticket/ticket/index";
 $route['tickets/list'] = "arche_ticket/ticket/list";
+$route['tickets/create'] = 'it_ticket/user/UserTicket/store';
 $route['tickets/view/(:num)'] = "arche_ticket/ticket/view/$1";
 $route['tickets/reopen/(:num)'] = "arche_ticket/ticket/reopen/$1";
 

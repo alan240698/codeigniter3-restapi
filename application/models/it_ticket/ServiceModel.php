@@ -572,4 +572,79 @@ class ServiceModel extends CI_Model
         $this->db->order_by('name', 'ASC');
         return $this->db->get($this->table_it_ticket_services)->result();
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALIAS METHODS - For backward compatibility
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Alias for getAllServiceGroup - Get all service groups
+     * @param string $status Filter by status
+     * @return array
+     */
+    public function get_all_groups($status = 'active')
+    {
+        return $this->getAllServiceGroup($status);
+    }
+
+    /**
+     * Get all ticket types (for dropdown)
+     * @param string $status Filter by status
+     * @return array
+     */
+    public function get_all_ticket_types($status = 'active')
+    {
+        $this->db->select('id, code, name, icon, color');
+        $this->db->from($this->table_types);
+        
+        if (!empty($status)) {
+            $this->db->where('status', $status);
+        }
+        
+        $this->db->order_by('sort_order', 'ASC');
+        $this->db->order_by('name', 'ASC');
+        
+        return $this->db->get()->result_array();
+    }
+
+    /**
+     * Get IT services by service group ID
+     * @param int $groupId Service group ID
+     * @return array
+     */
+    public function get_it_services_by_group($groupId)
+    {
+        $this->db->select('
+            it.id,
+            it.name,
+            it.code,
+            it.parent_id,
+            it.input_type,
+            it.sort_order
+        ', false);
+        
+        $this->db->from($this->table_it_ticket_services . ' it');
+        $this->db->where('it.service_group_id', $groupId);
+        $this->db->where('it.status', 'active');
+        
+        $this->db->order_by('it.parent_id', 'ASC');
+        $this->db->order_by('it.sort_order', 'ASC');
+        $this->db->order_by('it.name', 'ASC');
+        
+        return $this->db->get()->result_array();
+    }
+
+    /**
+     * Get single IT service by ID
+     * @param int $id IT service ID
+     * @return array|null
+     */
+    public function get_it_service_by_id($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->where('status', 'active');
+        return $this->db->get($this->table_it_ticket_services)->row_array();
+    }
 }

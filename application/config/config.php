@@ -478,7 +478,9 @@ $config['csrf_exclude_uris'] = array(
     '^custom-fields/.*$',
     '^sla-policies/.*$',
     '^it-service-sla/.*$',
-    '^it-service-workflows/.*$'
+    '^it-service-workflows/.*$',
+    '^my-tickets/.*$',
+    '^tickets/.*$'
 );
 
 /*
