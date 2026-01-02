@@ -257,7 +257,7 @@
             }
         }
 
-        /* Loading State */
+       /* Loading State - Simple Version */
         .loading-overlay {
             position: relative;
             pointer-events: none;
@@ -270,8 +270,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.9);
             z-index: 999;
             border-radius: 12px;
         }
@@ -282,9 +281,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 4px solid #e5e7eb;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e5e7eb;
             border-top-color: #3b82f6;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -292,64 +291,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .loading-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 1001;
-            pointer-events: none;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 20px;
-            position: relative;
-        }
-
-        .loading-text {
-            color: #1f2937;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .loading-subtext {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-
-        @keyframes dots {
-
-            0%,
-            20% {
-                content: '';
-            }
-
-            40% {
-                content: '.';
-            }
-
-            60% {
-                content: '..';
-            }
-
-            80%,
-            100% {
-                content: '...';
-            }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         /* Card Styles */
@@ -969,16 +911,6 @@
 
             showLoading(container) {
                 container.classList.add('loading-overlay');
-
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'loading-content';
-                loadingDiv.innerHTML = `
-                    <div class="loading-spinner"></div>
-                    <div class="loading-text">Loading data<span class="loading-dots"></span></div>
-                    <div class="loading-subtext">Please wait a moment</div>
-                `;
-
-                container.appendChild(loadingDiv);
             },
 
             hideLoading(container) {
