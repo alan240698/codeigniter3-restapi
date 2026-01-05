@@ -5,9 +5,10 @@ class ServiceGroupController extends CI_Controller
 {
     public function __construct() {
         parent::__construct();
+
         $this->load->library(['form_validation']);
         $this->load->model('it_ticket/ServiceModel');
-        
+
         // Set JSON response header
         header('Content-Type: application/json');
     }
@@ -20,23 +21,21 @@ class ServiceGroupController extends CI_Controller
     {
         try {
             // Get query parameters
-            $page = (int)$this->input->get('page') ?: 1;
-            $perPage = (int)$this->input->get('per_page') ?: 10;
-            $search = $this->input->get('search');
-            $status = $this->input->get('status');
+            $page       = (int)$this->input->get('page') ?: 1;
+            $perPage    = (int)$this->input->get('per_page') ?: 10;
+            $search     = $this->input->get('search');
+            $status     = $this->input->get('status');
 
-            // Calculate offset
-            $offset = ($page - 1) * $perPage;
             // Get filtered data
             $result = $this->ServiceModel->get_groups_paginated($page, $perPage, $search, $status);
 
             $this->_response([
-                'success' => true,
-                'data' => $result['data'],
-                'total' => $result['total'],
-                'page' => $page,
-                'per_page' => $perPage,
-                'total_pages' => ceil($result['total'] / $perPage)
+                'success'       => true,
+                'data'          => $result['data'],
+                'total'         => $result['total'],
+                'page'          => $page,
+                'per_page'      => $perPage,
+                'total_pages'   => ceil($result['total'] / $perPage)
             ]);
 
         } catch (Exception $e) {
@@ -61,12 +60,13 @@ class ServiceGroupController extends CI_Controller
                     'success' => false,
                     'message' => 'Service Group not found'
                 ], 404);
+
                 return;
             }
 
             $this->_response([
-                'success' => true,
-                'data' => $serviceGroup
+                'success'   => true,
+                'data'      => $serviceGroup
             ]);
 
         } catch (Exception $e) {
@@ -88,7 +88,7 @@ class ServiceGroupController extends CI_Controller
             $input = json_decode($rawInput, true);
 
             // Validate input
-             $_POST = $input;
+            $_POST = $input;
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
             $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_code');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
@@ -105,26 +105,36 @@ class ServiceGroupController extends CI_Controller
                 return;
             }
 
+            // Determine sort_order
+            $sort_order = isset($input['sort_order']) && $input['sort_order'] >= 0
+                ? (int)$input['sort_order'] 
+                : ($this->ServiceModel->get_max_sort_order_group() + 1);
+
+            // If sort_order is specified and conflicts with existing, shift others up
+            if (isset($input['sort_order'])) {
+                $this->ServiceModel->shift_sort_order_group($sort_order, 'up');
+            }
+
             // Prepare data
             $data = [
-                'name' => $input['name'],
-                'code' => strtoupper($input['code']),
-                'icon' => $input['icon'] ?? '📁',
-                'color' => $input['color'] ?? null,
-                'description' => $input['description'] ?? null,
-                'status' => $input['status'],
-                'sort_order' => $input['sort_order'] ?? ($this->ServiceModel->get_max_sort_order() + 1),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'name'          => $input['name'],
+                'code'          => strtoupper($input['code']),
+                'icon'          => $input['icon'] ?? 'fa-folder',
+                'color'         => $input['color'] ?? null,
+                'description'   => $input['description'] ?? null,
+                'status'        => $input['status'],
+                'sort_order'    => $sort_order,
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s')
             ];
 
             $insertId = $this->ServiceModel->create_group($data);
 
             if ($insertId) {
                 $this->_response([
-                    'success' => true,
-                    'message' => 'Service Group created successfully',
-                    'data' => ['id' => $insertId]
+                    'success'   => true,
+                    'message'   => 'Service Group created successfully',
+                    'data'      => ['id' => $insertId]
                 ], 201);
             } else {
                 throw new Exception('Failed to create service group');
@@ -152,17 +162,16 @@ class ServiceGroupController extends CI_Controller
                     'success' => false,
                     'message' => 'Service Group not found'
                 ], 404);
+
                 return;
             }
 
             // Get JSON input
-                        $rawInput = file_get_contents('php://input');
+            $rawInput = file_get_contents('php://input');
             $input = json_decode($rawInput, true);
 
-
             // Validate input
-                $_POST = $input;
-
+            $_POST = $input;
             $this->form_validation->set_rules('name', 'Name', 'required|trim|max_length[100]');
             $this->form_validation->set_rules('code', 'Code', 'required|trim|max_length[50]|callback_check_unique_code_update[' . $id . ']');
             $this->form_validation->set_rules('icon', 'Icon', 'trim|max_length[50]');
@@ -179,21 +188,28 @@ class ServiceGroupController extends CI_Controller
                 return;
             }
 
+            // Handle sort_order change
+            $old_sort_order = (int)$existing['sort_order'];
+            $new_sort_order = isset($input['sort_order']) 
+                ? (int)$input['sort_order'] 
+                : $old_sort_order;
+
+            // If sort_order changed, reorder other records
+            if ($new_sort_order !== $old_sort_order) {
+                $this->ServiceModel->reorder_on_update_group($id, $old_sort_order, $new_sort_order);
+            }
+
             // Prepare data
             $data = [
-                'name' => $input['name'],
-                'code' => strtoupper($input['code']),
-                'icon' => $input['icon'] ?? '📁',
-                'color' => $input['color'] ?? null,
-                'description' => $input['description'] ?? null,
-                'status' => $input['status'],
-                'updated_at' => date('Y-m-d H:i:s')
+                'name'          => $input['name'],
+                'code'          => strtoupper($input['code']),
+                'icon'          => $input['icon'] ?? 'fa-folder',
+                'color'         => $input['color'] ?? null,
+                'description'   => $input['description'] ?? null,
+                'status'        => $input['status'],
+                'sort_order'    => $new_sort_order,
+                'updated_at'    => date('Y-m-d H:i:s')
             ];
-            
-            // Update sort_order if provided
-            if (isset($input['sort_order'])) {
-                $data['sort_order'] = $input['sort_order'];
-            }
 
             $updated = $this->ServiceModel->update_group($id, $data);
 
@@ -216,7 +232,7 @@ class ServiceGroupController extends CI_Controller
 
     /**
      * DELETE /it-ticket/service-groups/{id}
-     * Delete service group
+     * Delete service group and reorder remaining items
      */
     public function delete($id)
     {
@@ -231,18 +247,25 @@ class ServiceGroupController extends CI_Controller
                 return;
             }
 
-            // Check if has ticket types
+            // Check if has IT services
             if ($this->ServiceModel->group_has_it_service($id)) {
                 $this->_response([
                     'success' => false,
-                    'message' => 'Cannot delete service group with existing it service'
+                    'message' => 'Cannot delete service group with existing IT services'
                 ], 400);
                 return;
             }
 
+            // Get current sort_order before deletion
+            $deleted_sort_order = (int)$existing['sort_order'];
+
+            // Delete the record
             $deleted = $this->ServiceModel->delete_group($id);
 
             if ($deleted) {
+                // Reorder remaining items (shift down items after deleted one)
+                $this->ServiceModel->reorder_after_delete_group($deleted_sort_order);
+
                 $this->_response([
                     'success' => true,
                     'message' => 'Service Group deleted successfully'
@@ -260,47 +283,50 @@ class ServiceGroupController extends CI_Controller
     }
 
     /**
-     * Custom validation: Check unique code on create
+     * Check unique code on create
      */
     public function check_unique_code($code)
     {
-        if ($this->ServiceModel->is_code_exists($code)) {
+        if ($this->ServiceModel->is_code_exists_group($code)) {
             $this->form_validation->set_message('check_unique_code', 'Code already exists');
             return false;
         }
+
         return true;
     }
 
     /**
-     * Custom validation: Check unique code on update
+     * Check unique code on update
      */
     public function check_unique_code_update($code, $id)
     {
-        if ($this->ServiceModel->is_code_exists($code, $id)) {
+        if ($this->ServiceModel->is_code_exists_group($code, $id)) {
             $this->form_validation->set_message('check_unique_code_update', 'Code already exists');
             return false;
         }
+
         return true;
     }
 
     /**
-     * Custom validation: Check color format (hex)
+     * Check color format
      */
     public function check_color_format($color)
     {
         if (empty($color)) {
-            return true; // Optional field
+            return true;
         }
-        
+
         if (!preg_match('/^#[0-9A-F]{6}$/i', $color)) {
             $this->form_validation->set_message('check_color_format', 'Color must be in hex format (#RRGGBB)');
             return false;
         }
+
         return true;
     }
 
     /**
-     * Helper: Send JSON response
+     * Send JSON response
      */
     private function _response($data, $statusCode = 200)
     {
@@ -309,6 +335,7 @@ class ServiceGroupController extends CI_Controller
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))
             ->_display();
+
         exit;
     }
 }

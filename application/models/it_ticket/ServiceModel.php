@@ -89,14 +89,24 @@ class ServiceModel extends CI_Model
     }
 
     /**
-     * Get single service group by ID
-     * @param int $id Service group ID
-     * @return object|null
+     * Ensure result is always array (not object)
+     */
+    private function _ensure_array($result)
+    {
+        if (is_object($result)) {
+            return (array)$result;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get group
      */
     public function get_group($id)
     {
-        $this->db->where('id', $id);
-        return $this->db->get($this->table_groups)->row();
+        $result = $this->db->get_where($this->table_groups, ['id' => $id])->row_array();
+        return $this->_ensure_array($result);
     }
 
     /**
@@ -151,7 +161,7 @@ class ServiceModel extends CI_Model
      * @param int|null $exclude_id Exclude this ID (for update)
      * @return bool
      */
-    public function is_code_exists($code, $exclude_id = null)
+    public function is_code_exists_group($code, $exclude_id = null)
     {
         $this->db->where('code', strtoupper($code));
         
@@ -164,29 +174,82 @@ class ServiceModel extends CI_Model
     }
 
     /**
-     * Get maximum sort_order value
-     * @return int
+     * Get maximum sort_order value for service groups
      */
-    public function get_max_sort_order()
+    public function get_max_sort_order_group()
     {
         $this->db->select_max('sort_order');
-        $result = $this->db->get($this->table_groups)->row();
-        return $result->sort_order ?? 0;
+        $result = $this->db->get($this->table_groups)->row_array();
+        return (int)($result['sort_order'] ?? 0);
     }
 
     /**
-     * Update sort order for a service group
-     * @param int $id Service group ID
-     * @param int $sort_order New sort order
-     * @return bool
+     * Shift sort_order up when inserting at specific position
+     * 
+     * Example: If inserting at position 2:
+     * Before: [0, 1, 2, 3, 4]
+     * After:  [0, 1, _, 3, 4, 5] (where _ is the new position 2)
      */
-    public function update_sort_order($id, $sort_order)
+    public function shift_sort_order_group($from_order, $direction = 'up')
     {
-        $this->db->where('id', $id);
-        return $this->db->update($this->table_groups, [
-            'sort_order' => $sort_order,
-            'updated_at' => date('Y-m-d H:i:s')
-        ]);
+        if ($direction === 'up') {
+            // Shift all items >= $from_order up by 1
+            $this->db->set('sort_order', 'sort_order + 1', false);
+            $this->db->where('sort_order >=', $from_order);
+            $this->db->update($this->table_groups);
+        }
+    }
+
+    /**
+     * Reorder after delete - shift down items after deleted position
+     * 
+     * Example: Delete item at position 2:
+     * Before: [0, 1, 2, 3, 4]
+     * After delete: [0, 1, 3, 4]
+     * After reorder: [0, 1, 2, 3]
+     */
+    public function reorder_after_delete_group($deleted_order)
+    {
+        // Shift down all items > deleted_order by 1
+        $this->db->set('sort_order', 'sort_order - 1', false);
+        $this->db->where('sort_order >', $deleted_order);
+        $this->db->update($this->table_groups);
+    }
+
+    /**
+     * Reorder when updating sort_order of an item
+     * 
+     * Example: Move item from position 1 to position 3:
+     * Before: [0, 1*, 2, 3, 4] (* = item being moved)
+     * After:  [0, 2, 3, 1*, 4]
+     */
+    public function reorder_on_update_group($id, $old_order, $new_order)
+    {
+        if ($old_order === $new_order) {
+            return; // No change needed
+        }
+
+        $this->db->trans_start();
+
+        if ($new_order > $old_order) {
+            // Moving down: shift items between old and new position up by 1
+            // Example: 1 -> 3, so items at 2,3 shift to 1,2
+            $this->db->set('sort_order', 'sort_order - 1', false);
+            $this->db->where('sort_order >', $old_order);
+            $this->db->where('sort_order <=', $new_order);
+            $this->db->where('id !=', $id);
+            $this->db->update($this->table_groups);
+        } else {
+            // Moving up: shift items between new and old position down by 1
+            // Example: 3 -> 1, so items at 1,2 shift to 2,3
+            $this->db->set('sort_order', 'sort_order + 1', false);
+            $this->db->where('sort_order >=', $new_order);
+            $this->db->where('sort_order <', $old_order);
+            $this->db->where('id !=', $id);
+            $this->db->update($this->table_groups);
+        }
+
+        $this->db->trans_complete();
     }
 
     /**

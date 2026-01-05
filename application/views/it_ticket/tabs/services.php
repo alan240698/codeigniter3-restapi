@@ -223,16 +223,12 @@
         <div class="modal-body">
             <input type="hidden" id="sgId">
             <div class="form-group">
-                <label>Service Group Name <span class="required">*</span></label>
+                <label>Name <span class="required">*</span></label>
                 <input type="text" id="sgName" placeholder="Enter service group name">
             </div>
             <div class="form-group">
                 <label>Code <span class="required">*</span></label>
                 <input type="text" id="sgCode" placeholder="e.g., IT_SUPPORT">
-            </div>
-            <div class="form-group">
-                <label>Icon</label>
-                <input type="text" id="sgIcon" placeholder="e.g., 💻" maxlength="2">
             </div>
             <div class="form-group">
                 <label>Description</label>
@@ -480,7 +476,6 @@
             this.validator.setupFormValidation([
                 { fieldId: 'sgName', fieldName: 'name' },
                 { fieldId: 'sgCode', fieldName: 'code', autoUppercase: true },
-                { fieldId: 'sgIcon', fieldName: 'icon' },
                 { fieldId: 'sgDesc', fieldName: 'description' }
             ]);
             this.loadServiceGroups();
@@ -606,11 +601,10 @@
             document.getElementById('sgId').value = '';
             document.getElementById('sgName').value = '';
             document.getElementById('sgCode').value = '';
-            document.getElementById('sgIcon').value = '';
             document.getElementById('sgDesc').value = '';
             document.getElementById('sgStatus').value = 'active';
 
-            this.validator.reset(['sgName', 'sgCode', 'sgIcon', 'sgDesc']);
+            this.validator.reset(['sgName', 'sgCode', 'sgDesc']);
             document.getElementById('modalServiceGroup').classList.add('active');
         },
 
@@ -625,7 +619,6 @@
                     document.getElementById('sgId').value       = sg.id;
                     document.getElementById('sgName').value     = sg.name;
                     document.getElementById('sgCode').value     = sg.code;
-                    document.getElementById('sgIcon').value     = sg.icon          || '';
                     document.getElementById('sgDesc').value     = sg.description   || '';
                     document.getElementById('sgStatus').value = sg.status;
                     document.getElementById('modalServiceGroup').classList.add('active');
@@ -641,7 +634,6 @@
             const formData = {
                 name: document.getElementById('sgName').value,
                 code: document.getElementById('sgCode').value,
-                icon: document.getElementById('sgIcon').value,
                 description: document.getElementById('sgDesc').value,
                 status: document.getElementById('sgStatus').value
             };
@@ -649,7 +641,6 @@
             const fieldMap = {
                 name: 'sgName',
                 code: 'sgCode',
-                icon: 'sgIcon',
                 description: 'sgDesc'
             };
 
@@ -712,7 +703,7 @@
         },
 
         closeModal() {
-            this.validator.reset(['sgName', 'sgCode', 'sgIcon', 'sgDesc']);
+            this.validator.reset(['sgName', 'sgCode', 'sgDesc']);
             document.getElementById('modalServiceGroup').classList.remove('active');
         },
 
