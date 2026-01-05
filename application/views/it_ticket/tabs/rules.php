@@ -161,25 +161,27 @@
                 </div>
             </div>
 
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">#</th>
-                        <th>Rule Name</th>
-                        <th>IT Service</th>
-                        <th>Priority</th>
-                        <th>Assignment Type</th>
-                        <th>Target</th>
-                        <th>Status</th>
-                        <th style="width: 150px;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="routingRulesTableBody">
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="width: 100%; overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Rule Name</th>
+                            <th>IT Service</th>
+                            <th>Priority</th>
+                            <th>Assignment Type</th>
+                            <th>Target</th>
+                            <th>Status</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routingRulesTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -504,7 +506,7 @@
 
 <!-- Modal: Custom Field -->
 <div id="modalCustomField" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
+    <div class="modal-content">
         <div class="modal-header">
             <h3 id="modalFieldTitle">Add Custom Field</h3>
             <button class="modal-close" onclick="CustomFieldsManager.closeModal()">×</button>

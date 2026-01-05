@@ -82,7 +82,7 @@
     <div class="card">
         <div class="card-header">
             <h3><i class="fas fa-users-gear"></i> Support Teams</h3>
-            <button class="btn btn-primary" onclick="TeamManager.openAddTeam()">
+            <button class="btn btn-primary-it-ticket" onclick="TeamManager.openAddTeam()">
                 <i class="fas fa-plus"></i> Add Team
             </button>
         </div>
@@ -168,29 +168,31 @@
             </div>
         </div>
 
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th style="width: 50px;">#</th>
-                    <th>Team Name</th>
-                    <th>Code</th>
-                    <th>Support Level</th>
-                    <th>Department</th>
-                    <th>Country</th>
-                    <th>Members</th>
-                    <th>Status</th>
-                    <th style="width: 220px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="teamsTableBody">
-                <tr>
-                    <td colspan="9" style="text-align: center; padding: 40px;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
-                        <p style="margin-top: 10px; color: #6b7280;">Loading teams...</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div style="width: 100%; overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Team Name</th>
+                        <th>Code</th>
+                        <th>Support Level</th>
+                        <th>Department</th>
+                        <th>Country</th>
+                        <th>Members</th>
+                        <th>Status</th>
+                        <th style="width: 220px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="teamsTableBody">
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
+                            <p style="margin-top: 10px; color: #6b7280;">Loading teams...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <div id="teamsPagination" class="pagination-container"
@@ -214,7 +216,7 @@
                 <button class="btn btn-secondary btn-sm" onclick="TeamManager.closeMembersSection()">
                     <i class="fas fa-arrow-left"></i> Back to Teams
                 </button>
-                <button class="btn btn-primary" onclick="MemberManager.openAddMember()">
+                <button class="btn btn-primary-it-ticket" onclick="MemberManager.openAddMember()">
                     <i class="fas fa-user-plus"></i> Add Member
                 </button>
             </div>
@@ -275,7 +277,7 @@
 
 <!-- MODAL: Add/Edit Team -->
 <div id="modalTeam" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
+    <div class="modal-content">
         <div class="modal-header">
             <h3 id="modalTeamTitle">Add Support Team</h3>
             <button class="modal-close" onclick="TeamManager.closeModal()">×</button>
@@ -361,7 +363,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="TeamManager.closeModal()">Cancel</button>
-            <button class="btn btn-primary" onclick="TeamManager.saveTeam()">
+            <button class="btn btn-primary-it-ticket" onclick="TeamManager.saveTeam()">
                 <i class="fas fa-save"></i> Save
             </button>
         </div>
@@ -441,7 +443,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="MemberManager.closeModal()">Cancel</button>
-            <button class="btn btn-primary" onclick="MemberManager.saveMember()">
+            <button class="btn btn-primary-it-ticket" onclick="MemberManager.saveMember()">
                 <i class="fas fa-save"></i> Save
             </button>
         </div>
@@ -708,13 +710,13 @@
                 <td><span class="badge badge-${team.status === 'active' ? 'success' : 'danger'}">${team.status}</span></td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn btn-sm btn-success" onclick="TeamManager.viewMembers(${team.id}, '${team.name}')">
+                        <button class="btn btn-sm btn-success-it-ticket" onclick="TeamManager.viewMembers(${team.id}, '${team.name}')">
                             <i class="fas fa-users"></i> Members
                         </button>
-                        <button class="btn btn-sm btn-primary" onclick="TeamManager.editTeam(${team.id})">
+                        <button class="btn btn-sm btn-primary-it-ticket" onclick="TeamManager.editTeam(${team.id})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="TeamManager.deleteTeam(${team.id})">
+                        <button class="btn btn-sm btn-danger-it-ticket" onclick="TeamManager.deleteTeam(${team.id})">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -979,7 +981,7 @@
 
             // Update section title
             document.getElementById('membersTeamTitle').innerHTML =
-                `<i class="fas fa-user-group"></i> Members of: <span style="color: #3b82f6;">${teamName}</span>`;
+                `</i> Members of: <span style="color: #3b82f6;">${teamName}</span>`;
 
             // Show members section
             document.getElementById('membersSection').style.display = 'block';
@@ -1127,10 +1129,10 @@
                 <td><span class="badge badge-${member.is_active ? 'success' : 'danger'}">${member.is_active ? 'Active' : 'Inactive'}</span></td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn btn-sm btn-primary" onclick="MemberManager.editMember(${member.id})">
+                        <button class="btn btn-sm btn-primary-it-ticket" onclick="MemberManager.editMember(${member.id})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="MemberManager.removeMember(${member.id})">
+                        <button class="btn btn-sm btn-danger-it-ticket" onclick="MemberManager.removeMember(${member.id})">
                             <i class="fas fa-user-minus"></i>
                         </button>
                     </div>

@@ -24,27 +24,29 @@
             </div>
         </div>
 
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th style="width: 50px;">#</th>
-                    <th>Template Name</th>
-                    <th>Template Code</th>
-                    <th>Subject</th>
-                    <th>Variables</th>
-                    <th>Status</th>
-                    <th style="width: 200px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="templatesTableBody">
-                <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
-                        <p style="margin-top: 10px; color: #6b7280;">Loading templates...</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div style="width: 100%; overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Template Name</th>
+                        <th>Template Code</th>
+                        <th>Subject</th>
+                        <th>Variables</th>
+                        <th>Status</th>
+                        <th style="width: 200px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="templatesTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #3b82f6;"></i>
+                            <p style="margin-top: 10px; color: #6b7280;">Loading templates...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
