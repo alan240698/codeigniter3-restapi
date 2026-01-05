@@ -107,6 +107,7 @@ $route['it_services/delete/(:num)'] = 'api/it_ticket/ItServiceController/delete/
 */
 
 $route['api/service-groups/all'] = 'api/it_ticket/ServiceGroupController/get_all';
+$route['api/service-groups/all'] = 'api/it_ticket/ServiceGroupController/get_all';
 
 /*
 |--------------------------------------------------------------------------  

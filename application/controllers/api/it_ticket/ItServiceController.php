@@ -75,6 +75,15 @@ class ItServiceController extends CI_Controller
     }
 
     /**
+     * GET /api/it-services/all-group-type
+     * Get all it services with group info (alias for get_all)
+     */
+    public function get_all_with_groups()
+    {
+        return $this->get_all_dropdown();
+    }
+
+    /**
      * GET /api/it-services/all-dropdown
      * Get hierarchical structure for dropdown
      */

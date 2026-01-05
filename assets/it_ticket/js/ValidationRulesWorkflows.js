@@ -53,10 +53,10 @@ const ValidationRulesWorkflows = {
             maxLength: 50,
             pattern: /^[A-Z0-9_]+$/,
             message: {
-                required: 'Workflow code is required',
-                minLength: 'Workflow code must be at least 2 characters',
-                maxLength: 'Workflow code must not exceed 50 characters',
-                pattern: 'Workflow code must be uppercase letters, numbers and underscores only'
+                required: 'State code is required',
+                minLength: 'State code must be at least 2 characters',
+                maxLength: 'State code must not exceed 50 characters',
+                pattern: 'State code must be uppercase letters, numbers and underscores only'
             }
         },
         description: {
@@ -64,8 +64,8 @@ const ValidationRulesWorkflows = {
             minLength: 10,
             maxLength: 500,
             message: {
-                minLength: 'Workflow description must be at least 10 characters',
-                maxLength: 'Workflow description must not exceed 500 characters'
+                minLength: 'State description must be at least 10 characters',
+                maxLength: 'State description must not exceed 500 characters'
             }
         },
         state_type: {
@@ -107,19 +107,19 @@ const ValidationRulesWorkflows = {
                 required: 'Trans name is required',
                 minLength: 'Trans name must be at least 3 characters',
                 maxLength: 'Trans name must not exceed 50 characters',
-                pattern: 'Name can only contain letters, numbers, spaces, hyphens and underscores'
+                pattern: 'Trans Name can only contain letters, numbers, spaces, hyphens and underscores'
             }
         },
         from_state_id: {
             required: true,
             message: {
-                required: 'Select frome state is required',
+                required: 'From state is required',
             }
         },
         to_state_id: {
             required: true,
             message: {
-                required: 'Select to state is required',
+                required: 'To state is required',
             }
         },
         required_role: {

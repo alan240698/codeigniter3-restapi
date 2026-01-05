@@ -434,6 +434,7 @@
             <div class="form-group">
                 <label>State Type <span class="required">*</span></label>
                 <select id="stateType">
+                    <option value="initial">Initial (Start state)</option>
                     <option value="intermediate">Intermediate (Working state)</option>
                     <option value="final">Final (Completed)</option>
                     <option value="cancelled">Cancelled</option>
@@ -1140,7 +1141,7 @@
             document.getElementById('stateWorkflowId').value = this.currentWorkflowId;
             document.getElementById('stateName').value = '';
             document.getElementById('stateCode').value = '';
-            document.getElementById('stateType').value = 'intermediate';
+            document.getElementById('stateType').value = 'initial';
             document.getElementById('stateColor').value = '#3b82f6';
             document.getElementById('stateColorHex').value = '#3b82f6';
             document.getElementById('stateSlaHours').value = '';
@@ -1162,7 +1163,7 @@
                     document.getElementById('stateId').value = state.id;
                     document.getElementById('stateWorkflowId').value = state.workflow_id;
                     document.getElementById('stateName').value = state.name;
-                    document.getElementById('stateCode').value = state.code;
+                    document.getElementById('stateCode').value = state.code.toUpperCase();
                     document.getElementById('stateType').value = state.state_type;
                     document.getElementById('stateColor').value = state.color || '#3b82f6';
                     document.getElementById('stateColorHex').value = state.color || '#3b82f6';
