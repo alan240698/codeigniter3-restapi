@@ -534,13 +534,7 @@
             <div class="form-group">
                 <label>Required Role</label>
                 <select id="transRequiredRole">
-                    <option value="">Any Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="manager">Manager</option>
-                    <option value="tech_l1">L1 Support</option>
-                    <option value="tech_l2">L2 Support</option>
-                    <option value="tech_l3">L3 Support</option>
-                    <option value="user">End User</option>
+                    <option value="">Select Role</option>
                 </select>
             </div>
 
@@ -1328,6 +1322,24 @@
             }
         },
 
+        async loadTicketRolesDropdown() {
+            try {
+                const response = await fetch(`${this.baseUrl}api/roles/all`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const options = data?.data.map(role =>
+                        `<option value="${role.name}">${role.display_name}</option>`
+                    ).join('');
+
+                    document.getElementById('transRequiredRole').innerHTML =
+                        '<option value="">Select Role</option>' + options;
+                }
+            } catch (error) {
+                console.error('Error loading roles:', error);
+            }
+        },
+
         setupStateChangeHandlers() {
             const fromSelect = document.getElementById('transFromState');
             const toSelect = document.getElementById('transToState');
@@ -2050,6 +2062,7 @@
                 WorkflowManager.init(),
                 StateManager.init(),
                 TransitionManager.init(),
+                TransitionManager.loadTicketRolesDropdown(),
                 WorkflowManager.loadWorkflows(),
                 WorkflowMappingManager.loadMappings(),
                 WorkflowMappingManager.loadItServicesDropdown(),

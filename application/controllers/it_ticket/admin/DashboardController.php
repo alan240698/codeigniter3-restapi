@@ -11,7 +11,8 @@ class DashboardController extends CI_Controller
         'teams'      => 'Support Teams',
         'rules'      => 'Rules Configuration',
         'templates'  => 'Email Templates',
-        'monitoring' => 'Test & Monitor'
+        'monitoring' => 'Test & Monitor',
+        'roles'      => 'Roles'
     ];
 
     public function __construct() {

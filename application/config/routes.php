@@ -107,7 +107,6 @@ $route['it_services/delete/(:num)'] = 'api/it_ticket/ItServiceController/delete/
 */
 
 $route['api/service-groups/all'] = 'api/it_ticket/ServiceGroupController/get_all';
-$route['api/service-groups/all'] = 'api/it_ticket/ServiceGroupController/get_all';
 
 /*
 |--------------------------------------------------------------------------  
@@ -311,6 +310,19 @@ $route['email-templates/create-instance'] = 'api/it_ticket/EmailTemplateControll
 // PUBLIC TEMPLATE VIEWING (No authentication required)
 $route['template/view/(:any)'] = 'TemplateViewController/view/$1';
 $route['template/action/(:any)'] = 'TemplateViewController/action/$1';
+
+/*
+|--------------------------------------------------------------------------
+| ROLE ROUTE
+|--------------------------------------------------------------------------
+*/
+$route['api/roles/all'] = 'api/it_ticket/RoleController/get_all';
+
+$route['api/roles'] = 'api/it_ticket/RoleController/index';
+$route['api/roles/(:num)'] = 'api/it_ticket/RoleController/show/$1';
+$route['api/roles/create'] = 'api/it_ticket/RoleController/store';
+$route['api/roles/(:num)/update'] = 'api/it_ticket/RoleController/update/$1';
+$route['api/roles/(:num)/delete'] = 'api/it_ticket/RoleController/delete/$1';
 
 /*
 |--------------------------------------------------------------------------
