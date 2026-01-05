@@ -89,7 +89,7 @@ const ValidationRulesServiceGroup = {
             maxLength: 100,
             pattern: /^[a-zA-Z0-9\s\-_:,.]+$/,
             message: {
-                required: 'It ticket name is required',
+                required: 'Name is required',
                 minLength: 'Name must be at least 3 characters',
                 maxLength: 'Name must not exceed 100 characters',
                 pattern: 'Name can only contain letters, numbers, spaces, hyphens and underscores'
@@ -101,7 +101,7 @@ const ValidationRulesServiceGroup = {
             maxLength: 40,
             pattern: /^[A-Z0-9_]+$/,
             message: {
-                required: 'It ticket code is required',
+                required: 'Code is required',
                 minLength: 'Code must be at least 2 characters',
                 maxLength: 'Code must not exceed 40 characters',
                 pattern: 'Code must be uppercase letters, numbers and underscores only'
@@ -116,10 +116,11 @@ const ValidationRulesServiceGroup = {
                 maxLength: 'Description must not exceed 500 characters'
             }
         },
-        input_type: {
-            required: true,
+        requires_solution: {
+            required: false,
+            allowedValues: ['yes', 'no'],
             message: {
-                required: 'Please select input type'
+                allowedValues: 'Requires solution must be one of Yes, No'
             }
         },
     }

@@ -314,11 +314,10 @@
                 <input type="text" id="itCode" placeholder="e.g., VPN_ACCESS">
             </div>
             <div class="form-group">
-                <label>Input Type</label>
-                <select id="itInputType">
-                    <option value="textarea">Tree</option>
-                    <option value="radio">Radio</option>
-                    <option value="dropdown">Dropdown</option>
+                <label>Requires Solution</label>
+                <select id="itRequiresSolution">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
                 </select>
             </div>
             <div class="form-group">
@@ -976,7 +975,7 @@
                 { fieldId: 'itName', fieldName: 'name' },
                 { fieldId: 'itCode', fieldName: 'code', autoUppercase: true },
                 { fieldId: 'itDesc', fieldName: 'description' },
-                { fieldId: 'itInputType', fieldName: 'input_type' }
+                { fieldId: 'itRequiresSolution', fieldName: 'requires_solution' }
             ]);
 
             this.loadItServices();
@@ -1012,27 +1011,6 @@
             }
         },
 
-        // async loadTicketTypesDropdown() {
-        //     try {
-        //         const response = await fetch(`${this.baseUrl}it-services/all-group-type`);
-        //         const data = await response.json();
-
-        //         if (data.success) {
-        //             const filterSelect = document.getElementById('filterItServiceServiceGroup');
-        //             const modalSelect = document.getElementById('itServiceGroup');
-
-        //             const options = data.data.map(tt =>
-        //                 `<option value="${tt.id}">${tt.name}</option>`
-        //             ).join('');
-
-        //             filterSelect.innerHTML = '<option value="">All Service Group</option>' + options;
-        //             modalSelect.innerHTML = '<option value="">Select Service Group</option>' + options;
-        //         }
-        //     } catch (error) {
-        //         console.error('Error loading ticket types:', error);
-        //     }
-        // },
-
         renderItServices(itServices) {
             const container = document.getElementById('itServicesTree');
 
@@ -1067,7 +1045,7 @@
                                     </span>
                                     <span style="color: #d1d5db;">•</span>
                                     <span style="color: #6b7280;">
-                                        <i class="fas fa-tag" style="font-size: 10px; opacity: 0.6;"></i> ${parent.input_type}
+                                        <i class="fas fa-tag" style="font-size: 10px; opacity: 0.6;"></i> Requires solution: ${parent.requires_solution}
                                     </span>
                                     ${parent.service_group_name ? `
                                         <span style="color: #d1d5db;">•</span>
@@ -1088,7 +1066,7 @@
                                         style="padding: 7px 12px; font-size: 13px;" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.service_group_id})" 
+                                <button class="btn btn-sm btn-success-it-ticket" onclick="ItServiceManager.openAddSubItService(${parent.id}, ${parent.service_group_id}, '${parent.requires_solution}')" 
                                         style="padding: 7px 12px; font-size: 13px;" title="Add Sub-Service">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -1201,16 +1179,16 @@
             document.getElementById('itServiceGroup').value = '';
             document.getElementById('itName').value = '';
             document.getElementById('itCode').value = '';
-            document.getElementById('itInputType').value = 'text';
+            document.getElementById('itRequiresSolution').value = 'yes';
             document.getElementById('itDesc').value = '';
             document.getElementById('itStatus').value = 'active';
 
-            this.validator.reset(['itServiceGroup', 'itName', 'itCode', 'itDesc', 'itInputType']);
+            this.validator.reset(['itServiceGroup', 'itName', 'itCode', 'itDesc', 'itRequiresSolution']);
 
             document.getElementById('modalItService').classList.add('active');
         },
 
-        openAddSubItService(parentId, serviceGroupId) {
+        openAddSubItService(parentId, serviceGroupId, requiresSolution) {
             document.getElementById('modalItServiceTitle').textContent = 'Add Sub-It-Service';
             document.getElementById('itId').value = '';
             document.getElementById('itParentId').value = parentId;
@@ -1226,9 +1204,12 @@
             select.value = serviceGroupId;
             select.disabled = true;
 
+            const selectRequiresSolution = document.getElementById('itRequiresSolution');
+            selectRequiresSolution.value = requiresSolution;
+            selectRequiresSolution.disabled = true;
+
             document.getElementById('itName').value = '';
             document.getElementById('itCode').value = '';
-            document.getElementById('itInputType').value = 'text';
             document.getElementById('itDesc').value = '';
             document.getElementById('modalItService').classList.add('active');
         },
@@ -1246,7 +1227,7 @@
                     document.getElementById('itServiceGroup').value = it.service_group_id;
                     document.getElementById('itName').value = it.name;
                     document.getElementById('itCode').value = it.code;
-                    document.getElementById('itInputType').value = it.input_type;
+                    document.getElementById('itRequiresSolution').value = it.requires_solution;
                     document.getElementById('itDesc').value = it.description || '';
                     document.getElementById('itStatus').value = it.status;
                     document.getElementById('modalItService').classList.add('active');
@@ -1264,7 +1245,7 @@
                 parent_id: document.getElementById('itParentId').value || null,
                 name: document.getElementById('itName').value,
                 code: document.getElementById('itCode').value,
-                input_type: document.getElementById('itInputType').value,
+                requires_solution: document.getElementById('itRequiresSolution').value,
                 description: document.getElementById('itDesc').value,
                 status: document.getElementById('itStatus').value
             };
@@ -1274,7 +1255,7 @@
                 name: 'itName', 
                 code: 'itCode', 
                 description: 'itDesc',
-                input_type: 'itInputType'
+                requires_solution: 'itRequiresSolution'
             };
 
             if (!this.validator.validateAndShowErrors(formData, fieldMap)) {
@@ -1343,7 +1324,7 @@
                     const modalSelect = document.getElementById('itServiceGroup');
 
                     const options = data.data.map(sg =>
-                        `<option value="${sg.id}">${sg.icon || '📁'} ${sg.name}</option>`
+                        `<option value="${sg.id}">${sg.name}</option>`
                     ).join('');
 
                     filterSelect.innerHTML = '<option value="">All Service Groups</option>' + options;
@@ -1355,7 +1336,7 @@
         },
 
         closeModal() {
-            this.validator.reset(['itServiceGroup', 'itName', 'itCode', 'itDesc', 'itInputType']);
+            this.validator.reset(['itServiceGroup', 'itName', 'itCode', 'itDesc', 'itRequiresSolution']);
 
              const select = document.getElementById('itServiceGroup');
 

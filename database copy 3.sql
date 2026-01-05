@@ -218,10 +218,9 @@ CREATE TABLE `it_ticket_services` (
   `code` VARCHAR(50) NOT NULL,
   `description` TEXT DEFAULT NULL,
   `parent_id` INT UNSIGNED DEFAULT NULL,
-  `input_type` ENUM('radio', 'dropdown', 'tree') NOT NULL DEFAULT 'dropdown',
   `icon` VARCHAR(50) DEFAULT NULL,
   `sort_order` INT NOT NULL DEFAULT 0,
-  `requires_solution` TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Require solution before close',
+  `requires_solution` ENUM('yes', 'no') NOT NULL DEFAULT 'yes',
   `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -481,7 +480,7 @@ CREATE TABLE `it_ticket_tickets` (
   `first_response_by` INT UNSIGNED DEFAULT NULL,
   `requires_approval` TINYINT(1) NOT NULL DEFAULT 0,
   `approval_status` ENUM('not_required', 'pending', 'approved', 'rejected') NOT NULL DEFAULT 'not_required',
-  `requires_solution` TINYINT(1) NOT NULL DEFAULT 1,
+  `requires_solution` ENUM('yes', 'no') NOT NULL DEFAULT 'yes',
   `solution` TEXT DEFAULT NULL,
   `solution_provided_at` DATETIME DEFAULT NULL,
   `solution_provided_by` INT UNSIGNED DEFAULT NULL,
@@ -1040,88 +1039,88 @@ INSERT INTO `it_ticket_email_templates` (`id`, `template_code`, `template_name`,
 -- ============================================
 
 -- HRM Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `input_type`, `sort_order`, `requires_solution`, `status`) VALUES
+INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
 -- Parent services
-(1, 2, 'Attendance & Timekeeping', 'HRM_ATTENDANCE', NULL, 'dropdown', 1, 1, 'active'),
-(2, 2, 'Leave Management', 'HRM_LEAVE', NULL, 'dropdown', 2, 1, 'active'),
-(3, 2, 'Payroll & Compensation', 'HRM_PAYROLL', NULL, 'dropdown', 3, 1, 'active'),
-(4, 2, 'Employee Profile', 'HRM_PROFILE', NULL, 'dropdown', 4, 1, 'active'),
+(1, 2, 'Attendance & Timekeeping', 'HRM_ATTENDANCE', NULL, 1, 1, 'active'),
+(2, 2, 'Leave Management', 'HRM_LEAVE', NULL, 2, 1, 'active'),
+(3, 2, 'Payroll & Compensation', 'HRM_PAYROLL', NULL, 3, 1, 'active'),
+(4, 2, 'Employee Profile', 'HRM_PROFILE', NULL, 4, 1, 'active'),
 
 -- Sub-services for Attendance
-(5, 2, 'Check-in/Check-out Issue', 'HRM_ATT_CHECKIN', 1, 'radio', 1, 1, 'active'),
-(6, 2, 'Timesheet Correction', 'HRM_ATT_TIMESHEET', 1, 'radio', 2, 1, 'active'),
-(7, 2, 'Overtime Request', 'HRM_ATT_OVERTIME', 1, 'radio', 3, 1, 'active'),
+(5, 2, 'Check-in/Check-out Issue', 'HRM_ATT_CHECKIN', 1, 1, 1, 'active'),
+(6, 2, 'Timesheet Correction', 'HRM_ATT_TIMESHEET', 1, 2, 1, 'active'),
+(7, 2, 'Overtime Request', 'HRM_ATT_OVERTIME', 1, 3, 1, 'active'),
 
 -- Sub-services for Leave
-(8, 2, 'Annual Leave Request', 'HRM_LEAVE_ANNUAL', 2, 'radio', 1, 0, 'active'),
-(9, 2, 'Sick Leave', 'HRM_LEAVE_SICK', 2, 'radio', 2, 0, 'active'),
-(10, 2, 'Unpaid Leave', 'HRM_LEAVE_UNPAID', 2, 'radio', 3, 0, 'active'),
+(8, 2, 'Annual Leave Request', 'HRM_LEAVE_ANNUAL', 2, 1, 0, 'active'),
+(9, 2, 'Sick Leave', 'HRM_LEAVE_SICK', 2, 2, 0, 'active'),
+(10, 2, 'Unpaid Leave', 'HRM_LEAVE_UNPAID', 2, 3, 0, 'active'),
 
 -- Sub-services for Payroll
-(11, 2, 'Salary Inquiry', 'HRM_PAY_INQUIRY', 3, 'radio', 1, 1, 'active'),
-(12, 2, 'Tax Certificate Request', 'HRM_PAY_TAX', 3, 'radio', 2, 1, 'active'),
-(13, 2, 'Bonus Inquiry', 'HRM_PAY_BONUS', 3, 'radio', 3, 1, 'active');
+(11, 2, 'Salary Inquiry', 'HRM_PAY_INQUIRY', 3, 1, 1, 'active'),
+(12, 2, 'Tax Certificate Request', 'HRM_PAY_TAX', 3, 2, 1, 'active'),
+(13, 2, 'Bonus Inquiry', 'HRM_PAY_BONUS', 3, 3, 1, 'active');
 
 -- Network Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `input_type`, `sort_order`, `requires_solution`, `status`) VALUES
-(20, 1, 'Internet Connection', 'NET_INTERNET', NULL, 'dropdown', 1, 1, 'active'),
-(21, 1, 'VPN Access', 'NET_VPN', NULL, 'dropdown', 2, 1, 'active'),
-(22, 1, 'WiFi Issues', 'NET_WIFI', NULL, 'dropdown', 3, 1, 'active'),
-(23, 1, 'Email Issues', 'NET_EMAIL', NULL, 'dropdown', 4, 1, 'active'),
+INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
+(20, 1, 'Internet Connection', 'NET_INTERNET', NULL, 1, 1, 'active'),
+(21, 1, 'VPN Access', 'NET_VPN', NULL, 2, 1, 'active'),
+(22, 1, 'WiFi Issues', 'NET_WIFI', NULL, 3, 1, 'active'),
+(23, 1, 'Email Issues', 'NET_EMAIL', NULL, 4, 1, 'active'),
 
 -- Sub-services for Network
-(24, 1, 'No Internet Connection', 'NET_INT_NO_CONN', 20, 'radio', 1, 1, 'active'),
-(25, 1, 'Slow Connection', 'NET_INT_SLOW', 20, 'radio', 2, 1, 'active'),
-(26, 1, 'Cannot Connect VPN', 'NET_VPN_CONN', 21, 'radio', 1, 1, 'active'),
-(27, 1, 'VPN Disconnects Frequently', 'NET_VPN_DISC', 21, 'radio', 2, 1, 'active'),
-(28, 1, 'WiFi Not Available', 'NET_WIFI_NO_CONN', 22, 'radio', 1, 1, 'active'),
-(29, 1, 'Weak WiFi Signal', 'NET_WIFI_WEAK', 22, 'radio', 2, 1, 'active');
+(24, 1, 'No Internet Connection', 'NET_INT_NO_CONN', 20, 1, 1, 'active'),
+(25, 1, 'Slow Connection', 'NET_INT_SLOW', 20, 2, 1, 'active'),
+(26, 1, 'Cannot Connect VPN', 'NET_VPN_CONN', 21, 1, 1, 'active'),
+(27, 1, 'VPN Disconnects Frequently', 'NET_VPN_DISC', 21, 2, 1, 'active'),
+(28, 1, 'WiFi Not Available', 'NET_WIFI_NO_CONN', 22, 1, 1, 'active'),
+(29, 1, 'Weak WiFi Signal', 'NET_WIFI_WEAK', 22, 2, 1, 'active');
 
 -- User Computer Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `input_type`, `sort_order`, `requires_solution`, `status`) VALUES
-(30, 3, 'Hardware Issues', 'UC_HARDWARE', NULL, 'dropdown', 1, 1, 'active'),
-(31, 3, 'Software Installation', 'UC_SOFTWARE', NULL, 'dropdown', 2, 1, 'active'),
-(32, 3, 'Printer Issues', 'UC_PRINTER', NULL, 'dropdown', 3, 1, 'active'),
-(33, 3, 'Account & Access', 'UC_ACCESS', NULL, 'dropdown', 4, 1, 'active'),
+INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
+(30, 3, 'Hardware Issues', 'UC_HARDWARE', NULL, 1, 1, 'active'),
+(31, 3, 'Software Installation', 'UC_SOFTWARE', NULL, 2, 1, 'active'),
+(32, 3, 'Printer Issues', 'UC_PRINTER', NULL, 3, 1, 'active'),
+(33, 3, 'Account & Access', 'UC_ACCESS', NULL, 4, 1, 'active'),
 
 -- Sub-services
-(34, 3, 'Computer Not Starting', 'UC_HW_NO_START', 30, 'radio', 1, 1, 'active'),
-(35, 3, 'Monitor Issue', 'UC_HW_MONITOR', 30, 'radio', 2, 1, 'active'),
-(36, 3, 'Keyboard/Mouse Problem', 'UC_HW_INPUT', 30, 'radio', 3, 1, 'active'),
-(37, 3, 'Install MS Office', 'UC_SW_OFFICE', 31, 'radio', 1, 1, 'active'),
-(38, 3, 'Install Other Software', 'UC_SW_OTHER', 31, 'radio', 2, 1, 'active'),
-(39, 3, 'Printer Not Printing', 'UC_PR_NO_PRINT', 32, 'radio', 1, 1, 'active'),
-(40, 3, 'Printer Paper Jam', 'UC_PR_JAM', 32, 'radio', 2, 1, 'active');
+(34, 3, 'Computer Not Starting', 'UC_HW_NO_START', 30, 1, 1, 'active'),
+(35, 3, 'Monitor Issue', 'UC_HW_MONITOR', 30, 2, 1, 'active'),
+(36, 3, 'Keyboard/Mouse Problem', 'UC_HW_INPUT', 30, 3, 1, 'active'),
+(37, 3, 'Install MS Office', 'UC_SW_OFFICE', 31, 1, 1, 'active'),
+(38, 3, 'Install Other Software', 'UC_SW_OTHER', 31, 2, 1, 'active'),
+(39, 3, 'Printer Not Printing', 'UC_PR_NO_PRINT', 32, 1, 1, 'active'),
+(40, 3, 'Printer Paper Jam', 'UC_PR_JAM', 32, 2, 1, 'active');
 
 -- Cyber Security Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `input_type`, `sort_order`, `requires_solution`, `status`) VALUES
-(41, 4, 'Phishing & Spam', 'SEC_PHISHING', NULL, 'dropdown', 1, 1, 'active'),
-(42, 4, 'Malware/Virus', 'SEC_MALWARE', NULL, 'dropdown', 2, 1, 'active'),
-(43, 4, 'Account Security', 'SEC_ACCOUNT', NULL, 'dropdown', 3, 1, 'active'),
-(44, 4, 'Data Security', 'SEC_DATA', NULL, 'dropdown', 4, 1, 'active'),
+INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
+(41, 4, 'Phishing & Spam', 'SEC_PHISHING', NULL, 1, 1, 'active'),
+(42, 4, 'Malware/Virus', 'SEC_MALWARE', NULL, 2, 1, 'active'),
+(43, 4, 'Account Security', 'SEC_ACCOUNT', NULL, 3, 1, 'active'),
+(44, 4, 'Data Security', 'SEC_DATA', NULL, 4, 1, 'active'),
 
 -- Sub-services
-(45, 4, 'Suspicious Email Received', 'SEC_PHISH_EMAIL', 41, 'radio', 1, 1, 'active'),
-(46, 4, 'Clicked Phishing Link', 'SEC_PHISH_CLICK', 41, 'radio', 2, 1, 'active'),
-(47, 4, 'Virus Detected', 'SEC_MAL_VIRUS', 42, 'radio', 1, 1, 'active'),
-(48, 4, 'Computer Infected', 'SEC_MAL_INFECT', 42, 'radio', 2, 1, 'active'),
-(49, 4, 'Password Reset', 'SEC_ACC_PASS', 43, 'radio', 1, 1, 'active'),
-(50, 4, 'Account Locked', 'SEC_ACC_LOCK', 43, 'radio', 2, 1, 'active'),
-(51, 4, 'Unauthorized Access Attempt', 'SEC_ACC_UNAUTH', 43, 'radio', 3, 1, 'active');
+(45, 4, 'Suspicious Email Received', 'SEC_PHISH_EMAIL', 41, 1, 1, 'active'),
+(46, 4, 'Clicked Phishing Link', 'SEC_PHISH_CLICK', 41, 2, 1, 'active'),
+(47, 4, 'Virus Detected', 'SEC_MAL_VIRUS', 42, 1, 1, 'active'),
+(48, 4, 'Computer Infected', 'SEC_MAL_INFECT', 42, 2, 1, 'active'),
+(49, 4, 'Password Reset', 'SEC_ACC_PASS', 43, 1, 1, 'active'),
+(50, 4, 'Account Locked', 'SEC_ACC_LOCK', 43, 2, 1, 'active'),
+(51, 4, 'Unauthorized Access Attempt', 'SEC_ACC_UNAUTH', 43, 3, 1, 'active');
 
 -- Business Application Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `input_type`, `sort_order`, `requires_solution`, `status`) VALUES
-(52, 5, 'ERP System', 'APP_ERP', NULL, 'dropdown', 1, 1, 'active'),
-(53, 5, 'CRM System', 'APP_CRM', NULL, 'dropdown', 2, 1, 'active'),
-(54, 5, 'Document Management', 'APP_DMS', NULL, 'dropdown', 3, 1, 'active'),
-(55, 5, 'Other Applications', 'APP_OTHER', NULL, 'dropdown', 4, 1, 'active');
+INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
+(52, 5, 'ERP System', 'APP_ERP', NULL, 1, 1, 'active'),
+(53, 5, 'CRM System', 'APP_CRM', NULL, 2, 1, 'active'),
+(54, 5, 'Document Management', 'APP_DMS', NULL, 3, 1, 'active'),
+(55, 5, 'Other Applications', 'APP_OTHER', NULL, 4, 1, 'active');
 
 -- Infrastructure Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `input_type`, `sort_order`, `requires_solution`, `status`) VALUES
-(56, 6, 'Server Issues', 'INFRA_SERVER', NULL, 'dropdown', 1, 1, 'active'),
-(57, 6, 'Database Issues', 'INFRA_DATABASE', NULL, 'dropdown', 2, 1, 'active'),
-(58, 6, 'Backup & Recovery', 'INFRA_BACKUP', NULL, 'dropdown', 3, 1, 'active'),
-(59, 6, 'Storage Issues', 'INFRA_STORAGE', NULL, 'dropdown', 4, 1, 'active');
+INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
+(56, 6, 'Server Issues', 'INFRA_SERVER', NULL, 1, 1, 'active'),
+(57, 6, 'Database Issues', 'INFRA_DATABASE', NULL, 2, 1, 'active'),
+(58, 6, 'Backup & Recovery', 'INFRA_BACKUP', NULL, 3, 1, 'active'),
+(59, 6, 'Storage Issues', 'INFRA_STORAGE', NULL, 4, 1, 'active');
 
 -- ============================================
 -- END OF SCHEMA

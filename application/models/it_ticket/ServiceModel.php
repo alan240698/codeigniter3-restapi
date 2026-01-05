@@ -510,7 +510,7 @@ class ServiceModel extends CI_Model
             it.name,
             it.code,
             it.parent_id,
-            it.input_type,
+            it.requires_solution,
             it.sort_order
         ", false);
 
@@ -541,8 +541,7 @@ class ServiceModel extends CI_Model
 
     /**
      * Get single it service by ID
-     * @param int $id it service ID
-     * @return object|null
+     * @return array|null
      */
     public function get_it_service($id)
     {
@@ -552,7 +551,8 @@ class ServiceModel extends CI_Model
         $this->db->join($this->table_it_ticket_services . ' parent', 'it.parent_id = parent.id', 'left');
         $this->db->where('it.id', $id);
         
-        return $this->db->get()->row();
+        $result = $this->db->get()->row_array();
+        return $result ?: null;
     }
 
     /**
@@ -572,7 +572,7 @@ class ServiceModel extends CI_Model
      * @param array $data Update data
      * @return bool
      */
-    public function update_it_ticket($id, $data)
+    public function update_it_service($id, $data)
     {
         $this->db->where('id', $id);
         return $this->db->update($this->table_it_ticket_services, $data);
@@ -583,15 +583,37 @@ class ServiceModel extends CI_Model
      * @param int $id It service ID
      * @return bool
      */
-    public function delete_it_ticket($id)
+    public function delete_it_service($id)
     {
-        // First, delete all children
-        $this->db->where('parent_id', $id);
-        $this->db->delete($this->table_it_ticket_services);
+        // First, get all children recursively
+        $children = $this->_get_all_children_recursive($id);
+
+        // Delete children first (deepest first)
+        foreach (array_reverse($children) as $child_id) {
+            $this->db->where('id', $child_id);
+            $this->db->delete($this->table_it_ticket_services);
+        }
 
         // Then delete the parent
         $this->db->where('id', $id);
         return $this->db->delete($this->table_it_ticket_services);
+    }
+
+    /**
+     * Helper: Get all children recursively
+     */
+    private function _get_all_children_recursive($parent_id, &$result = [])
+    {
+        $this->db->select('id');
+        $this->db->where('parent_id', $parent_id);
+        $children = $this->db->get($this->table_it_ticket_services)->result_array();
+
+        foreach ($children as $child) {
+            $result[] = $child['id'];
+            $this->_get_all_children_recursive($child['id'], $result);
+        }
+
+        return $result;
     }
 
     /**
@@ -603,7 +625,7 @@ class ServiceModel extends CI_Model
     public function is_it_service_code_exists($code, $exclude_id = null)
     {
         $this->db->where('code', strtoupper($code));
-        
+
         if ($exclude_id !== null) {
             $this->db->where('id !=', $exclude_id);
         }
@@ -632,8 +654,120 @@ class ServiceModel extends CI_Model
     public function get_it_service_children($parent_id)
     {
         $this->db->where('parent_id', $parent_id);
+        $this->db->order_by('sort_order', 'ASC');
         $this->db->order_by('name', 'ASC');
-        return $this->db->get($this->table_it_ticket_services)->result();
+
+        return $this->db->get($this->table_it_ticket_services)->result_array();
+    }
+
+    /**
+     * Get maximum sort_order for services within a scope
+     * Scope = service_group_id + parent_id
+     */
+    public function get_max_sort_order_service($service_group_id, $parent_id = null)
+    {
+        $this->db->select_max('sort_order');
+        $this->db->from($this->table_it_ticket_services);
+        $this->db->where('service_group_id', $service_group_id);
+
+        if ($parent_id === null) {
+            $this->db->where('parent_id IS NULL', null, false);
+        } else {
+            $this->db->where('parent_id', $parent_id);
+        }
+
+        $result = $this->db->get()->row_array();
+        $max_order = $result['sort_order'] ?? null;
+
+        if ($max_order === null || $max_order === '') {
+            return 0;
+        }
+
+        return (int)$max_order;
+    }
+
+    /**
+     * Shift sort_order when inserting service
+     */
+    public function shift_sort_order_service($service_group_id, $parent_id, $from_order, $direction = 'up')
+    {
+        if ($direction === 'up') {
+            $this->db->set('sort_order', 'sort_order + 1', false);
+            $this->db->where('service_group_id', $service_group_id);
+
+            if ($parent_id === null) {
+                $this->db->where('parent_id IS NULL', null, false);
+            } else {
+                $this->db->where('parent_id', $parent_id);
+            }
+
+            $this->db->where('sort_order >=', $from_order);
+            $this->db->update($this->table_it_ticket_services);
+        }
+    }
+
+    /**
+     * Reorder services after delete
+     */
+    public function reorder_after_delete_service($service_group_id, $parent_id, $deleted_order)
+    {
+        $this->db->set('sort_order', 'sort_order - 1', false);
+        $this->db->where('service_group_id', $service_group_id);
+
+        if ($parent_id === null) {
+            $this->db->where('parent_id IS NULL', null, false);
+        } else {
+            $this->db->where('parent_id', $parent_id);
+        }
+
+        $this->db->where('sort_order >', $deleted_order);
+        $this->db->update($this->table_it_ticket_services);
+    }
+
+    /**
+     * Reorder when updating service sort_order
+     */
+    public function reorder_on_update_service($id, $service_group_id, $parent_id, $old_order, $new_order)
+    {
+        if ($old_order === $new_order) {
+            return;
+        }
+
+        $this->db->trans_start();
+
+        if ($new_order > $old_order) {
+            // Moving down
+            $this->db->set('sort_order', 'sort_order - 1', false);
+            $this->db->where('service_group_id', $service_group_id);
+
+            if ($parent_id === null) {
+                $this->db->where('parent_id IS NULL', null, false);
+            } else {
+                $this->db->where('parent_id', $parent_id);
+            }
+
+            $this->db->where('sort_order >', $old_order);
+            $this->db->where('sort_order <=', $new_order);
+            $this->db->where('id !=', $id);
+            $this->db->update($this->table_it_ticket_services);
+        } else {
+            // Moving up
+            $this->db->set('sort_order', 'sort_order + 1', false);
+            $this->db->where('service_group_id', $service_group_id);
+
+            if ($parent_id === null) {
+                $this->db->where('parent_id IS NULL', null, false);
+            } else {
+                $this->db->where('parent_id', $parent_id);
+            }
+
+            $this->db->where('sort_order >=', $new_order);
+            $this->db->where('sort_order <', $old_order);
+            $this->db->where('id !=', $id);
+            $this->db->update($this->table_it_ticket_services);
+        }
+
+        $this->db->trans_complete();
     }
 
     /*
@@ -684,7 +818,7 @@ class ServiceModel extends CI_Model
             it.name,
             it.code,
             it.parent_id,
-            it.input_type,
+            it.requires_solution,
             it.sort_order
         ', false);
         
