@@ -103,7 +103,7 @@ class UserTicket extends CI_Controller
             $ticketData = [
                 'ticket_number' => $ticketNumber,
                 'service_group_id' => $serviceGroupId,
-                'ticket_type_id' => 1, // Default ticket type, you can make this dynamic
+                // 'ticket_type_id' => 1, // Default ticket type, you can make this dynamic
                 'it_service_id' => $finalServiceId,
                 'subject' => $subject,
                 'description' => $description,

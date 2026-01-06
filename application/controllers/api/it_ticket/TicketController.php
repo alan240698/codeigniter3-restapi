@@ -90,7 +90,7 @@ class TicketController extends CI_Controller
             // Validate input
             $_POST = $input;
             $this->form_validation->set_rules('service_group_id', 'Service Group', 'required|integer');
-            $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer');
+            // $this->form_validation->set_rules('ticket_type_id', 'Ticket Type', 'required|integer');
             $this->form_validation->set_rules('it_service_id', 'It Service', 'required|integer');
             $this->form_validation->set_rules('subject', 'Subject', 'required|trim|max_length[255]');
             $this->form_validation->set_rules('description', 'Description', 'required|trim');
@@ -108,10 +108,10 @@ class TicketController extends CI_Controller
                 return;
             }
 
-            if (!$this->ServiceModel->get_ticket_type($input['ticket_type_id'])) {
-                $this->_response(['success' => false, 'message' => 'Ticket Type not found'], 400);
-                return;
-            }
+            // if (!$this->ServiceModel->get_ticket_type($input['ticket_type_id'])) {
+            //     $this->_response(['success' => false, 'message' => 'Ticket Type not found'], 400);
+            //     return;
+            // }
 
             $itService = $this->ServiceModel->get_it_service($input['it_service_id']);
             if (!$itService) {
@@ -136,7 +136,7 @@ class TicketController extends CI_Controller
             $ticketData = [
                 'ticket_number' => $ticketNumber,
                 'service_group_id' => $input['service_group_id'],
-                'ticket_type_id' => $input['ticket_type_id'],
+                // 'ticket_type_id' => $input['ticket_type_id'],
                 'it_service_id' => $input['it_service_id'],
                 'subject' => $input['subject'],
                 'description' => $input['description'],

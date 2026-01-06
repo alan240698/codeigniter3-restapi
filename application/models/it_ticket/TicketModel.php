@@ -19,16 +19,15 @@ class TicketModel extends CI_Model
     public function get_tickets_paginated($page = 1, $perPage = 10, $filters = [])
     {
         $this->db->select('
-            t.*,
+
             sg.name as service_group_name,
-            tt.name as ticket_type_name,
             it.name as it_service_name,
             ws.name as current_state_name,
             st.name as assigned_team_name
         ');
         $this->db->from($this->table_tickets . ' t');
         $this->db->join($this->table_service_groups . ' sg', 't.service_group_id = sg.id', 'left');
-        $this->db->join($this->table_ticket_types . ' tt', 't.ticket_type_id = tt.id', 'left');
+        // $this->db->join($this->table_ticket_types . ' tt', 't.ticket_type_id = tt.id', 'left');
         $this->db->join($this->table_it_ticket_services . ' it', 't.id = it.id', 'left');
         $this->db->join($this->table_workflow_states . ' ws', 't.current_state_id = ws.id', 'left');
         $this->db->join($this->table_support_teams . ' st', 't.assigned_team_id = st.id', 'left');
@@ -79,9 +78,7 @@ class TicketModel extends CI_Model
     public function get_ticket($id)
     {
         $this->db->select('
-            t.*,
             sg.name as service_group_name,
-            tt.name as ticket_type_name,
             it.name as it_service_name,
             w.name as workflow_name,
             ws.name as current_state_name,
@@ -89,7 +86,7 @@ class TicketModel extends CI_Model
         ');
         $this->db->from($this->table_tickets . ' t');
         $this->db->join($this->table_service_groups . ' sg', 't.service_group_id = sg.id', 'left');
-        $this->db->join($this->table_ticket_types . ' tt', 't.ticket_type_id = tt.id', 'left');
+        // $this->db->join($this->table_ticket_types . ' tt', 't.ticket_type_id = tt.id', 'left');
         $this->db->join($this->table_it_ticket_services . ' it', 't.id = it.id', 'left');
         $this->db->join($this->table_workflows . ' w', 't.workflow_id = w.id', 'left');
         $this->db->join($this->table_workflow_states . ' ws', 't.current_state_id = ws.id', 'left');

@@ -462,7 +462,6 @@ CREATE TABLE `it_ticket_tickets` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `ticket_number` VARCHAR(20) NOT NULL,
   `service_group_id` INT UNSIGNED NOT NULL,
-  `ticket_type_id` INT UNSIGNED NOT NULL,
   `it_service_id` INT UNSIGNED NOT NULL,
   `workflow_id` INT UNSIGNED DEFAULT NULL,
   `current_state_id` INT UNSIGNED DEFAULT NULL,
@@ -499,7 +498,6 @@ CREATE TABLE `it_ticket_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_ticket_number` (`ticket_number`),
   INDEX `idx_service_group` (`service_group_id`),
-  INDEX `idx_ticket_type` (`ticket_type_id`),
   INDEX `idx_service` (`it_service_id`),
   INDEX `idx_workflow` (`workflow_id`),
   INDEX `idx_current_state` (`current_state_id`),
@@ -516,8 +514,6 @@ CREATE TABLE `it_ticket_tickets` (
   INDEX `idx_active_solution` (`active_solution_id`),
   CONSTRAINT `fk_tickets_service_group` FOREIGN KEY (`service_group_id`) 
     REFERENCES `it_ticket_service_groups` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_tickets_ticket_type` FOREIGN KEY (`ticket_type_id`) 
-    REFERENCES `it_ticket_types` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `fk_tickets_service` FOREIGN KEY (`it_service_id`) 
     REFERENCES `it_ticket_services` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `fk_tickets_workflow` FOREIGN KEY (`workflow_id`) 
