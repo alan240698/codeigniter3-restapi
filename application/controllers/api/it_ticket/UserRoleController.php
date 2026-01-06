@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class UserRoleController extends CI_Controller
 {
@@ -22,18 +22,18 @@ class UserRoleController extends CI_Controller
             $page = (int)$this->input->get('page') ?: 1;
             $perPage = (int)$this->input->get('per_page') ?: 20;
             $search = $this->input->get('search');
-            
+
             $filters = array(
                 'role_id' => $this->input->get('role_id'),
                 'is_active' => $this->input->get('is_active'),
                 'employee_id' => $this->input->get('employee_id')
             );
-            
+
             // Remove null filters
-            $filters = array_filter($filters, function($v) {
+            $filters = array_filter($filters, function ($v) {
                 return $v !== null && $v !== '';
             });
-            
+
             $result = $this->UserRoleModel->get_user_roles_paginated($page, $perPage, $search, $filters);
 
             $this->_response(array(
@@ -48,7 +48,7 @@ class UserRoleController extends CI_Controller
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * GET /api/user-roles/by-users
      * Get users with their roles grouped
@@ -59,7 +59,7 @@ class UserRoleController extends CI_Controller
             $page = (int)$this->input->get('page') ?: 1;
             $perPage = (int)$this->input->get('per_page') ?: 20;
             $search = $this->input->get('search');
-            
+
             $result = $this->UserRoleModel->get_users_with_roles($page, $perPage, $search);
 
             $this->_response(array(
@@ -74,7 +74,7 @@ class UserRoleController extends CI_Controller
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * GET /api/user-roles/employee/{employee_id}
      * Get roles for specific employee
@@ -83,7 +83,7 @@ class UserRoleController extends CI_Controller
     {
         try {
             $roles = $this->UserRoleModel->get_employee_roles($employee_id);
-            
+
             $this->_response(array(
                 'success' => true,
                 'data' => $roles,
@@ -93,7 +93,7 @@ class UserRoleController extends CI_Controller
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * GET /api/user-roles/role/{role_id}/users
      * Get users with specific role
@@ -102,9 +102,9 @@ class UserRoleController extends CI_Controller
     {
         try {
             $activeOnly = $this->input->get('active_only') === '1';
-            
+
             $users = $this->UserRoleModel->get_role_users($role_id, $activeOnly);
-            
+
             $this->_response(array(
                 'success' => true,
                 'data' => $users,
@@ -115,7 +115,7 @@ class UserRoleController extends CI_Controller
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * POST /api/user-roles/assign
      * Assign role to employee
@@ -136,7 +136,7 @@ class UserRoleController extends CI_Controller
                 $this->_response(array('success' => false, 'message' => strip_tags(validation_errors())), 400);
                 return;
             }
-            
+
             // Validate assignment
             $validation = $this->UserRoleModel->validate_assignment($input['employee_id'], $input['role_id']);
             if (!$validation['valid']) {
@@ -149,7 +149,7 @@ class UserRoleController extends CI_Controller
                 'role_id' => (int)$input['role_id'],
                 'assigned_by' => $this->session->userdata('employee_id')
             );
-            
+
             if (empty($data['assigned_by'])) {
                 $data['assigned_by'] = null;
             }
@@ -165,7 +165,7 @@ class UserRoleController extends CI_Controller
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * POST /api/user-roles/bulk-assign
      * Bulk assign roles to employee
@@ -181,18 +181,18 @@ class UserRoleController extends CI_Controller
                 $this->_response(array('success' => false, 'message' => 'Employee ID is required'), 400);
                 return;
             }
-            
+
             if (!isset($input['role_ids']) || !is_array($input['role_ids'])) {
                 $this->_response(array('success' => false, 'message' => 'Role IDs must be an array'), 400);
                 return;
             }
-$assignedBy = $this->session->userdata('employee_id');
-if (empty($assignedBy)) {
-    $assignedBy = isset($input['employee_id']) ? $input['employee_id'] : null;
-}
-            
+            $assignedBy = $this->session->userdata('employee_id');
+            if (empty($assignedBy)) {
+                $assignedBy = isset($input['employee_id']) ? $input['employee_id'] : null;
+            }
+
             $result = $this->UserRoleModel->bulk_assign_roles(
-                trim($input['employee_id']), 
+                trim($input['employee_id']),
                 $input['role_ids'],
                 $assignedBy
             );
@@ -206,7 +206,7 @@ if (empty($assignedBy)) {
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * PUT /api/user-roles/{id}/toggle
      * Toggle role assignment status
@@ -225,7 +225,7 @@ if (empty($assignedBy)) {
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * DELETE /api/user-roles/{id}/remove
      * Soft delete (deactivate) role assignment
@@ -244,7 +244,7 @@ if (empty($assignedBy)) {
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * DELETE /api/user-roles/{id}/delete
      * Hard delete role assignment
@@ -263,7 +263,7 @@ if (empty($assignedBy)) {
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * GET /api/user-roles/statistics
      * Get assignment statistics
@@ -272,7 +272,7 @@ if (empty($assignedBy)) {
     {
         try {
             $stats = $this->UserRoleModel->get_statistics();
-            
+
             $this->_response(array(
                 'success' => true,
                 'data' => $stats
@@ -281,7 +281,7 @@ if (empty($assignedBy)) {
             $this->_response(array('success' => false, 'message' => $e->getMessage()), 500);
         }
     }
-    
+
     /**
      * GET /api/user-roles/available-roles
      * Get all available roles for assignment
@@ -290,7 +290,7 @@ if (empty($assignedBy)) {
     {
         try {
             $roles = $this->RoleModel->get_all_roles();
-            
+
             $this->_response(array(
                 'success' => true,
                 'data' => $roles

@@ -877,7 +877,7 @@
 
                     <div class="form-group">
                         <label>Role Name <span class="required">*</span></label>
-                        <input type="text" id="roleName" placeholder="e.g., support_agent" required>
+                        <input type="text" id="roleName" placeholder="e.g., SUPPORT_AGENT" required>
                     </div>
 
                     <div class="form-group">
@@ -1067,7 +1067,8 @@
             this.validator = new FormValidationManager(ValidationRoles.roles);
             this.validator.setupFormValidation([{
                     fieldId: 'roleName',
-                    fieldName: 'name'
+                    fieldName: 'name',
+                    autoUppercase: true
                 },
                 {
                     fieldId: 'roleDisplayName',

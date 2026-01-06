@@ -1157,6 +1157,12 @@
          */
         async init() {
             console.log('[UserPermissions] Init started...');
+            this.validator = new FormValidationManager(ValidationUserRoles.user_roles);
+
+            this.validator.setupFormValidation([
+                { fieldId: 'assignEmployeeId', fieldName: 'employee_id' },
+                { fieldId: 'roleSelectorList', fieldName: 'role_id' },
+            ]);
 
             //  Prevent duplicate initialization
             if (this.isInitialized) {
@@ -1885,6 +1891,7 @@
          *  CLOSE ASSIGN MODAL
          */
         closeAssignModal() {
+            this.validator.reset(['assignEmployeeId', 'roleSelectorList']);
             document.getElementById('userPermAssignRoleModal').classList.remove('active');
         },
 
@@ -1942,15 +1949,26 @@
             const selectedRoles = Array.from(document.querySelectorAll('input[name="selected_roles"]:checked'))
                 .map(cb => parseInt(cb.value));
 
-            if (!employeeId) {
-                alert('Please select an employee');
+                const formDataChek = {
+                        employee_id: employeeId,
+                        role_id: selectedRoles
+                    };
+
+
+            const fieldMap = { 
+                employee_id: 'assignEmployeeId',
+                role_id: 'roleSelectorList', 
+            };
+
+            if (!this.validator.validateAndShowErrors(formDataChek, fieldMap)) {
+                // TicketNotifier.showValidationError('Please fix all validation errors');
                 return;
             }
 
-            if (selectedRoles.length === 0) {
-                alert('Please select at least one role');
-                return;
-            }
+                    const formData = {
+                        employee_id: employeeId,
+                        role_ids: selectedRoles
+                    };
 
             this.showLoading();
 
@@ -1960,10 +1978,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        employee_id: employeeId,
-                        role_ids: selectedRoles
-                    })
+                    body: JSON.stringify(formData)
                 });
 
                 const result = await response.json();
