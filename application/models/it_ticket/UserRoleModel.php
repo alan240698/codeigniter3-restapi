@@ -9,7 +9,7 @@ class UserRoleModel extends CI_Model
     /**
      * Get all user role assignments with pagination
      */
-    public function get_user_roles_paginated($page = 1, $perPage = 20, $search = null, $filters = [])
+    public function get_user_roles_paginated($page = 1, $perPage = 20, $search = null, $filters = array())
     {
         $offset = ($page - 1) * $perPage;
         
@@ -58,37 +58,51 @@ class UserRoleModel extends CI_Model
         $this->db->limit($perPage, $offset);
         $data = $this->db->get()->result();
         
-        return [
+        return array(
             'data' => $data,
             'total' => $total
-        ];
+        );
     }
     
     /**
-     * Get user's roles grouped by user
+     * Get user's roles grouped by user - OPTIMIZED VERSION v2
+     * Fixed: No LIMIT in subquery (MySQL compatibility)
      */
     public function get_users_with_roles($page = 1, $perPage = 20, $search = null)
     {
         $offset = ($page - 1) * $perPage;
         
-        // Get unique employee IDs
-        $this->db->select('DISTINCT employee_id');
+        // ✅ Step 1: Count total unique employees
+        $this->db->select('COUNT(DISTINCT employee_id) as total_count', FALSE);
         $this->db->from($this->table);
         
         if (!empty($search)) {
             $this->db->like('employee_id', $search);
         }
         
-        $total = $this->db->count_all_results('', false);
+        $count_result = $this->db->get()->row();
+        $total = $count_result ? $count_result->total_count : 0;
         
-        $this->db->order_by('employee_id', 'ASC');
-        $this->db->limit($perPage, $offset);
-        $employees = $this->db->get()->result();
+        // ✅ Step 2: Get paginated employee IDs using derived table
+        $subquery_sql = "(
+            SELECT DISTINCT employee_id
+            FROM {$this->table}
+        ";
         
-        // Get roles for each employee
-        $result = [];
-        foreach ($employees as $emp) {
-            $this->db->select('
+        if (!empty($search)) {
+            $search_escaped = $this->db->escape_like_str($search);
+            $subquery_sql .= " WHERE employee_id LIKE '%{$search_escaped}%'";
+        }
+        
+        $subquery_sql .= "
+            ORDER BY employee_id ASC
+            LIMIT {$perPage} OFFSET {$offset}
+        ) as emp_list";
+        
+        // ✅ Step 3: Get all roles for these employees in ONE query
+        $sql = "
+            SELECT 
+                ur.employee_id,
                 ur.id,
                 ur.role_id,
                 ur.is_active,
@@ -96,27 +110,70 @@ class UserRoleModel extends CI_Model
                 ur.assigned_by,
                 r.name as role_name,
                 r.display_name as role_display_name,
+                r.description as role_description,
                 r.is_system
-            ');
-            $this->db->from($this->table . ' ur');
-            $this->db->join($this->roles_table . ' r', 'ur.role_id = r.id', 'left');
-            $this->db->where('ur.employee_id', $emp->employee_id);
-            $this->db->order_by('ur.assigned_at', 'DESC');
+            FROM {$this->table} ur
+            INNER JOIN {$subquery_sql} ON ur.employee_id = emp_list.employee_id
+            LEFT JOIN {$this->roles_table} r ON ur.role_id = r.id
+            ORDER BY ur.employee_id ASC, ur.assigned_at DESC
+        ";
+        
+        $query = $this->db->query($sql);
+        $all_roles = $query->result();
+        
+        // ✅ Step 4: Group by employee_id
+        $result = array();
+        $current_employee = null;
+        $employee_data = null;
+        
+        foreach ($all_roles as $role) {
+            if ($current_employee !== $role->employee_id) {
+                // Save previous employee data
+                if ($employee_data !== null) {
+                    $result[] = $employee_data;
+                }
+                
+                // Start new employee
+                $current_employee = $role->employee_id;
+                $employee_data = array(
+                    'employee_id' => $role->employee_id,
+                    'roles' => array(),
+                    'active_roles_count' => 0,
+                    'total_roles_count' => 0
+                );
+            }
             
-            $roles = $this->db->get()->result();
+            // Add role to employee
+            $employee_data['roles'][] = array(
+                'id' => $role->id,
+                'role_id' => $role->role_id,
+                'role_name' => $role->role_name,
+                'role_display_name' => $role->role_display_name,
+                'role_description' => $role->role_description,
+                'is_active' => $role->is_active,
+                'is_system' => $role->is_system,
+                'assigned_at' => $role->assigned_at,
+                'assigned_by' => $role->assigned_by
+            );
             
-            $result[] = [
-                'employee_id' => $emp->employee_id,
-                'roles' => $roles,
-                'active_roles_count' => count(array_filter($roles, fn($r) => $r->is_active)),
-                'total_roles_count' => count($roles)
-            ];
+            $employee_data['total_roles_count']++;
+            if ($role->is_active) {
+                $employee_data['active_roles_count']++;
+            }
         }
         
-        return [
+        // Don't forget last employee
+        if ($employee_data !== null) {
+            $result[] = $employee_data;
+        }
+        
+        return array(
             'data' => $result,
-            'total' => $total
-        ];
+            'total' => $total,
+            'page' => $page,
+            'per_page' => $perPage,
+            'total_pages' => ceil($total / $perPage)
+        );
     }
     
     /**
@@ -174,32 +231,36 @@ class UserRoleModel extends CI_Model
     public function assign_role($data)
     {
         // Check if already exists
-        $existing = $this->db->get_where($this->table, [
+        $existing = $this->db->get_where($this->table, array(
             'employee_id' => $data['employee_id'],
             'role_id' => $data['role_id']
-        ])->row();
+        ))->row();
         
         if ($existing) {
             // Update existing
-            return $this->db->update($this->table, [
+            $assigned_by = isset($data['assigned_by']) ? $data['assigned_by'] : null;
+            
+            return $this->db->update($this->table, array(
                 'is_active' => 1,
                 'assigned_at' => date('Y-m-d H:i:s'),
-                'assigned_by' => $data['assigned_by'] ?? null,
+                'assigned_by' => $assigned_by,
                 'updated_at' => date('Y-m-d H:i:s')
-            ], [
+            ), array(
                 'id' => $existing->id
-            ]);
+            ));
         } else {
             // Insert new
-            $insert_data = [
+            $assigned_by = isset($data['assigned_by']) ? $data['assigned_by'] : null;
+            
+            $insert_data = array(
                 'employee_id' => $data['employee_id'],
                 'role_id' => $data['role_id'],
                 'is_active' => 1,
                 'assigned_at' => date('Y-m-d H:i:s'),
-                'assigned_by' => $data['assigned_by'] ?? null,
+                'assigned_by' => $assigned_by,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
-            ];
+            );
             
             return $this->db->insert($this->table, $insert_data);
         }
@@ -210,10 +271,10 @@ class UserRoleModel extends CI_Model
      */
     public function remove_role($id)
     {
-        return $this->db->update($this->table, [
+        return $this->db->update($this->table, array(
             'is_active' => 0,
             'updated_at' => date('Y-m-d H:i:s')
-        ], ['id' => $id]);
+        ), array('id' => $id));
     }
     
     /**
@@ -221,7 +282,7 @@ class UserRoleModel extends CI_Model
      */
     public function delete_assignment($id)
     {
-        return $this->db->delete($this->table, ['id' => $id]);
+        return $this->db->delete($this->table, array('id' => $id));
     }
     
     /**
@@ -229,16 +290,16 @@ class UserRoleModel extends CI_Model
      */
     public function toggle_status($id)
     {
-        $current = $this->db->get_where($this->table, ['id' => $id])->row();
+        $current = $this->db->get_where($this->table, array('id' => $id))->row();
         
         if (!$current) {
             return false;
         }
         
-        return $this->db->update($this->table, [
+        return $this->db->update($this->table, array(
             'is_active' => !$current->is_active,
             'updated_at' => date('Y-m-d H:i:s')
-        ], ['id' => $id]);
+        ), array('id' => $id));
     }
     
     /**
@@ -249,18 +310,18 @@ class UserRoleModel extends CI_Model
         $this->db->trans_start();
         
         // Deactivate all current roles
-        $this->db->update($this->table, [
+        $this->db->update($this->table, array(
             'is_active' => 0,
             'updated_at' => date('Y-m-d H:i:s')
-        ], ['employee_id' => $employee_id]);
+        ), array('employee_id' => $employee_id));
         
         // Assign new roles
         foreach ($role_ids as $role_id) {
-            $this->assign_role([
+            $this->assign_role(array(
                 'employee_id' => $employee_id,
                 'role_id' => $role_id,
                 'assigned_by' => $assigned_by
-            ]);
+            ));
         }
         
         $this->db->trans_complete();
@@ -298,12 +359,12 @@ class UserRoleModel extends CI_Model
         $this->db->order_by('assignment_count', 'DESC');
         $roles_usage = $this->db->get()->result();
         
-        return [
+        return array(
             'total_assignments' => $total_assignments,
             'active_assignments' => $active_assignments,
             'unique_employees' => $unique_employees,
             'roles_usage' => $roles_usage
-        ];
+        );
     }
     
     /**
@@ -350,10 +411,10 @@ class UserRoleModel extends CI_Model
      */
     public function validate_assignment($employee_id, $role_id)
     {
-        $errors = [];
+        $errors = array();
         
         // Check if role exists
-        $role = $this->db->get_where($this->roles_table, ['id' => $role_id])->row();
+        $role = $this->db->get_where($this->roles_table, array('id' => $role_id))->row();
         if (!$role) {
             $errors[] = 'Role does not exist';
         }
@@ -364,9 +425,9 @@ class UserRoleModel extends CI_Model
             $errors[] = 'Employee ID is required';
         }
         
-        return [
+        return array(
             'valid' => empty($errors),
             'errors' => $errors
-        ];
+        );
     }
 }

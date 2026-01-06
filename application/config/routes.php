@@ -328,17 +328,17 @@ $route['api/roles/(:num)/delete'] = 'api/it_ticket/RoleController/delete/$1';
 // application/config/routes.php
 
 // User Roles API Routes
-$route['api/user-roles'] = 'it_ticket/UserRoleController/index';
-$route['api/user-roles/by-users'] = 'it_ticket/UserRoleController/get_users_with_roles';
-$route['api/user-roles/employee/(:any)'] = 'it_ticket/UserRoleController/get_employee_roles/$1';
-$route['api/user-roles/role/(:num)/users'] = 'it_ticket/UserRoleController/get_role_users/$1';
-$route['api/user-roles/assign'] = 'it_ticket/UserRoleController/assign';
-$route['api/user-roles/bulk-assign'] = 'it_ticket/UserRoleController/bulk_assign';
-$route['api/user-roles/(:num)/toggle'] = 'it_ticket/UserRoleController/toggle/$1';
-$route['api/user-roles/(:num)/remove'] = 'it_ticket/UserRoleController/remove/$1';
-$route['api/user-roles/(:num)/delete'] = 'it_ticket/UserRoleController/delete/$1';
-$route['api/user-roles/statistics'] = 'it_ticket/UserRoleController/statistics';
-$route['api/user-roles/available-roles'] = 'it_ticket/UserRoleController/available_roles';
+$route['api/user-roles'] = 'api/it_ticket/UserRoleController/index';
+$route['api/user-roles/by-users'] = 'api/it_ticket/UserRoleController/get_users_with_roles';
+$route['api/user-roles/employee/(:any)'] = 'api/it_ticket/UserRoleController/get_employee_roles/$1';
+$route['api/user-roles/role/(:num)/users'] = 'api/it_ticket/UserRoleController/get_role_users/$1';
+$route['api/user-roles/assign'] = 'api/it_ticket/UserRoleController/assign';
+$route['api/user-roles/bulk-assign'] = 'api/it_ticket/UserRoleController/bulk_assign';
+$route['api/user-roles/(:num)/toggle'] = 'api/it_ticket/UserRoleController/toggle/$1';
+$route['api/user-roles/(:num)/remove'] = 'api/it_ticket/UserRoleController/remove/$1';
+$route['api/user-roles/(:num)/delete'] = 'api/it_ticket/UserRoleController/delete/$1';
+$route['api/user-roles/statistics'] = 'api/it_ticket/UserRoleController/statistics';
+$route['api/user-roles/available-roles'] = 'api/it_ticket/UserRoleController/available_roles';
 
 /*
 |--------------------------------------------------------------------------

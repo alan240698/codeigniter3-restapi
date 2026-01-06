@@ -169,7 +169,7 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            /* background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%); */
         }
 
         .role-card:hover {
@@ -181,7 +181,7 @@
         .role-icon {
             /* width: 64px;
             height: 64px; */
-            /* background: linear-gradient(135deg, #000004 0%, #8650ff 100%); */
+               background: linear-gradient(135deg, #cdcdcf 0%, #ebebeb 100%);
             border-radius: 10px;
             padding: 0.5rem;
             display: flex;
@@ -190,15 +190,17 @@
             font-size: 1.75rem;
             color: #10b981;
             margin-bottom: 1.25rem;
-            border: #3232dd 1px solid;
+            /* border: #3232dd 1px solid; */
             /* box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); */
         }
 
         .role-name {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 0.375rem;
+            text-align: center;
+            margin-bottom: 1rem;
         }
 
         .role-display-name {
@@ -206,7 +208,19 @@
             color: var(--gray);
             font-weight: 600;
             font-family: 'Courier New', monospace;
-            background: var(--light-gray);
+            background: linear-gradient(to right, rgba(99, 102, 241, 0.05), transparent);
+            padding: 0.25rem 0.625rem;
+            border-radius: 6px;
+            /* display: inline-block; */
+            margin-bottom: 1rem;
+        }
+
+        .role-user-assignment {
+            font-size: 0.875rem;
+            color: var(--gray);
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(to right, rgba(99, 102, 241, 0.05), transparent);
             padding: 0.25rem 0.625rem;
             border-radius: 6px;
             /* display: inline-block; */
@@ -221,7 +235,7 @@
             padding: 1rem;
             background: linear-gradient(to right, rgba(99, 102, 241, 0.05), transparent);
             border-radius: 10px;
-            border-left: 3px solid var(--primary);
+            /* border-left: 3px solid var(--primary); */
         }
 
         .permission-group {
@@ -715,7 +729,7 @@
             gap: 0.25rem;
             padding: 0.25rem 0.625rem;
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: #78350f;
+            color: #000000;
             font-size: 0.7rem;
             font-weight: 700;
             border-radius: 12px;
@@ -798,13 +812,13 @@
             display: inline-flex;
             align-items: center;
             gap: 0.375rem;
-            padding: 0.375rem 0.75rem;
+            /* padding: 0.375rem 0.75rem; */
             background: #dbeafe;
             color: #1e40af;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 600;
-            margin-left: 0.5rem;
+            /* margin-left: 0.5rem; */
         }
 
         .dependencies-badge.has-deps {
@@ -1128,13 +1142,13 @@
                     <div class="role-name">${role.name}</div>
                     <div class="role-display-name">
                         ${role.display_name}
-                        ${totalDeps > 0 ? `<span class="dependencies-badge has-deps"><i class="fas fa-link"></i> ${totalDeps} dependencies</span>` : ''}
                     </div>
-                    ${role.description ? `
+                    <div class="role-user-assignment">
+                        <span class="dependencies-badge has-deps"><i class="fas fa-link"></i> ${totalDeps > 0 ? totalDeps : 0} user assignment</span>
+                    </div>
                         <div class="role-description">
-                            <i class="fas fa-info-circle"></i> ${role.description}
+                            <i class="fas fa-info-circle"></i> ${role.description || 'No description'}
                         </div>
-                    ` : ''}
                     <div class="role-permissions">
                         ${this.renderPermissionsSummary(permissions)}
                     </div>
