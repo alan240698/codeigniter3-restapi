@@ -105,7 +105,7 @@
                                 <textarea class="form-control"
                                     name="description"
                                     id="description"
-                                    rows="8"
+                                    rows="4"
                                     placeholder="Enter a short description here"
                                     style="resize: none;"></textarea>
                                 <div id="description-error" class="inline-error"></div>
@@ -159,15 +159,15 @@
                         <h6 class="fw-bold mb-3">Review Your Ticket</h6>
                         <div class="review-card">
                             <div class="review-row">
-                                <div class="review-label">Category:</div>
+                                <div class="review-label">Service group name:</div>
                                 <div class="review-value" id="review-category">-</div>
                             </div>
                             <div class="review-row">
-                                <div class="review-label">Issue Type:</div>
+                                <div class="review-label">It service name:</div>
                                 <div class="review-value" id="review-issue-type">-</div>
                             </div>
                             <div class="review-row" id="review-sub-issue-row" style="display: none;">
-                                <div class="review-label">Sub Issue Type:</div>
+                                <div class="review-label">Sub It service name:</div>
                                 <div class="review-value" id="review-sub-issue">-</div>
                             </div>
                             <div class="review-row">

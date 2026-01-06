@@ -19,7 +19,7 @@ class TicketModel extends CI_Model
     public function get_tickets_paginated($page = 1, $perPage = 10, $filters = [])
     {
         $this->db->select('
-
+            t.*,
             sg.name as service_group_name,
             it.name as it_service_name,
             ws.name as current_state_name,

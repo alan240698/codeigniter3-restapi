@@ -101,8 +101,8 @@ function renderTickets(tickets) {
         const row = `
             <tr onclick="viewTicket(${ticket.id})" style="cursor: pointer;">
                 <td class="text-center">${ticket.id}</td>
-                <td>${escapeHtml(ticket.category || '-')}</td>
-                <td>${escapeHtml(ticket.subcategory || '-')}</td>
+                <td>${escapeHtml(ticket.service_group_name || '-')}</td>
+                <td>${escapeHtml(ticket.it_service_name || '-')}</td>
                 <td>${truncateText(ticket.description || '-', 50)}</td>
                 <td>${escapeHtml(ticket.assigned_to || 'Unassigned')}</td>
                 <td><span class="badge bg-${getStatusColor(ticket.status)}">${ticket.status || 'New'}</span></td>
