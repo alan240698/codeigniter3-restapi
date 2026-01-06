@@ -21,6 +21,7 @@
     <script src="<?= base_url('assets/it_ticket/js/ValidationRulesTeams.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/ValidationRulesRules.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/ValidationRulesTemplates.js') ?>"></script>
+    <script src="<?= base_url('assets/it_ticket/js/ValidationRoles.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/FormValidationManager.js') ?>"></script>
     <style>
         * {

@@ -324,6 +324,22 @@ $route['api/roles/create'] = 'api/it_ticket/RoleController/store';
 $route['api/roles/(:num)/update'] = 'api/it_ticket/RoleController/update/$1';
 $route['api/roles/(:num)/delete'] = 'api/it_ticket/RoleController/delete/$1';
 
+
+// application/config/routes.php
+
+// User Roles API Routes
+$route['api/user-roles'] = 'it_ticket/UserRoleController/index';
+$route['api/user-roles/by-users'] = 'it_ticket/UserRoleController/get_users_with_roles';
+$route['api/user-roles/employee/(:any)'] = 'it_ticket/UserRoleController/get_employee_roles/$1';
+$route['api/user-roles/role/(:num)/users'] = 'it_ticket/UserRoleController/get_role_users/$1';
+$route['api/user-roles/assign'] = 'it_ticket/UserRoleController/assign';
+$route['api/user-roles/bulk-assign'] = 'it_ticket/UserRoleController/bulk_assign';
+$route['api/user-roles/(:num)/toggle'] = 'it_ticket/UserRoleController/toggle/$1';
+$route['api/user-roles/(:num)/remove'] = 'it_ticket/UserRoleController/remove/$1';
+$route['api/user-roles/(:num)/delete'] = 'it_ticket/UserRoleController/delete/$1';
+$route['api/user-roles/statistics'] = 'it_ticket/UserRoleController/statistics';
+$route['api/user-roles/available-roles'] = 'it_ticket/UserRoleController/available_roles';
+
 /*
 |--------------------------------------------------------------------------
 | USER TICKET INTERFACE

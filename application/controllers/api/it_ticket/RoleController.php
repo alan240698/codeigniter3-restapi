@@ -49,6 +49,25 @@ class RoleController extends CI_Controller
     }
 
     /**
+     * GET /api/roles/{id}
+     */
+    public function get($id)
+    {
+        try {
+            $role = $this->RoleModel->get_role($id);
+            
+            if (!$role) {
+                $this->_response(['success' => false, 'message' => 'Role not found'], 404);
+                return;
+            }
+
+            $this->_response(['success' => true, 'data' => $role]);
+        } catch (Exception $e) {
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * POST /api/roles/create
      */
     public function store()
@@ -76,6 +95,7 @@ class RoleController extends CI_Controller
                 'display_name' => trim($input['display_name']),
                 'description' => !empty($input['description']) ? trim($input['description']) : null,
                 'permissions' => json_encode($permissions),
+                'is_system' => 0, // Always 0 for new roles
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
@@ -83,7 +103,11 @@ class RoleController extends CI_Controller
             $insertId = $this->RoleModel->create_role($data);
 
             if ($insertId) {
-                $this->_response(['success' => true, 'message' => 'Role created successfully', 'data' => ['id' => $insertId]], 201);
+                $this->_response([
+                    'success' => true, 
+                    'message' => 'Role created successfully', 
+                    'data' => ['id' => $insertId]
+                ], 201);
             } else {
                 throw new Exception('Failed to create role');
             }
@@ -107,11 +131,32 @@ class RoleController extends CI_Controller
             $rawInput = file_get_contents('php://input');
             $input = json_decode($rawInput, true);
 
+            // PROTECTION: Check if trying to change system role name
+            if ($existing['is_system'] == 1 && 
+                isset($input['name']) && 
+                strtolower(trim($input['name'])) != $existing['name']) {
+                $this->_response([
+                    'success' => false, 
+                    'message' => 'Cannot change system role name. This field is protected.'
+                ], 403);
+                return;
+            }
+
             // Validate
             $this->load->library('form_validation');
             $_POST = $input;
-            $this->form_validation->set_rules('name', 'Role Name', 'required|trim|max_length[50]|callback_check_unique_name_update[' . $id . ']');
-            $this->form_validation->set_rules('display_name', 'Display Name', 'required|trim|max_length[100]');
+            
+            // For system roles, name validation is skipped if name unchanged
+            if ($existing['is_system'] == 1 && 
+                isset($input['name']) && 
+                strtolower(trim($input['name'])) == $existing['name']) {
+                // Skip name validation for system role with unchanged name
+                $this->form_validation->set_rules('display_name', 'Display Name', 'required|trim|max_length[100]');
+            } else {
+                // Normal validation
+                $this->form_validation->set_rules('name', 'Role Name', 'required|trim|max_length[50]|callback_check_unique_name_update[' . $id . ']');
+                $this->form_validation->set_rules('display_name', 'Display Name', 'required|trim|max_length[100]');
+            }
 
             if (!$this->form_validation->run()) {
                 $this->_response(['success' => false, 'message' => strip_tags(validation_errors())], 400);
@@ -122,12 +167,16 @@ class RoleController extends CI_Controller
             $permissions = $this->parsePermissions($input);
 
             $data = [
-                'name' => strtolower(trim($input['name'])),
                 'display_name' => trim($input['display_name']),
                 'description' => !empty($input['description']) ? trim($input['description']) : null,
                 'permissions' => json_encode($permissions),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
+
+            // Only update name for custom roles
+            if ($existing['is_system'] == 0) {
+                $data['name'] = strtolower(trim($input['name']));
+            }
 
             $updated = $this->RoleModel->update_role($id, $data);
 
@@ -148,16 +197,41 @@ class RoleController extends CI_Controller
     {
         try {
             $existing = $this->RoleModel->get_role($id);
+            
             if (!$existing) {
                 $this->_response(['success' => false, 'message' => 'Role not found'], 404);
                 return;
             }
 
-            if ($this->RoleModel->role_has_users($id)) {
-                $this->_response(['success' => false, 'message' => 'Cannot delete role that is assigned to users'], 400);
+            // PROTECTION: Check if system role
+            if ($existing['is_system'] == 1) {
+                $this->_response([
+                    'success' => false, 
+                    'message' => 'Cannot delete system role. This role is protected by the system.'
+                ], 403);
                 return;
             }
 
+            // Check dependencies
+            $dependencies = $existing['dependencies'];
+            
+            if ($dependencies['user_roles'] > 0) {
+                $this->_response([
+                    'success' => false, 
+                    'message' => "Cannot delete role. {$dependencies['user_roles']} user(s) are assigned this role. Please remove all user assignments first."
+                ], 400);
+                return;
+            }
+
+            if ($dependencies['workflow_transitions'] > 0) {
+                $this->_response([
+                    'success' => false, 
+                    'message' => "Cannot delete role. Used in {$dependencies['workflow_transitions']} workflow transition(s). Please update workflows first."
+                ], 400);
+                return;
+            }
+
+            // Safe to delete
             $deleted = $this->RoleModel->delete_role($id);
 
             if ($deleted) {
@@ -165,6 +239,23 @@ class RoleController extends CI_Controller
             } else {
                 throw new Exception('Failed to delete role');
             }
+        } catch (Exception $e) {
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * GET /api/roles/{id}/dependencies
+     */
+    public function get_dependencies($id)
+    {
+        try {
+            $dependencies = $this->RoleModel->check_role_dependencies($id);
+            
+            $this->_response([
+                'success' => true,
+                'data' => $dependencies
+            ]);
         } catch (Exception $e) {
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
         }

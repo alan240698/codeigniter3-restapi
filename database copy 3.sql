@@ -17,13 +17,15 @@ CREATE TABLE `it_ticket_roles` (
   `display_name` VARCHAR(100) NOT NULL,
   `description` TEXT DEFAULT NULL,
   `permissions` JSON DEFAULT NULL,
+  `is_system` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Flag to protect system roles (1=system, 0=custom)',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_name` (`name`),
-  INDEX `idx_name` (`name`)
+  INDEX `idx_name` (`name`),
+  INDEX `idx_is_system` (`is_system`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-COMMENT='System roles';
+COMMENT='System roles with protection for core roles';
 
 -- 2. Service Groups
 CREATE TABLE `it_ticket_service_groups` (

@@ -1,5 +1,3 @@
-<div id="tab-monitoring" class="tab-content active">
-    
     <style>
         /* Selection Panel */
         .selection-panel {
@@ -620,6 +618,9 @@
             max-height: 1000px;
         }
     </style>
+
+<div id="tab-monitoring" class="tab-content active">
+    
 
     <!-- Selection Panel -->
     <div class="selection-panel">
