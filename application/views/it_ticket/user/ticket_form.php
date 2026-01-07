@@ -11,6 +11,280 @@
         z-index: 10;
         margin-top: auto;
     }
+
+    /* ========================================
+   FILE UPLOAD - IMPROVED UI/UX
+   ======================================== */
+
+.uploaded-files-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.uploaded-file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.uploaded-file-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--file-color, #17a2b8);
+    transition: width 0.3s ease;
+}
+
+.uploaded-file-item:hover {
+    border-color: #17a2b8;
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15);
+    transform: translateY(-2px);
+}
+
+.uploaded-file-item:hover::before {
+    width: 6px;
+}
+
+/* File Icon */
+.file-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 24px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.icon-image {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.icon-pdf {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.icon-word {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.icon-excel {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+}
+
+.icon-text {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+}
+
+.icon-default {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #666;
+}
+
+.uploaded-file-item:hover .file-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* File Details */
+.file-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.file-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2c3e50;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.2px;
+}
+
+.file-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+}
+
+.file-size {
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.file-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #27ae60;
+    font-weight: 500;
+}
+
+.file-status i {
+    font-size: 12px;
+}
+
+/* Remove Button */
+.file-remove-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e74c3c;
+    background: white;
+    color: #e74c3c;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.file-remove-btn:hover {
+    background: #e74c3c;
+    color: white;
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.file-remove-btn:active {
+    transform: scale(0.95) rotate(90deg);
+}
+
+/* Files Summary */
+.files-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 8px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.stat-item i {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.stat-label {
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* Progress Bar */
+.summary-progress {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+    border-radius: 10px;
+    transition: width 0.5s ease, background 0.3s ease;
+    box-shadow: 0 0 10px rgba(67, 233, 123, 0.5);
+}
+
+.progress-warning {
+    background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 0 10px rgba(245, 87, 108, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .uploaded-file-item {
+        padding: 12px;
+    }
+    
+    .file-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .file-name {
+        font-size: 13px;
+    }
+    
+    .file-meta {
+        font-size: 11px;
+    }
+    
+    .file-remove-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .summary-stats {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.uploaded-file-item {
+    animation: slideIn 0.3s ease-out;
+}
 </style>
 
 <div class="modal fade" id="ticketFormModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">

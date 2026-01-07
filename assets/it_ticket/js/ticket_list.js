@@ -47,10 +47,10 @@ function initializeEventHandlers() {
         }
     });
 
-    // File upload
-    $('#attachments').change(function () {
-        displayFileList(this.files);
-    });
+    // // File upload
+    // $('#attachments').change(function () {
+    //     displayFileList(this.files);
+    // });
 }
 
 function loadTickets() {
@@ -229,24 +229,24 @@ function submitTicket() {
     });
 }
 
-function displayFileList(files) {
-    const fileList = $('#file-list');
-    fileList.empty();
+// function displayFileList(files) {
+//     const fileList = $('#file-list');
+//     fileList.empty();
 
-    if (files.length > 0) {
-        const ul = $('<ul class="list-group"></ul>');
-        Array.from(files).forEach(file => {
-            const li = `
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="fas fa-file me-2 text-muted"></i>${escapeHtml(file.name)}</span>
-                    <span class="badge bg-info rounded-pill">${formatFileSize(file.size)}</span>
-                </li>
-            `;
-            ul.append(li);
-        });
-        fileList.append(ul);
-    }
-}
+//     if (files.length > 0) {
+//         const ul = $('<ul class="list-group"></ul>');
+//         Array.from(files).forEach(file => {
+//             const li = `
+//                 <li class="list-group-item d-flex justify-content-between align-items-center">
+//                     <span><i class="fas fa-file me-2 text-muted"></i>${escapeHtml(file.name)}</span>
+//                     <span class="badge bg-info rounded-pill">${formatFileSize(file.size)}</span>
+//                 </li>
+//             `;
+//             ul.append(li);
+//         });
+//         fileList.append(ul);
+//     }
+// }
 
 function viewTicket(ticketId) {
     window.location.href = BASE_URL + 'my-tickets/' + ticketId;
