@@ -91,6 +91,29 @@ class RulesModel extends CI_Model
         return null;
     }
 
+        // ========================================
+    // ROUTING RULES
+    // ========================================
+
+    /**
+     * Get active routing rule by service
+     * @param int $itServiceId
+     * @return object|null
+     */
+    public function get_routing_rule_by_service($itServiceId)
+    {
+        return $this->db
+            ->select('rr.*, st.name as team_name')
+            ->from($this->table_routing . ' rr')
+            ->join('it_ticket_support_teams st', 'st.id = rr.target_team_id', 'left')
+            ->where('rr.it_service_id', $itServiceId)
+            ->where('rr.status', 'active')
+            ->order_by('rr.priority', 'ASC')
+            ->limit(1)
+            ->get()
+            ->row();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | APPROVAL RULES
@@ -177,6 +200,23 @@ class RulesModel extends CI_Model
         $this->db->order_by('lr.level_number', 'ASC');
         
         return $this->db->get()->result();
+    }
+
+      /**
+     * Get all level rules for a service
+     * @param int $itServiceId
+     * @return array
+     */
+    public function get_level_rules_v1($itServiceId)
+    {
+        return $this->db
+            ->select('lr.*, st.name as team_name, st.support_level')
+            ->from($this->table_level . ' lr')
+            ->join('it_ticket_support_teams st', 'st.id = lr.support_team_id', 'left')
+            ->where('lr.it_service_id', $itServiceId)
+            ->order_by('lr.level_number', 'ASC')
+            ->get()
+            ->result();
     }
 
     public function get_level_rule($id)

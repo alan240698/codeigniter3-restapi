@@ -279,6 +279,42 @@ class WorkflowModel extends CI_Model
         return $this->db->count_all_results($this->table_transitions) > 0;
     }
 
+        /**
+     * Get initial state of a workflow
+     * @param int $workflowId
+     * @return object|null
+     */
+    public function get_initial_state_v1($workflowId)
+    {
+        return $this->db
+            ->select('*')
+            ->from($this->table_states)
+            ->where('workflow_id', $workflowId)
+            ->where('state_type', 'initial')
+            ->order_by('sort_order', 'ASC')
+            ->limit(1)
+            ->get()
+            ->row();
+    }
+
+    /**
+     * Get workflow by IT service ID
+     * @param int $itServiceId
+     * @return object|null
+     */
+    public function get_workflow_by_service($itServiceId)
+    {
+        return $this->db
+            ->select('w.*')
+            ->from($this->table_workflows . ' w')
+            ->join($this->table_it_service_workflows . ' sw', 'sw.workflow_id = w.id')
+            ->where('sw.it_service_id', $itServiceId)
+            ->where('sw.is_active', 1)
+            ->where('w.status', 'active')
+            ->get()
+            ->row();
+    }
+
     /**
      * Get maximum sort_order for states in a workflow
      */

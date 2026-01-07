@@ -104,7 +104,7 @@ function renderTickets(tickets) {
                 <td>${escapeHtml(ticket.service_group_name || '-')}</td>
                 <td>${escapeHtml(ticket.it_service_name || '-')}</td>
                 <td>${truncateText(ticket.description || '-', 50)}</td>
-                <td>${escapeHtml(ticket.assigned_to || 'Unassigned')}</td>
+                <td>${escapeHtml(ticket.assigned_to || ticket.assigned_team_name)}</td>
                 <td><span class="badge bg-${getStatusColor(ticket.status)}">${ticket.status || 'New'}</span></td>
                 <td>${formatDate(ticket.created_at)}</td>
             </tr>

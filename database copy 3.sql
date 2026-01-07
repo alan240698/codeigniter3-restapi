@@ -744,381 +744,332 @@ COMMENT='Email template actions log';
 -- ============================================
 
 -- ============================================
--- 1. ROLES (Essential for user management)
--- ============================================
-INSERT INTO `it_ticket_roles` (`id`, `name`, `display_name`, `description`, `permissions`) VALUES
-(1, 'admin', 'System Administrator', 'Full system access with all permissions', 
- JSON_OBJECT(
-   'manage_users', true,
-   'manage_teams', true,
-   'manage_services', true,
-   'manage_workflows', true,
-   'manage_sla', true,
-   'manage_settings', true,
-   'view_all_tickets', true,
-   'manage_all_tickets', true,
-   'view_reports', true,
-   'manage_reports', true
- )),
-(2, 'user', 'End User', 'Can create and view own tickets', 
- JSON_OBJECT(
-   'create_ticket', true,
-   'view_own_tickets', true,
-   'comment_own_tickets', true,
-   'cancel_own_tickets', true
- )),
-(3, 'support_agent', 'Support Agent', 'Can view and resolve assigned tickets', 
- JSON_OBJECT(
-   'view_assigned_tickets', true,
-   'view_team_tickets', true,
-   'update_tickets', true,
-   'add_comments', true,
-   'add_solutions', true,
-   'escalate_tickets', true,
-   'view_reports', true
- )),
-(4, 'team_lead', 'Team Lead', 'Can manage team tickets and assign work', 
- JSON_OBJECT(
-   'view_team_tickets', true,
-   'view_all_tickets', true,
-   'assign_tickets', true,
-   'reassign_tickets', true,
-   'approve_escalations', true,
-   'view_team_reports', true,
-   'manage_team_members', true
- )),
-(5, 'manager', 'Manager', 'Can approve requests and oversee all tickets', 
- JSON_OBJECT(
-   'view_all_tickets', true,
-   'approve_requests', true,
-   'reject_requests', true,
-   'view_all_reports', true,
-   'manage_sla', true,
-   'manage_priorities', true
- ));
-
--- ============================================
--- 2. SERVICE GROUPS
--- ============================================
-INSERT INTO `it_ticket_service_groups` (`id`, `name`, `code`, `description`, `icon`, `color`, `sort_order`, `status`) VALUES
-(1, 'Network & Connectivity', 'NETWORK', 'Network infrastructure and connectivity issues', 'fa-network-wired', '#3498db', 1, 'active'),
-(2, 'Human Resources', 'HRM', 'HR systems and employee services', 'fa-users', '#e74c3c', 2, 'active'),
-(3, 'User Computer & Devices', 'USER_COMPUTER', 'Desktop, laptop, and peripheral support', 'fa-desktop', '#2ecc71', 3, 'active'),
-(4, 'Cyber Security', 'CYBER_SECURITY', 'Security incidents and access management', 'fa-shield-alt', '#f39c12', 4, 'active'),
-(5, 'Business Applications', 'BUSINESS_APPS', 'Enterprise application support', 'fa-briefcase', '#9b59b6', 5, 'active'),
-(6, 'Infrastructure', 'INFRASTRUCTURE', 'Server and data center operations', 'fa-server', '#34495e', 6, 'active');
-
--- ============================================
--- 3. TICKET TYPES
--- ============================================
-INSERT INTO `it_ticket_types` (`id`, `name`, `code`, `description`, `icon`, `color`, `sort_order`, `status`) VALUES
-(1, 'Incident', 'INCIDENT', 'Unplanned interruption or reduction in service quality', 'fa-exclamation-triangle', '#e74c3c', 1, 'active'),
-(2, 'Service Request', 'REQUEST', 'Request for service or information', 'fa-hand-paper', '#3498db', 2, 'active'),
-(3, 'Change Request', 'CHANGE', 'Request to modify IT infrastructure or services', 'fa-exchange-alt', '#f39c12', 3, 'active'),
-(4, 'Problem', 'PROBLEM', 'Root cause investigation for recurring incidents', 'fa-bug', '#9b59b6', 4, 'active');
-
--- ============================================
--- 4. SUPPORT TEAMS
--- ============================================
-INSERT INTO `it_ticket_support_teams` (`id`, `name`, `code`, `description`, `support_level`, `country`, `email`, `status`) VALUES
-(1, 'Service Desk - Level 1', 'IT_L1', 'First line support and ticket triage', 'L1', 'Vietnam', 'servicedesk@company.com', 'active'),
-(2, 'IT Support - Level 2', 'IT_L2', 'Advanced technical support', 'L2', 'Vietnam', 'itsupport@company.com', 'active'),
-(3, 'Network Operations', 'NETWORK_TEAM', 'Network infrastructure and connectivity', 'L2', 'Vietnam', 'netops@company.com', 'active'),
-(4, 'Security Operations', 'SECURITY_TEAM', 'Cyber security incident response', 'L3', 'Vietnam', 'secops@company.com', 'active'),
-(5, 'Application Support', 'APP_SUPPORT', 'Business application specialists', 'L2', 'Vietnam', 'appsupport@company.com', 'active'),
-(6, 'Infrastructure Team', 'INFRA_TEAM', 'Server and infrastructure specialists', 'L3', 'Vietnam', 'infrastructure@company.com', 'active');
-
--- ============================================
--- 5. WORKFLOWS
--- ============================================
-INSERT INTO `it_ticket_workflows` (`id`, `name`, `code`, `description`, `status`) VALUES
-(1, 'Standard Workflow', 'STANDARD', 'Default workflow for most tickets without approval', 'active'),
-(2, 'Approval Workflow', 'APPROVAL', 'Workflow requiring manager approval before assignment', 'active'),
-(3, 'Emergency Workflow', 'EMERGENCY', 'Fast-track workflow for critical incidents', 'active'),
-(4, 'Change Management', 'CHANGE_MGMT', 'Workflow for change requests with CAB approval', 'active');
-
--- ============================================
--- 6. WORKFLOW STATES
+-- IT TICKET SYSTEM - INITIAL DATA INSERT
+-- Version: 1.0
+-- Date: 2026-01-07
+-- Description: Complete initial data for all tables
 -- ============================================
 
+-- ============================================
+-- PHASE 1: FOUNDATION DATA
+-- ============================================
+
+-- 1. Roles (System roles)
+INSERT INTO `it_ticket_roles` (`name`, `display_name`, `description`, `permissions`, `is_system`) VALUES
+('admin', 'System Administrator', 'Full system access with all permissions', '{"all": true}', 1),
+('support_agent', 'Support Agent', 'Can view and manage assigned tickets', '{"tickets.view": true, "tickets.update": true, "tickets.comment": true}', 1),
+('manager', 'Support Manager', 'Can manage team and oversee all tickets', '{"tickets.view": true, "tickets.assign": true, "tickets.approve": true, "team.manage": true}', 1),
+('team_lead', 'Team Lead', 'Can manage team members and their tickets', '{"tickets.view": true, "tickets.assign": true, "team.view": true}', 0),
+('requester', 'End User', 'Can create and view own tickets', '{"tickets.create": true, "tickets.view_own": true}', 0);
+
+-- 2. Service Groups
+INSERT INTO `it_ticket_service_groups` (`name`, `code`, `description`, `icon`, `color`, `sort_order`, `status`) VALUES
+('Hardware Support', 'HARDWARE', 'Hardware related services and support', 'laptop', '#3B82F6', 1, 'active'),
+('Software Support', 'SOFTWARE', 'Software applications and licensing', 'code', '#10B981', 2, 'active'),
+('Network & Infrastructure', 'NETWORK', 'Network connectivity and infrastructure', 'network-wired', '#8B5CF6', 3, 'active'),
+('Security & Access', 'SECURITY', 'Security, access control and permissions', 'shield-alt', '#EF4444', 4, 'active'),
+('Email & Communication', 'EMAIL', 'Email, messaging and communication tools', 'envelope', '#F59E0B', 5, 'active'),
+('Cloud Services', 'CLOUD', 'Cloud platforms and services', 'cloud', '#06B6D4', 6, 'active'),
+('Database Services', 'DATABASE', 'Database management and support', 'database', '#EC4899', 7, 'active'),
+('General IT Support', 'GENERAL', 'General IT requests and inquiries', 'question-circle', '#6B7280', 8, 'active');
+
+-- 3. Support Teams
+INSERT INTO `it_ticket_support_teams` (`name`, `code`, `description`, `support_level`, `department_code`, `country`, `email`, `status`) VALUES
+('L1 Helpdesk', 'L1-HELPDESK', 'First line support - general inquiries and basic troubleshooting', 'L1', 'IT', 'Vietnam', 'l1-helpdesk@company.com', 'active'),
+('L2 Technical Support', 'L2-TECH', 'Second line support - advanced technical issues', 'L2', 'IT', 'Vietnam', 'l2-tech@company.com', 'active'),
+('L3 Infrastructure', 'L3-INFRA', 'Third line support - infrastructure and network', 'L3', 'IT', 'Vietnam', 'l3-infra@company.com', 'active'),
+('L3 Security Team', 'L3-SEC', 'Security and access control specialists', 'L3', 'IT', 'Vietnam', 'security@company.com', 'active'),
+('L4 Engineering', 'L4-ENG', 'Engineering team - complex system issues', 'L4', 'IT', 'Vietnam', 'engineering@company.com', 'active');
+
+-- 4. Workflows
+INSERT INTO `it_ticket_workflows` (`name`, `code`, `description`, `status`) VALUES
+('Standard Workflow', 'STANDARD', 'Standard ticket workflow for most services', 'active'),
+('Approval Required Workflow', 'APPROVAL', 'Workflow requiring approval before assignment', 'active'),
+('Emergency Workflow', 'EMERGENCY', 'Fast-track workflow for critical issues', 'active'),
+('Change Request Workflow', 'CHANGE', 'Workflow for change management requests', 'active');
+
+-- 5. SLA Policies
+INSERT INTO `it_ticket_sla_policies` (`name`, `description`, `priority`, `first_response_hours`, `resolution_hours`, `business_hours_only`, `status`) VALUES
+('Critical - 4 Hours', 'Critical priority - 4 hour resolution', 'critical', 1, 4, 0, 'active'),
+('High - 8 Hours', 'High priority - 8 hour resolution', 'high', 2, 8, 0, 'active'),
+('Medium - 24 Hours', 'Medium priority - 24 hour resolution', 'medium', 4, 24, 1, 'active'),
+('Low - 48 Hours', 'Low priority - 48 hour resolution', 'low', 8, 48, 1, 'active');
+
+-- 6. Email Templates
+INSERT INTO `it_ticket_email_templates` (`template_code`, `template_name`, `subject`, `body`, `variables`, `status`) VALUES
+('TICKET_CREATED', 'Ticket Created Notification', 'Ticket #{ticket_number} Created', 
+'<p>Dear {requester_name},</p>
+<p>Your ticket has been created successfully.</p>
+<p><strong>Ticket Number:</strong> {ticket_number}</p>
+<p><strong>Subject:</strong> {subject}</p>
+<p><strong>Priority:</strong> {priority}</p>
+<p>We will respond to your request soon.</p>',
+'["ticket_number", "requester_name", "subject", "priority"]', 'active'),
+
+('TICKET_ASSIGNED', 'Ticket Assignment Notification', 'Ticket #{ticket_number} Assigned to You',
+'<p>Dear {assignee_name},</p>
+<p>A ticket has been assigned to you.</p>
+<p><strong>Ticket Number:</strong> {ticket_number}</p>
+<p><strong>Subject:</strong> {subject}</p>
+<p><strong>Priority:</strong> {priority}</p>
+<p><strong>SLA Due:</strong> {sla_due_date}</p>',
+'["ticket_number", "assignee_name", "subject", "priority", "sla_due_date"]', 'active'),
+
+('TICKET_RESOLVED', 'Ticket Resolved Notification', 'Ticket #{ticket_number} Resolved',
+'<p>Dear {requester_name},</p>
+<p>Your ticket has been resolved.</p>
+<p><strong>Ticket Number:</strong> {ticket_number}</p>
+<p><strong>Resolution:</strong> {solution}</p>
+<p>If you need further assistance, please reply to this email.</p>',
+'["ticket_number", "requester_name", "solution"]', 'active'),
+
+('APPROVAL_REQUEST', 'Approval Request Notification', 'Approval Required for Ticket #{ticket_number}',
+'<p>Dear {approver_name},</p>
+<p>Your approval is required for the following ticket:</p>
+<p><strong>Ticket Number:</strong> {ticket_number}</p>
+<p><strong>Subject:</strong> {subject}</p>
+<p><strong>Requester:</strong> {requester_name}</p>
+<p>Please review and approve/reject this request.</p>',
+'["ticket_number", "approver_name", "subject", "requester_name"]', 'active');
+
+-- ============================================
+-- PHASE 2: LEVEL 1 DEPENDENCIES
+-- ============================================
+
+-- 7. User Roles (example data - adjust employee_id as needed)
+INSERT INTO `it_ticket_user_roles` (`employee_id`, `role_id`, `is_active`, `assigned_by`) VALUES
+(1, 1, 1, 1),  -- Employee 1 = Admin
+(2, 3, 1, 1),  -- Employee 2 = Manager
+(3, 2, 1, 1),  -- Employee 3 = Support Agent
+(4, 2, 1, 1),  -- Employee 4 = Support Agent
+(5, 4, 1, 1),  -- Employee 5 = Team Lead
+(6, 2, 1, 1),  -- Employee 6 = Support Agent
+(7, 2, 1, 1);  -- Employee 7 = Support Agent
+
+-- 8. Ticket Types
+INSERT INTO `it_ticket_types` (`name`, `code`, `description`, `icon`, `color`, `sort_order`, `status`) VALUES
+('Incident', 'INCIDENT', 'Unplanned interruption or reduction in service quality', 'exclamation-triangle', '#EF4444', 1, 'active'),
+('Service Request', 'SERVICE_REQ', 'Request for service or information', 'hand-paper', '#3B82F6', 2, 'active'),
+('Change Request', 'CHANGE_REQ', 'Request for change in IT infrastructure or services', 'sync-alt', '#8B5CF6', 3, 'active'),
+('Problem', 'PROBLEM', 'Root cause of one or more incidents', 'search', '#F59E0B', 4, 'active');
+
+-- 9. Team Members
+INSERT INTO `it_ticket_team_members` (`team_id`, `employee_id`, `role`, `is_active`) VALUES
+-- L1 Helpdesk Team
+(1, 3, 'member', 1),
+(1, 4, 'member', 1),
+(1, 5, 'lead', 1),
+-- L2 Technical Support
+(2, 6, 'member', 1),
+(2, 7, 'lead', 1),
+-- L3 Infrastructure
+(3, 8, 'member', 1),
+-- L3 Security
+(4, 9, 'member', 1),
+-- L4 Engineering
+(5, 10, 'manager', 1);
+
+-- 10. Workflow States
+INSERT INTO `it_ticket_workflow_states` (`workflow_id`, `name`, `code`, `description`, `state_type`, `color`, `sort_order`) VALUES
 -- Standard Workflow States
-INSERT INTO `it_ticket_workflow_states` (`workflow_id`, `name`, `code`, `description`, `state_type`, `color`, `sla_hours`, `sort_order`) VALUES
--- Standard Workflow (ID=1)
-(1, 'New', 'NEW', 'Ticket just created, awaiting assignment', 'initial', '#3498db', NULL, 1),
-(1, 'Assigned', 'ASSIGNED', 'Ticket assigned to agent or team', 'intermediate', '#f39c12', 2, 2),
-(1, 'In Progress', 'IN_PROGRESS', 'Agent is actively working on the ticket', 'intermediate', '#e67e22', 24, 3),
-(1, 'Pending Customer', 'PENDING_CUSTOMER', 'Waiting for customer response', 'intermediate', '#95a5a6', NULL, 4),
-(1, 'Resolved', 'RESOLVED', 'Solution provided, awaiting closure', 'intermediate', '#27ae60', 48, 5),
-(1, 'Closed', 'CLOSED', 'Ticket completed and closed', 'final', '#2c3e50', NULL, 6),
-(1, 'Cancelled', 'CANCELLED', 'Ticket cancelled by requester', 'cancelled', '#e74c3c', NULL, 7),
+(1, 'New', 'NEW', 'Ticket just created', 'initial', '#6B7280', 1),
+(1, 'Assigned', 'ASSIGNED', 'Ticket assigned to agent', 'intermediate', '#3B82F6', 2),
+(1, 'In Progress', 'IN_PROGRESS', 'Agent working on ticket', 'intermediate', '#F59E0B', 3),
+(1, 'Resolved', 'RESOLVED', 'Ticket resolved', 'final', '#10B981', 4),
+(1, 'Closed', 'CLOSED', 'Ticket closed', 'final', '#6B7280', 5),
+(1, 'Cancelled', 'CANCELLED', 'Ticket cancelled', 'cancelled', '#EF4444', 6),
 
--- Approval Workflow (ID=2)
-(2, 'New', 'NEW', 'Ticket created, pending approval', 'initial', '#3498db', NULL, 1),
-(2, 'Pending Approval', 'PENDING_APPROVAL', 'Waiting for manager approval', 'intermediate', '#f39c12', 8, 2),
-(2, 'Approved', 'APPROVED', 'Request approved, ready for assignment', 'intermediate', '#27ae60', 2, 3),
-(2, 'Rejected', 'REJECTED', 'Request rejected by approver', 'final', '#e74c3c', NULL, 4),
-(2, 'Assigned', 'ASSIGNED', 'Assigned to support team', 'intermediate', '#3498db', 2, 5),
-(2, 'In Progress', 'IN_PROGRESS', 'Work in progress', 'intermediate', '#e67e22', 24, 6),
-(2, 'Resolved', 'RESOLVED', 'Solution provided', 'intermediate', '#27ae60', 48, 7),
-(2, 'Closed', 'CLOSED', 'Ticket closed', 'final', '#2c3e50', NULL, 8),
-(2, 'Cancelled', 'CANCELLED', 'Ticket cancelled', 'cancelled', '#95a5a6', NULL, 9),
+-- Approval Workflow States
+(2, 'New', 'NEW', 'Ticket just created', 'initial', '#6B7280', 1),
+(2, 'Pending Approval', 'PENDING_APPROVAL', 'Waiting for approval', 'intermediate', '#F59E0B', 2),
+(2, 'Approved', 'APPROVED', 'Request approved', 'intermediate', '#10B981', 3),
+(2, 'Rejected', 'REJECTED', 'Request rejected', 'cancelled', '#EF4444', 4),
+(2, 'Assigned', 'ASSIGNED', 'Assigned after approval', 'intermediate', '#3B82F6', 5),
+(2, 'In Progress', 'IN_PROGRESS', 'Being worked on', 'intermediate', '#F59E0B', 6),
+(2, 'Resolved', 'RESOLVED', 'Ticket resolved', 'final', '#10B981', 7),
+(2, 'Closed', 'CLOSED', 'Ticket closed', 'final', '#6B7280', 8),
 
--- Emergency Workflow (ID=3)
-(3, 'Critical', 'CRITICAL', 'Critical incident reported', 'initial', '#c0392b', NULL, 1),
-(3, 'Investigating', 'INVESTIGATING', 'Team investigating the incident', 'intermediate', '#e67e22', 1, 2),
-(3, 'Mitigating', 'MITIGATING', 'Applying temporary fix', 'intermediate', '#f39c12', 2, 3),
-(3, 'Resolved', 'RESOLVED', 'Service restored', 'intermediate', '#27ae60', 4, 4),
-(3, 'Closed', 'CLOSED', 'Incident closed with RCA', 'final', '#2c3e50', NULL, 5),
-
--- Change Management Workflow (ID=4)
-(4, 'Draft', 'DRAFT', 'Change request in draft', 'initial', '#95a5a6', NULL, 1),
-(4, 'Review', 'REVIEW', 'Under technical review', 'intermediate', '#3498db', 24, 2),
-(4, 'CAB Approval', 'CAB_APPROVAL', 'Pending CAB approval', 'intermediate', '#f39c12', 48, 3),
-(4, 'Approved', 'APPROVED', 'Change approved for implementation', 'intermediate', '#27ae60', NULL, 4),
-(4, 'Scheduled', 'SCHEDULED', 'Change scheduled', 'intermediate', '#9b59b6', NULL, 5),
-(4, 'Implementing', 'IMPLEMENTING', 'Change being implemented', 'intermediate', '#e67e22', NULL, 6),
-(4, 'Completed', 'COMPLETED', 'Change successfully completed', 'final', '#27ae60', NULL, 7),
-(4, 'Failed', 'FAILED', 'Change failed, rolled back', 'final', '#e74c3c', NULL, 8),
-(4, 'Cancelled', 'CANCELLED', 'Change cancelled', 'cancelled', '#95a5a6', NULL, 9);
+-- Emergency Workflow States
+(3, 'Critical', 'CRITICAL', 'Critical issue', 'initial', '#EF4444', 1),
+(3, 'Investigating', 'INVESTIGATING', 'Team investigating', 'intermediate', '#F59E0B', 2),
+(3, 'Resolving', 'RESOLVING', 'Applying fix', 'intermediate', '#3B82F6', 3),
+(3, 'Resolved', 'RESOLVED', 'Issue resolved', 'final', '#10B981', 4),
+(3, 'Closed', 'CLOSED', 'Incident closed', 'final', '#6B7280', 5);
 
 -- ============================================
--- 7. SLA POLICIES
--- ============================================
-INSERT INTO `it_ticket_sla_policies` (`id`, `name`, `description`, `priority`, `first_response_hours`, `resolution_hours`, `business_hours_only`, `status`) VALUES
-(1, 'Low Priority SLA', 'Non-urgent issues - 5 business days resolution', 'low', 24, 120, 1, 'active'),
-(2, 'Medium Priority SLA', 'Standard business impact - 3 business days', 'medium', 8, 72, 1, 'active'),
-(3, 'High Priority SLA', 'Significant business impact - 1 business day', 'high', 4, 24, 1, 'active'),
-(4, 'Critical Priority SLA', 'Critical business impact - 4 hours resolution', 'critical', 1, 4, 0, 'active');
-
--- ============================================
--- 8. EMAIL TEMPLATES
--- ============================================
-INSERT INTO `it_ticket_email_templates` (`id`, `template_code`, `template_name`, `subject`, `body`, `variables`, `status`) VALUES
-(1, 'TICKET_CREATED', 'Ticket Created Confirmation', 
- 'Ticket #{ticket_number} - {subject}', 
- '<h2>Ticket Created Successfully</h2>
-<p>Dear {requester_name},</p>
-<p>Your support ticket has been created with the following details:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Priority:</strong> {priority}</li>
-  <li><strong>Service:</strong> {service_name}</li>
-  <li><strong>Status:</strong> {status}</li>
-</ul>
-<p>You can track your ticket status at: <a href="{ticket_url}">{ticket_url}</a></p>
-<p>Our team will respond within {sla_response_time}.</p>
-<p>Best regards,<br>IT Support Team</p>', 
- '["ticket_number", "subject", "priority", "service_name", "status", "requester_name", "ticket_url", "sla_response_time"]',
- 'active'),
-
-(2, 'TICKET_ASSIGNED', 'Ticket Assigned to Agent',
- 'Assigned: Ticket #{ticket_number}',
- '<h2>New Ticket Assigned</h2>
-<p>Dear {assigned_to_name},</p>
-<p>A ticket has been assigned to you:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Priority:</strong> {priority}</li>
-  <li><strong>Requester:</strong> {requester_name}</li>
-  <li><strong>SLA Due:</strong> {sla_due_date}</li>
-</ul>
-<p><strong>Description:</strong></p>
-<p>{description}</p>
-<p>Please review and respond: <a href="{ticket_url}">{ticket_url}</a></p>',
- '["ticket_number", "subject", "priority", "requester_name", "assigned_to_name", "description", "ticket_url", "sla_due_date"]',
- 'active'),
-
-(3, 'TICKET_RESOLVED', 'Ticket Resolved',
- 'Resolved: Ticket #{ticket_number}',
- '<h2>Ticket Resolved</h2>
-<p>Dear {requester_name},</p>
-<p>Your ticket has been resolved:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Resolved By:</strong> {resolved_by_name}</li>
-  <li><strong>Resolved At:</strong> {resolved_at}</li>
-</ul>
-<p><strong>Solution:</strong></p>
-<p>{solution}</p>
-<p>If you are satisfied with the solution, the ticket will be automatically closed in 24 hours.</p>
-<p>If you need further assistance, please reply to reopen this ticket.</p>
-<p>View ticket: <a href="{ticket_url}">{ticket_url}</a></p>',
- '["ticket_number", "subject", "requester_name", "resolved_by_name", "resolved_at", "solution", "ticket_url"]',
- 'active'),
-
-(4, 'TICKET_CLOSED', 'Ticket Closed',
- 'Closed: Ticket #{ticket_number}',
- '<h2>Ticket Closed</h2>
-<p>Dear {requester_name},</p>
-<p>Your ticket has been closed:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Closed At:</strong> {closed_at}</li>
-</ul>
-<p>Thank you for using our IT support services.</p>
-<p>If you need to reopen this ticket, please contact support.</p>',
- '["ticket_number", "subject", "requester_name", "closed_at"]',
- 'active'),
-
-(5, 'APPROVAL_REQUEST', 'Approval Required',
- 'Approval Required: Ticket #{ticket_number}',
- '<h2>Approval Required</h2>
-<p>Dear {approver_name},</p>
-<p>A ticket requires your approval:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Requester:</strong> {requester_name}</li>
-  <li><strong>Priority:</strong> {priority}</li>
-</ul>
-<p><strong>Description:</strong></p>
-<p>{description}</p>
-<p>Please review and approve/reject: <a href="{approval_url}">{approval_url}</a></p>',
- '["ticket_number", "subject", "requester_name", "approver_name", "priority", "description", "approval_url"]',
- 'active'),
-
-(6, 'TICKET_ESCALATED', 'Ticket Escalated',
- 'Escalated: Ticket #{ticket_number}',
- '<h2>Ticket Escalated</h2>
-<p>Dear {escalated_to_name},</p>
-<p>A ticket has been escalated to you:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>From Level:</strong> {from_level}</li>
-  <li><strong>To Level:</strong> {to_level}</li>
-  <li><strong>Escalated By:</strong> {escalated_by_name}</li>
-</ul>
-<p><strong>Escalation Reason:</strong></p>
-<p>{escalation_reason}</p>
-<p>View ticket: <a href="{ticket_url}">{ticket_url}</a></p>',
- '["ticket_number", "subject", "escalated_to_name", "from_level", "to_level", "escalated_by_name", "escalation_reason", "ticket_url"]',
- 'active'),
-
-(7, 'SLA_WARNING', 'SLA Warning',
- 'SLA Warning: Ticket #{ticket_number}',
- '<h2>SLA Warning</h2>
-<p>Dear {assigned_to_name},</p>
-<p>This ticket is approaching SLA breach:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Priority:</strong> {priority}</li>
-  <li><strong>SLA Due:</strong> {sla_due_date}</li>
-  <li><strong>Time Remaining:</strong> {time_remaining}</li>
-</ul>
-<p>Please prioritize this ticket: <a href="{ticket_url}">{ticket_url}</a></p>',
- '["ticket_number", "subject", "assigned_to_name", "priority", "sla_due_date", "time_remaining", "ticket_url"]',
- 'active'),
-
-(8, 'SLA_BREACH', 'SLA Breached',
- 'SLA BREACH: Ticket #{ticket_number}',
- '<h2 style="color: red;">SLA Breach Alert</h2>
-<p>Dear Team Lead,</p>
-<p>The following ticket has breached its SLA:</p>
-<ul>
-  <li><strong>Ticket Number:</strong> #{ticket_number}</li>
-  <li><strong>Subject:</strong> {subject}</li>
-  <li><strong>Priority:</strong> {priority}</li>
-  <li><strong>Assigned To:</strong> {assigned_to_name}</li>
-  <li><strong>SLA Due:</strong> {sla_due_date}</li>
-  <li><strong>Breach Time:</strong> {breach_time}</li>
-</ul>
-<p>Immediate action required: <a href="{ticket_url}">{ticket_url}</a></p>',
- '["ticket_number", "subject", "priority", "assigned_to_name", "sla_due_date", "breach_time", "ticket_url"]',
- 'active');
-
--- ============================================
--- 9. IT SERVICES
+-- PHASE 3: LEVEL 2 DEPENDENCIES
 -- ============================================
 
--- HRM Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
--- Parent services
-(1, 2, 'Attendance & Timekeeping', 'HRM_ATTENDANCE', NULL, 1, 1, 'active'),
-(2, 2, 'Leave Management', 'HRM_LEAVE', NULL, 2, 1, 'active'),
-(3, 2, 'Payroll & Compensation', 'HRM_PAYROLL', NULL, 3, 1, 'active'),
-(4, 2, 'Employee Profile', 'HRM_PROFILE', NULL, 4, 1, 'active'),
+-- 11. IT Services (Parent services first, then children)
+INSERT INTO `it_ticket_services` (`service_group_id`, `name`, `code`, `description`, `parent_id`, `icon`, `sort_order`, `requires_solution`, `status`) VALUES
+-- HARDWARE Services
+(1, 'Desktop Support', 'HW-DESKTOP', 'Desktop computer support', NULL, 'desktop', 1, 'yes', 'active'),
+(1, 'Laptop Support', 'HW-LAPTOP', 'Laptop computer support', NULL, 'laptop', 2, 'yes', 'active'),
+(1, 'Printer Support', 'HW-PRINTER', 'Printer and scanner support', NULL, 'print', 3, 'yes', 'active'),
+(1, 'Hardware Replacement', 'HW-REPLACE', 'Request new hardware', 1, 'exchange-alt', 4, 'no', 'active'),
+(1, 'Hardware Repair', 'HW-REPAIR', 'Repair existing hardware', 1, 'wrench', 5, 'yes', 'active'),
 
--- Sub-services for Attendance
-(5, 2, 'Check-in/Check-out Issue', 'HRM_ATT_CHECKIN', 1, 1, 1, 'active'),
-(6, 2, 'Timesheet Correction', 'HRM_ATT_TIMESHEET', 1, 2, 1, 'active'),
-(7, 2, 'Overtime Request', 'HRM_ATT_OVERTIME', 1, 3, 1, 'active'),
+-- SOFTWARE Services
+(2, 'Application Installation', 'SW-INSTALL', 'Install new software', NULL, 'download', 1, 'no', 'active'),
+(2, 'Application Support', 'SW-SUPPORT', 'Software troubleshooting', NULL, 'life-ring', 2, 'yes', 'active'),
+(2, 'License Request', 'SW-LICENSE', 'Software license request', NULL, 'key', 3, 'no', 'active'),
+(2, 'Software Update', 'SW-UPDATE', 'Update existing software', 2, 'sync', 4, 'no', 'active'),
 
--- Sub-services for Leave
-(8, 2, 'Annual Leave Request', 'HRM_LEAVE_ANNUAL', 2, 1, 0, 'active'),
-(9, 2, 'Sick Leave', 'HRM_LEAVE_SICK', 2, 2, 0, 'active'),
-(10, 2, 'Unpaid Leave', 'HRM_LEAVE_UNPAID', 2, 3, 0, 'active'),
+-- NETWORK Services
+(3, 'Network Connectivity', 'NET-CONNECT', 'Network connection issues', NULL, 'network-wired', 1, 'yes', 'active'),
+(3, 'VPN Access', 'NET-VPN', 'VPN access request', NULL, 'shield-alt', 2, 'no', 'active'),
+(3, 'WiFi Issues', 'NET-WIFI', 'Wireless network problems', 3, 'wifi', 3, 'yes', 'active'),
 
--- Sub-services for Payroll
-(11, 2, 'Salary Inquiry', 'HRM_PAY_INQUIRY', 3, 1, 1, 'active'),
-(12, 2, 'Tax Certificate Request', 'HRM_PAY_TAX', 3, 2, 1, 'active'),
-(13, 2, 'Bonus Inquiry', 'HRM_PAY_BONUS', 3, 3, 1, 'active');
+-- SECURITY Services
+(4, 'Account Access', 'SEC-ACCESS', 'Account access requests', NULL, 'user-lock', 1, 'no', 'active'),
+(4, 'Password Reset', 'SEC-PASSWORD', 'Password reset requests', NULL, 'key', 2, 'no', 'active'),
+(4, 'Security Incident', 'SEC-INCIDENT', 'Security breach or threat', NULL, 'exclamation-triangle', 3, 'yes', 'active'),
 
--- Network Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
-(20, 1, 'Internet Connection', 'NET_INTERNET', NULL, 1, 1, 'active'),
-(21, 1, 'VPN Access', 'NET_VPN', NULL, 2, 1, 'active'),
-(22, 1, 'WiFi Issues', 'NET_WIFI', NULL, 3, 1, 'active'),
-(23, 1, 'Email Issues', 'NET_EMAIL', NULL, 4, 1, 'active'),
+-- EMAIL Services
+(5, 'Email Issues', 'EMAIL-ISSUE', 'Email delivery or access problems', NULL, 'envelope', 1, 'yes', 'active'),
+(5, 'Email Account Request', 'EMAIL-ACCOUNT', 'New email account request', NULL, 'user-plus', 2, 'no', 'active'),
+(5, 'Distribution List', 'EMAIL-DL', 'Manage distribution lists', NULL, 'users', 3, 'no', 'active'),
 
--- Sub-services for Network
-(24, 1, 'No Internet Connection', 'NET_INT_NO_CONN', 20, 1, 1, 'active'),
-(25, 1, 'Slow Connection', 'NET_INT_SLOW', 20, 2, 1, 'active'),
-(26, 1, 'Cannot Connect VPN', 'NET_VPN_CONN', 21, 1, 1, 'active'),
-(27, 1, 'VPN Disconnects Frequently', 'NET_VPN_DISC', 21, 2, 1, 'active'),
-(28, 1, 'WiFi Not Available', 'NET_WIFI_NO_CONN', 22, 1, 1, 'active'),
-(29, 1, 'Weak WiFi Signal', 'NET_WIFI_WEAK', 22, 2, 1, 'active');
+-- CLOUD Services
+(6, 'Cloud Storage', 'CLOUD-STORAGE', 'Cloud storage issues', NULL, 'cloud-upload-alt', 1, 'yes', 'active'),
+(6, 'SaaS Application', 'CLOUD-SAAS', 'SaaS application support', NULL, 'cloud', 2, 'yes', 'active'),
 
--- User Computer Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
-(30, 3, 'Hardware Issues', 'UC_HARDWARE', NULL, 1, 1, 'active'),
-(31, 3, 'Software Installation', 'UC_SOFTWARE', NULL, 2, 1, 'active'),
-(32, 3, 'Printer Issues', 'UC_PRINTER', NULL, 3, 1, 'active'),
-(33, 3, 'Account & Access', 'UC_ACCESS', NULL, 4, 1, 'active'),
+-- DATABASE Services
+(7, 'Database Access', 'DB-ACCESS', 'Database access request', NULL, 'database', 1, 'no', 'active'),
+(7, 'Database Issues', 'DB-ISSUE', 'Database performance or errors', NULL, 'exclamation-circle', 2, 'yes', 'active'),
 
--- Sub-services
-(34, 3, 'Computer Not Starting', 'UC_HW_NO_START', 30, 1, 1, 'active'),
-(35, 3, 'Monitor Issue', 'UC_HW_MONITOR', 30, 2, 1, 'active'),
-(36, 3, 'Keyboard/Mouse Problem', 'UC_HW_INPUT', 30, 3, 1, 'active'),
-(37, 3, 'Install MS Office', 'UC_SW_OFFICE', 31, 1, 1, 'active'),
-(38, 3, 'Install Other Software', 'UC_SW_OTHER', 31, 2, 1, 'active'),
-(39, 3, 'Printer Not Printing', 'UC_PR_NO_PRINT', 32, 1, 1, 'active'),
-(40, 3, 'Printer Paper Jam', 'UC_PR_JAM', 32, 2, 1, 'active');
+-- GENERAL Services
+(8, 'General Inquiry', 'GEN-INQUIRY', 'General IT questions', NULL, 'question-circle', 1, 'yes', 'active'),
+(8, 'Consultation', 'GEN-CONSULT', 'IT consultation request', NULL, 'comments', 2, 'yes', 'active');
 
--- Cyber Security Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
-(41, 4, 'Phishing & Spam', 'SEC_PHISHING', NULL, 1, 1, 'active'),
-(42, 4, 'Malware/Virus', 'SEC_MALWARE', NULL, 2, 1, 'active'),
-(43, 4, 'Account Security', 'SEC_ACCOUNT', NULL, 3, 1, 'active'),
-(44, 4, 'Data Security', 'SEC_DATA', NULL, 4, 1, 'active'),
+-- 12. Workflow Transitions
+INSERT INTO `it_ticket_workflow_transitions` (`workflow_id`, `from_state_id`, `to_state_id`, `name`, `description`, `sort_order`) VALUES
+-- Standard Workflow Transitions
+(1, NULL, 1, 'Create', 'Create new ticket', 1),
+(1, 1, 2, 'Assign', 'Assign to agent', 2),
+(1, 2, 3, 'Start Work', 'Begin working on ticket', 3),
+(1, 3, 4, 'Resolve', 'Mark as resolved', 4),
+(1, 4, 5, 'Close', 'Close ticket', 5),
+(1, 1, 6, 'Cancel', 'Cancel ticket', 6),
+(1, 2, 6, 'Cancel', 'Cancel ticket', 7),
 
--- Sub-services
-(45, 4, 'Suspicious Email Received', 'SEC_PHISH_EMAIL', 41, 1, 1, 'active'),
-(46, 4, 'Clicked Phishing Link', 'SEC_PHISH_CLICK', 41, 2, 1, 'active'),
-(47, 4, 'Virus Detected', 'SEC_MAL_VIRUS', 42, 1, 1, 'active'),
-(48, 4, 'Computer Infected', 'SEC_MAL_INFECT', 42, 2, 1, 'active'),
-(49, 4, 'Password Reset', 'SEC_ACC_PASS', 43, 1, 1, 'active'),
-(50, 4, 'Account Locked', 'SEC_ACC_LOCK', 43, 2, 1, 'active'),
-(51, 4, 'Unauthorized Access Attempt', 'SEC_ACC_UNAUTH', 43, 3, 1, 'active');
+-- Approval Workflow Transitions
+(2, NULL, 7, 'Create', 'Create new ticket', 1),
+(2, 7, 8, 'Request Approval', 'Submit for approval', 2),
+(2, 8, 9, 'Approve', 'Approve request', 3),
+(2, 8, 10, 'Reject', 'Reject request', 4),
+(2, 9, 11, 'Assign', 'Assign after approval', 5),
+(2, 11, 12, 'Start Work', 'Begin work', 6),
+(2, 12, 13, 'Resolve', 'Mark as resolved', 7),
+(2, 13, 14, 'Close', 'Close ticket', 8),
 
--- Business Application Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
-(52, 5, 'ERP System', 'APP_ERP', NULL, 1, 1, 'active'),
-(53, 5, 'CRM System', 'APP_CRM', NULL, 2, 1, 'active'),
-(54, 5, 'Document Management', 'APP_DMS', NULL, 3, 1, 'active'),
-(55, 5, 'Other Applications', 'APP_OTHER', NULL, 4, 1, 'active');
+-- Emergency Workflow Transitions
+(3, NULL, 15, 'Report Critical', 'Report critical issue', 1),
+(3, 15, 16, 'Investigate', 'Start investigation', 2),
+(3, 16, 17, 'Apply Fix', 'Apply resolution', 3),
+(3, 17, 18, 'Resolve', 'Mark resolved', 4),
+(3, 18, 19, 'Close', 'Close incident', 5);
 
--- Infrastructure Services
-INSERT INTO `it_ticket_services` (`id`, `service_group_id`, `name`, `code`, `parent_id`, `sort_order`, `requires_solution`, `status`) VALUES
-(56, 6, 'Server Issues', 'INFRA_SERVER', NULL, 1, 1, 'active'),
-(57, 6, 'Database Issues', 'INFRA_DATABASE', NULL, 2, 1, 'active'),
-(58, 6, 'Backup & Recovery', 'INFRA_BACKUP', NULL, 3, 1, 'active'),
-(59, 6, 'Storage Issues', 'INFRA_STORAGE', NULL, 4, 1, 'active');
+-- ============================================
+-- PHASE 4: LEVEL 3 DEPENDENCIES (RULES)
+-- ============================================
+
+-- 13. Service Workflows
+INSERT INTO `it_ticket_service_workflows` (`it_service_id`, `workflow_id`, `is_active`) VALUES
+-- Standard workflow for most services
+(1, 1, 1), (2, 1, 1), (3, 1, 1), (5, 1, 1), (7, 1, 1), (9, 1, 1),
+(10, 1, 1), (12, 1, 1), (16, 1, 1), (17, 1, 1), (20, 1, 1), (22, 1, 1), (23, 1, 1),
+-- Approval workflow for requests
+(4, 2, 1), (6, 2, 1), (8, 2, 1), (11, 2, 1), (13, 2, 1), (14, 2, 1), (18, 2, 1), (19, 2, 1), (21, 2, 1),
+-- Emergency workflow for critical issues
+(15, 3, 1);
+
+-- 14. Routing Rules
+INSERT INTO `it_ticket_routing_rules` (`it_service_id`, `rule_name`, `priority`, `assignment_type`, `target_team_id`, `status`) VALUES
+(1, 'Desktop Support to L1', 100, 'team', 1, 'active'),
+(2, 'Laptop Support to L1', 100, 'team', 1, 'active'),
+(3, 'Printer Support to L1', 100, 'team', 1, 'active'),
+(7, 'Application Support to L2', 100, 'team', 2, 'active'),
+(10, 'Network Issues to L3 Infrastructure', 100, 'team', 3, 'active'),
+(11, 'VPN to L3 Infrastructure', 100, 'team', 3, 'active'),
+(13, 'Account Access to L3 Security', 100, 'team', 4, 'active'),
+(14, 'Password Reset to L1', 100, 'team', 1, 'active'),
+(15, 'Security Incident to L3 Security', 100, 'team', 4, 'active'),
+(16, 'Email Issues to L2', 100, 'team', 2, 'active');
+
+-- 15. Approval Rules
+INSERT INTO `it_ticket_approval_rules` (`it_service_id`, `rule_name`, `requires_approval`, `approval_type`, `status`) VALUES
+(4, 'Hardware Replacement Approval', 1, 'manager', 'active'),
+(6, 'Software Installation Approval', 1, 'manager', 'active'),
+(8, 'License Request Approval', 1, 'manager', 'active'),
+(11, 'VPN Access Approval', 1, 'department_head', 'active'),
+(13, 'Account Access Approval', 1, 'department_head', 'active'),
+(18, 'Email Account Approval', 1, 'manager', 'active'),
+(21, 'Database Access Approval', 1, 'department_head', 'active');
+
+-- 16. Level Rules
+INSERT INTO `it_ticket_level_rules` (`it_service_id`, `level_number`, `level_name`, `support_team_id`, `auto_escalate_hours`, `status`) VALUES
+-- Desktop Support levels
+(1, 1, 'L1 Support', 1, 4, 'active'),
+(1, 2, 'L2 Technical', 2, 8, 'active'),
+(1, 3, 'L3 Infrastructure', 3, NULL, 'active'),
+-- Application Support levels
+(7, 1, 'L1 Support', 1, 2, 'active'),
+(7, 2, 'L2 Technical', 2, 4, 'active'),
+(7, 3, 'L4 Engineering', 5, NULL, 'active'),
+-- Network Connectivity levels
+(10, 1, 'L2 Technical', 2, 2, 'active'),
+(10, 2, 'L3 Infrastructure', 3, 4, 'active'),
+(10, 3, 'L4 Engineering', 5, NULL, 'active');
+
+-- 17. Custom Fields
+INSERT INTO `it_ticket_custom_fields` (`it_service_id`, `field_name`, `field_label`, `field_type`, `field_options`, `is_required`, `sort_order`, `status`) VALUES
+-- Hardware Replacement fields
+(4, 'current_device', 'Current Device Model', 'text', NULL, 1, 1, 'active'),
+(4, 'replacement_reason', 'Reason for Replacement', 'select', '["Broken", "Outdated", "Lost", "Upgrade needed"]', 1, 2, 'active'),
+(4, 'preferred_model', 'Preferred New Model', 'text', NULL, 0, 3, 'active'),
+
+-- Software Installation fields
+(6, 'software_name', 'Software Name', 'text', NULL, 1, 1, 'active'),
+(6, 'software_version', 'Version Required', 'text', NULL, 0, 2, 'active'),
+(6, 'business_justification', 'Business Justification', 'textarea', NULL, 1, 3, 'active'),
+
+-- VPN Access fields
+(11, 'access_duration', 'Access Duration', 'select', '["1 month", "3 months", "6 months", "1 year", "Permanent"]', 1, 1, 'active'),
+(11, 'access_reason', 'Reason for VPN Access', 'textarea', NULL, 1, 2, 'active'),
+
+-- Account Access fields
+(13, 'account_type', 'Account Type', 'select', '["Email", "Database", "Application", "Admin", "Service Account"]', 1, 1, 'active'),
+(13, 'access_level', 'Access Level', 'select', '["Read Only", "Read/Write", "Admin", "Full Control"]', 1, 2, 'active'),
+(13, 'manager_approval', 'Manager Name', 'text', NULL, 1, 3, 'active');
+
+-- 18. Service SLA
+INSERT INTO `it_ticket_service_sla` (`it_service_id`, `sla_policy_id`, `is_active`) VALUES
+-- Critical services - 4 hour SLA
+(15, 1, 1), -- Security Incident
+(22, 1, 1), -- Database Issues
+
+-- High priority services - 8 hour SLA
+(1, 2, 1),  -- Desktop Support
+(2, 2, 1),  -- Laptop Support
+(10, 2, 1), -- Network Connectivity
+(16, 2, 1), -- Email Issues
+
+-- Medium priority services - 24 hour SLA
+(3, 3, 1),  -- Printer Support
+(7, 3, 1),  -- Application Support
+(11, 3, 1), -- VPN Access
+(17, 3, 1), -- Email Account Request
+
+-- Low priority services - 48 hour SLA
+(6, 4, 1),  -- Software Installation
+(8, 4, 1),  -- License Request
+(23, 4, 1), -- General Inquiry
+(24, 4, 1); -- Consultation
+
+-- ============================================
+-- INITIAL DATA INSERT COMPLETE
+-- ============================================
 
 -- ============================================
 -- END OF SCHEMA

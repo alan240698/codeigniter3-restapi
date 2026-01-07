@@ -109,6 +109,44 @@ class ServiceModel extends CI_Model
         return $this->_ensure_array($result);
     }
 
+        /**
+     * Get all active service groups
+     * @return array
+     */
+    public function get_groups()
+    {
+        return $this->db
+            ->select('*')
+            ->from($this->table_groups)
+            ->where('status', 'active')
+            ->order_by('sort_order', 'ASC')
+            ->get()
+            ->result();
+    }
+
+        /**
+     * Get all active services
+     * @param int $serviceGroupId (optional)
+     * @return array
+     */
+    public function get_services($serviceGroupId = null)
+    {
+        $this->db
+            ->select('s.*, sg.name as group_name')
+            ->from($this->table_it_ticket_services . ' s')
+            ->join($this->table_groups . ' sg', 'sg.id = s.service_group_id', 'left')
+            ->where('s.status', 'active');
+
+        if ($serviceGroupId) {
+            $this->db->where('s.service_group_id', $serviceGroupId);
+        }
+
+        return $this->db
+            ->order_by('s.sort_order', 'ASC')
+            ->get()
+            ->result();
+    }
+
     /**
      * Create new service group
      * @param array $data Service group data
@@ -844,4 +882,15 @@ class ServiceModel extends CI_Model
         $this->db->where('status', 'active');
         return $this->db->get($this->table_it_ticket_services)->row_array();
     }
+
+    /**
+ * Get single service group by ID
+ * @param int $id Service group ID
+ * @return array|null
+ */
+public function get_group_by_id($id)
+{
+    $this->db->where('id', $id);
+    return $this->db->get($this->table_groups)->row_array();
+}
 }
