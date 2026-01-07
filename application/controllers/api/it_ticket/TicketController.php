@@ -402,8 +402,10 @@ class TicketController extends CI_Controller
 
             // Get related data
             $history = $this->TicketModel->get_ticket_history($id);
-            $comments = $this->TicketModel->get_ticket_comments($id);
-            $attachments = $this->TicketModel->get_ticket_attachments($id);
+            $comments = [];
+            // $comments = $this->TicketModel->get_ticket_comments($id);
+            $attachments = [];
+            // $attachments = $this->TicketModel->get_ticket_attachments($id);
             $approvals = $this->db->get_where('it_ticket_approvals', ['ticket_id' => $id])->result();
 
             $this->_response([
@@ -418,6 +420,620 @@ class TicketController extends CI_Controller
             ]);
 
         } catch (Exception $e) {
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+        /**
+     * GET /api/tickets/team-unassigned
+     * Get unassigned tickets for team (tickets that no one has picked yet)
+     */
+    public function team_unassigned()
+    {
+        try {
+            $page = (int)$this->input->get('page') ?: 1;
+            $perPage = (int)$this->input->get('per_page') ?: 10;
+            $employeeId = (int)$this->input->get('employee_id');
+            $country = $this->input->get('country');
+
+            if (!$employeeId) {
+                $this->_response(['success' => false, 'message' => 'Employee ID is required'], 400);
+                return;
+            }
+
+            // Get teams that this employee belongs to
+            $teamIds = $this->db
+                ->select('team_id')
+                ->from('it_ticket_team_members')
+                // ->where('employee_id', $employeeId)
+                ->where('is_active', 1)
+                ->get()
+                ->result_array();
+
+            if (empty($teamIds)) {
+                $this->_response([
+                    'success' => true,
+                    'data' => [],
+                    'total' => 0,
+                    'page' => $page,
+                    'per_page' => $perPage,
+                    'total_pages' => 0
+                ]);
+                return;
+            }
+
+            $teamIdList = array_column($teamIds, 'team_id');
+
+            // Build query for unassigned team tickets
+            $this->db->select('
+                t.*,
+                sg.name as service_group_name,
+                its.name as it_service_name,
+                team.name as assigned_team_name
+            ');
+            $this->db->from('it_ticket_tickets t');
+            $this->db->join('it_ticket_service_groups sg', 'sg.id = t.service_group_id', 'left');
+            $this->db->join('it_ticket_services its', 'its.id = t.it_service_id', 'left');
+            // $this->db->join('employees req', 'req.employee_id = t.requester_id', 'left');
+            $this->db->join('it_ticket_support_teams team', 'team.id = t.assigned_team_id', 'left');
+            
+            // Conditions: assigned to team but not to specific user
+            $this->db->where_in('t.assigned_team_id', $teamIdList);
+            $this->db->where('(t.assigned_to IS NULL OR t.assigned_to = 0)');
+            $this->db->where('t.status !=', 'closed');
+            
+            // Country filter (if employees table has country field)
+            // if ($country) {
+            //     $this->db->where('req.country', $country);
+            // }
+            // Additional filters
+            $status = $this->input->get('status');
+            if ($status) {
+                $this->db->where('t.status', $status);
+            }
+
+            $priority = $this->input->get('priority');
+            if ($priority) {
+                $this->db->where('t.priority', $priority);
+            }
+
+            $search = $this->input->get('search');
+            if ($search) {
+                $this->db->group_start();
+                $this->db->like('t.ticket_number', $search);
+                $this->db->or_like('t.subject', $search);
+                $this->db->or_like('t.description', $search);
+                $this->db->group_end();
+            }
+
+            // Get total count
+            $total = $this->db->count_all_results('', FALSE);
+
+            // Pagination
+            $offset = ($page - 1) * $perPage;
+            $this->db->order_by('t.created_at', 'DESC');
+            $this->db->limit($perPage, $offset);
+
+            $tickets = $this->db->get()->result();
+
+            $this->_response([
+                'success' => true,
+                'data' => $tickets,
+                'total' => $total,
+                'page' => $page,
+                'per_page' => $perPage,
+                'total_pages' => ceil($total / $perPage)
+            ]);
+
+        } catch (Exception $e) {
+            log_message('error', 'Team unassigned tickets error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * GET /api/tickets/my-assigned
+     * Get tickets assigned to current employee
+     */
+    public function my_assigned()
+    {
+        try {
+            $page = (int)$this->input->get('page') ?: 1;
+            $perPage = (int)$this->input->get('per_page') ?: 10;
+            $employeeId = (int)$this->input->get('employee_id');
+            $country = $this->input->get('country');
+
+            if (!$employeeId) {
+                $this->_response(['success' => false, 'message' => 'Employee ID is required'], 400);
+                return;
+            }
+
+            // Build query for assigned tickets
+            $this->db->select('
+                t.*,
+                sg.name as service_group_name,
+                its.name as it_service_name,
+                team.name as assigned_team_name,
+            ');
+            $this->db->from('it_ticket_tickets t');
+            $this->db->join('it_ticket_service_groups sg', 'sg.id = t.service_group_id', 'left');
+            $this->db->join('it_ticket_services its', 'its.id = t.it_service_id', 'left');
+            // $this->db->join('employees req', 'req.employee_id = t.requester_id', 'left');
+            // $this->db->join('employees assignee', 'assignee.employee_id = t.assigned_to', 'left');
+            // $this->db->join('employees observer', 'observer.employee_id = t.observer_id', 'left');
+            $this->db->join('it_ticket_support_teams team', 'team.id = t.assigned_team_id', 'left');
+            
+            // Main condition: assigned to this employee
+            $this->db->where('t.assigned_to', $employeeId);
+            $this->db->where('t.status !=', 'closed');
+            
+            // Country filter (if employees table has country field)
+            // if ($country) {
+            //     $this->db->where('req.country', $country);
+            // }
+
+            // Additional filters
+            $status = $this->input->get('status');
+            if ($status) {
+                $this->db->where('t.status', $status);
+            }
+
+            $priority = $this->input->get('priority');
+            if ($priority) {
+                $this->db->where('t.priority', $priority);
+            }
+
+            $search = $this->input->get('search');
+            if ($search) {
+                $this->db->group_start();
+                $this->db->like('t.ticket_number', $search);
+                $this->db->or_like('t.subject', $search);
+                $this->db->or_like('t.description', $search);
+                $this->db->group_end();
+            }
+
+            // Get total count
+            $total = $this->db->count_all_results('', FALSE);
+
+            // Pagination
+            $offset = ($page - 1) * $perPage;
+            $this->db->order_by('t.created_at', 'DESC');
+            $this->db->limit($perPage, $offset);
+
+            $tickets = $this->db->get()->result();
+
+            $this->_response([
+                'success' => true,
+                'data' => $tickets,
+                'total' => $total,
+                'page' => $page,
+                'per_page' => $perPage,
+                'total_pages' => ceil($total / $perPage)
+            ]);
+
+        } catch (Exception $e) {
+            log_message('error', 'My assigned tickets error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * POST /api/tickets/{id}/pick
+     * Pick/claim an unassigned ticket
+     */
+    public function pick_ticket($ticketId)
+    {
+        try {
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true);
+
+            $employeeId = isset($input['employee_id']) ? (int)$input['employee_id'] : 0;
+
+            if (!$employeeId) {
+                $this->_response(['success' => false, 'message' => 'Employee ID is required'], 400);
+                return;
+            }
+
+            // Get ticket
+            $ticket = $this->TicketModel->get_ticket($ticketId);
+            
+            if (!$ticket) {
+                $this->_response(['success' => false, 'message' => 'Ticket not found'], 404);
+                return;
+            }
+
+            // Check if already assigned
+            if ($ticket->assigned_to && $ticket->assigned_to != 0) {
+                $this->_response(['success' => false, 'message' => 'Ticket already assigned to someone'], 400);
+                return;
+            }
+
+            // Verify employee is in the assigned team
+            $isMember = $this->db
+                ->where('team_id', $ticket->assigned_team_id)
+                ->where('employee_id', $employeeId)
+                ->where('is_active', 1)
+                ->count_all_results('it_ticket_team_members');
+
+            if (!$isMember) {
+                $this->_response(['success' => false, 'message' => 'You are not a member of the assigned team'], 403);
+                return;
+            }
+
+            $this->db->trans_start();
+
+            // Update ticket
+            $this->db->where('id', $ticketId);
+            $this->db->update('it_ticket_tickets', [
+                'assigned_to' => $employeeId,
+                'status' => 'assigned',
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+
+            // Add history
+            $this->TicketModel->add_history($ticketId, $employeeId, 'assigned', [
+                'comment' => 'Ticket picked/claimed by user'
+            ]);
+
+            // Notify requester
+            $this->NotificationModel->create_notification([
+                'employee_id' => $ticket->requester_id,
+                'ticket_id' => $ticketId,
+                'type' => 'ticket_picked',
+                'title' => 'Ticket Assigned',
+                'message' => "Your ticket #{$ticket->ticket_number} has been picked up",
+                'link' => "/tickets/{$ticketId}"
+            ]);
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Failed to pick ticket');
+            }
+
+            $this->_response([
+                'success' => true,
+                'message' => 'Ticket picked successfully',
+                'data' => [
+                    'ticket_id' => $ticketId,
+                    'assigned_to' => $employeeId
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Pick ticket error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * POST /api/tickets/{id}/update
+     * Update ticket details
+     */
+    public function update($ticketId)
+    {
+        try {
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true);
+
+            $employeeId = isset($input['employee_id']) ? (int)$input['employee_id'] : 0;
+
+            if (!$employeeId) {
+                $this->_response(['success' => false, 'message' => 'Employee ID is required'], 400);
+                return;
+            }
+
+            // Get ticket
+            $ticket = $this->TicketModel->get_ticket($ticketId);
+            
+            if (!$ticket) {
+                $this->_response(['success' => false, 'message' => 'Ticket not found'], 404);
+                return;
+            }
+
+            $updateData = [];
+            $changes = [];
+
+            // Update assigned team
+            if (isset($input['assigned_team_id']) && $input['assigned_team_id'] != $ticket->assigned_team_id) {
+                $updateData['assigned_team_id'] = $input['assigned_team_id'] ?: null;
+                $changes[] = "Team changed";
+            }
+
+            // Update assigned user
+            if (isset($input['assigned_to']) && $input['assigned_to'] != $ticket->assigned_to) {
+                $updateData['assigned_to'] = $input['assigned_to'] ?: null;
+                $changes[] = "Assigned to changed";
+            }
+
+            // Update observer (based on schema, there's no observer_id field in tickets table)
+            // Commenting this out since the field doesn't exist in the schema
+            // if (isset($input['observer_id']) && $input['observer_id'] != $ticket->observer_id) {
+            //     $updateData['observer_id'] = $input['observer_id'] ?: null;
+            //     $changes[] = "Observer changed";
+            // }
+
+            // Update priority
+            if (isset($input['priority']) && $input['priority'] != $ticket->priority) {
+                $updateData['priority'] = $input['priority'];
+                $changes[] = "Priority changed to {$input['priority']}";
+            }
+
+            if (empty($updateData)) {
+                $this->_response(['success' => true, 'message' => 'No changes made']);
+                return;
+            }
+
+            $this->db->trans_start();
+
+            // Update ticket
+            $updateData['updated_at'] = date('Y-m-d H:i:s');
+            $this->db->where('id', $ticketId);
+            $this->db->update('it_ticket_tickets', $updateData);
+
+            // Add history
+            $this->TicketModel->add_history($ticketId, $employeeId, 'updated', [
+                'comment' => 'Ticket updated: ' . implode(', ', $changes),
+                'changes' => $changes
+            ]);
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Failed to update ticket');
+            }
+
+            $this->_response([
+                'success' => true,
+                'message' => 'Ticket updated successfully',
+                'data' => [
+                    'ticket_id' => $ticketId,
+                    'changes' => $changes
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Update ticket error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * POST /api/tickets/{id}/comment
+     * Add comment to ticket
+     */
+    public function add_comment($ticketId)
+    {
+        try {
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true);
+
+            $employeeId = isset($input['employee_id']) ? (int)$input['employee_id'] : 0;
+            $comment = isset($input['comment']) ? trim($input['comment']) : '';
+
+            if (!$employeeId || !$comment) {
+                $this->_response(['success' => false, 'message' => 'Employee ID and comment are required'], 400);
+                return;
+            }
+
+            // Get ticket
+            $ticket = $this->TicketModel->get_ticket($ticketId);
+            
+            if (!$ticket) {
+                $this->_response(['success' => false, 'message' => 'Ticket not found'], 404);
+                return;
+            }
+
+            $this->db->trans_start();
+
+            // Insert comment
+            $commentData = [
+                'ticket_id' => $ticketId,
+                'employee_id' => $employeeId,
+                'comment' => $comment,
+                'is_internal' => 0,
+                'is_solution' => 0,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $this->db->insert('it_ticket_comments', $commentData);
+            $commentId = $this->db->insert_id();
+
+            // Add history
+            $this->TicketModel->add_history($ticketId, $employeeId, 'commented', [
+                'comment' => 'Comment added',
+                'comment_id' => $commentId
+            ]);
+
+            // Update ticket updated_at
+            $this->db->where('id', $ticketId);
+            $this->db->update('it_ticket_tickets', ['updated_at' => date('Y-m-d H:i:s')]);
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Failed to add comment');
+            }
+
+            $this->_response([
+                'success' => true,
+                'message' => 'Comment added successfully',
+                'data' => [
+                    'comment_id' => $commentId,
+                    'ticket_id' => $ticketId
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Add comment error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * POST /api/tickets/{id}/note
+     * Add private note to ticket (stored in solutions table with note flag)
+     */
+    public function add_note($ticketId)
+    {
+        try {
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true);
+
+            $employeeId = isset($input['employee_id']) ? (int)$input['employee_id'] : 0;
+            $note = isset($input['note']) ? trim($input['note']) : '';
+
+            if (!$employeeId || !$note) {
+                $this->_response(['success' => false, 'message' => 'Employee ID and note are required'], 400);
+                return;
+            }
+
+            // Get ticket
+            $ticket = $this->TicketModel->get_ticket($ticketId);
+            
+            if (!$ticket) {
+                $this->_response(['success' => false, 'message' => 'Ticket not found'], 404);
+                return;
+            }
+
+            $this->db->trans_start();
+
+            // Insert note as a solution with special type or use comments table with is_internal flag
+            // Using comments table with is_internal flag
+            $noteData = [
+                'ticket_id' => $ticketId,
+                'employee_id' => $employeeId,
+                'comment' => $note,
+                'is_internal' => 1, // Mark as internal/private
+                'is_solution' => 0,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $this->db->insert('it_ticket_comments', $noteData);
+            $noteId = $this->db->insert_id();
+
+            // Add history
+            $this->TicketModel->add_history($ticketId, $employeeId, 'commented', [
+                'comment' => 'Private note added',
+                'comment_id' => $noteId
+            ]);
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Failed to add note');
+            }
+
+            $this->_response([
+                'success' => true,
+                'message' => 'Note added successfully',
+                'data' => [
+                    'note_id' => $noteId,
+                    'ticket_id' => $ticketId
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Add note error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * DELETE /api/tickets/notes/{noteId}
+     * Delete a private note (comment with is_internal=1)
+     */
+    public function delete_note($noteId)
+    {
+        try {
+            // Check if note exists (comment with is_internal=1)
+            $note = $this->db
+                ->where('id', $noteId)
+                ->where('is_internal', 1)
+                ->get('it_ticket_comments')
+                ->row();
+            
+            if (!$note) {
+                $this->_response(['success' => false, 'message' => 'Note not found'], 404);
+                return;
+            }
+
+            $this->db->trans_start();
+
+            // Delete note
+            $this->db->where('id', $noteId);
+            $this->db->delete('it_ticket_comments');
+
+            // Add history
+            $this->TicketModel->add_history($note->ticket_id, $note->employee_id, 'commented', [
+                'comment' => 'Private note deleted',
+                'comment_id' => $noteId
+            ]);
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Failed to delete note');
+            }
+
+            $this->_response([
+                'success' => true,
+                'message' => 'Note deleted successfully'
+            ]);
+
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Delete note error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * GET /api/support-teams
+     * Get all active support teams
+     */
+    public function get_support_teams()
+    {
+        try {
+            $teams = $this->db
+                ->select('id, name, code, description, support_level')
+                ->from('it_ticket_support_teams')
+                ->where('status', 'active')
+                ->order_by('name', 'ASC')
+                ->get()
+                ->result();
+
+            $this->_response([
+                'success' => true,
+                'data' => $teams
+            ]);
+
+        } catch (Exception $e) {
+            log_message('error', 'Get support teams error: ' . $e->getMessage());
+            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * GET /api/employees/active
+     * Get all active employees
+     */
+    public function get_active_employees()
+    {
+        try {
+            $employees = [];
+
+            $this->_response([
+                'success' => true,
+                'data' => $employees
+            ]);
+
+        } catch (Exception $e) {
+            log_message('error', 'Get active employees error: ' . $e->getMessage());
             $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

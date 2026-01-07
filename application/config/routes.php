@@ -271,6 +271,18 @@ $route['api/tickets/assign/(:num)'] = 'api/it_ticket/TicketController/assign/$1'
 $route['api/tickets/resolve/(:num)'] = 'api/it_ticket/TicketController/resolve/$1';
 $route['api/tickets/close/(:num)'] = 'api/it_ticket/TicketController/close/$1';
 
+// TICKETS - New routes for team and assigned tickets
+$route['api/tickets/team-unassigned'] = 'api/it_ticket/TicketController/team_unassigned';
+$route['api/tickets/my-assigned'] = 'api/it_ticket/TicketController/my_assigned';
+$route['api/tickets/(:num)/pick'] = 'api/it_ticket/TicketController/pick_ticket/$1';
+$route['api/tickets/(:num)/comment'] = 'api/it_ticket/TicketController/add_comment/$1';
+$route['api/tickets/(:num)/note'] = 'api/it_ticket/TicketController/add_note/$1';
+$route['api/tickets/notes/(:num)'] = 'api/it_ticket/TicketController/delete_note/$1';
+
+// SUPPORT TEAMS - Helper endpoints
+$route['api/support-teams'] = 'api/it_ticket/TicketController/get_support_teams';
+$route['api/employees/active'] = 'api/it_ticket/TicketController/get_active_employees';
+
 // APPROVAL RULES
 $route['approval-rules'] = 'api/it_ticket/ApprovalRuleController/index';
 $route['approval-rules/show/(:num)'] = 'api/it_ticket/ApprovalRuleController/show/$1';

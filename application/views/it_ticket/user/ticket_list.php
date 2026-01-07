@@ -260,66 +260,126 @@
         'country' => $country ?? 'Vietnam'
     ]); ?>
     
-    <!-- Modal: Update Ticket -->
-    <div class="modal fade" id="updateTicketModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- Modal: Update Ticket -->
+<div class="modal fade" id="updateTicketModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-secondary" id="update-ticket-badge">Bronze</span>
+                    <span class="text-muted" id="update-ticket-number">ID-001</span>
                 </div>
-                <div class="modal-body p-0">
-                    <input type="hidden" id="update-ticket-id">
-                    
-                    <div class="row g-0">
-                        <!-- Left Column: Main Content -->
-                        <div class="col-md-8 p-4 border-end">
-                            <!-- Ticket Title -->
-                            <h5 id="update-ticket-title" class="mb-3" style="font-weight: 600;"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <div class="modal-body p-0">
+                <input type="hidden" id="update-ticket-id">
+                
+                <div class="row g-0">
+                    <!-- Left Sidebar: Details Section -->
+                    <div class="col-md-3 p-4 bg-light border-end">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0 fw-bold">Details</h6>
+                                <button class="btn btn-sm btn-warning text-white">
+                                    <i class="fas fa-redo"></i> Re-qualify
+                                </button>
+                            </div>
                             
-                            <!-- Description -->
-                            <p id="update-ticket-description" class="text-muted mb-4" style="line-height: 1.6;"></p>
+                            <!-- Country -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Country</label>
+                                <select class="form-select form-select-sm" id="update-country">
+                                    <option value="Vietnam">Viet Nam</option>
+                                    <option value="Thailand">Thailand</option>
+                                    <option value="Singapore">Singapore</option>
+                                </select>
+                            </div>
                             
-                            <!-- Attachments Section -->
-                            <div class="mb-4">
-                                <h6 class="mb-3">Attachments (2)</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <div class="border rounded p-3">
-                                            <div class="fw-bold small">Readables.pdf</div>
-                                            <div class="text-muted small">12kb <a href="#" class="text-primary">View file</a></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="border rounded p-3">
-                                            <div class="fw-bold small">Readables.pdf</div>
-                                            <div class="text-muted small">12kb <a href="#" class="text-primary">View file</a></div>
-                                        </div>
-                                    </div>
+                            <!-- Assigned Team -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Assigned Team</label>
+                                <select class="form-select form-select-sm" id="update-assigned-team">
+                                    <option value="">Select Team</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Assigned to -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Assigned to</label>
+                                <div class="position-relative">
+                                    <select class="form-select form-select-sm" id="update-assigned-to">
+                                        <option value="">Select User</option>
+                                    </select>
+                                    <a href="#" class="text-primary small d-block mt-1" id="assign-to-me">Assign to me</a>
                                 </div>
                             </div>
                             
-                            <!-- Comments/Logs Tabs -->
-                            <ul class="nav nav-tabs mb-3" role="tablist">
-                                <li class="nav-item">
-                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#comments-tab">Comments <span class="badge bg-secondary ms-1">2</span></button>
-                                </li>
-                                <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#logs-tab">Logs <span class="badge bg-secondary ms-1">6</span></button>
-                                </li>
-                            </ul>
-                            
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="comments-tab">
-                                    <!-- Add Comment -->
-                                    <div class="mb-3">
-                                        <textarea class="form-control" id="update-comment" rows="3" placeholder="Add a comment..."></textarea>
-                                        <button class="btn btn-sm btn-success mt-2">Submit</button>
-                                    </div>
-                                    
-                                    <!-- Sample Comment -->
-                                    <div class="d-flex gap-3 mb-3">
+                            <!-- Observer -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Observer</label>
+                                <div class="position-relative">
+                                    <select class="form-select form-select-sm" id="update-observer">
+                                        <option value="">Select Observer</option>
+                                    </select>
+                                    <a href="#" class="text-primary small d-block mt-1" id="assign-observer-to-me">Assign to me</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Center Content: Ticket Details -->
+                    <div class="col-md-6 p-4">
+                        <!-- Ticket Title -->
+                        <h5 id="update-ticket-title" class="mb-3 fw-bold"></h5>
+                        
+                        <!-- Description -->
+                        <p id="update-ticket-description" class="text-muted mb-4" style="line-height: 1.6;"></p>
+                        
+                        <!-- Attachments Section -->
+                        <div class="mb-4" id="attachments-section" style="display: none;">
+                            <h6 class="mb-3">Attachments (<span id="attachment-count">0</span>)</h6>
+                            <div class="row g-3" id="attachments-container">
+                                <!-- Attachments will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Comments/Logs Tabs -->
+                        <ul class="nav nav-tabs border-bottom-0 mb-3" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active border-0 border-bottom border-3 border-info px-3" 
+                                        id="comments-tab-btn" data-bs-toggle="tab" data-bs-target="#comments-tab" type="button">
+                                    <i class="far fa-comment"></i> Comments <span class="badge bg-secondary ms-1" id="comments-count">0</span>
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link border-0 px-3" id="logs-tab-btn" 
+                                        data-bs-toggle="tab" data-bs-target="#logs-tab" type="button">
+                                    <i class="far fa-clock"></i> Logs <span class="badge bg-secondary ms-1" id="logs-count">0</span>
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="comments-tab">
+                                <!-- Add Comment -->
+                                <div class="mb-4">
+                                    <textarea class="form-control" id="update-comment" rows="3" 
+                                              placeholder="Add a comment..."></textarea>
+                                    <button class="btn btn-success btn-sm mt-2" id="btn-submit-comment">
+                                        Submit
+                                    </button>
+                                </div>
+                                
+                                <!-- Comments List -->
+                                <div id="comments-list">
+                                    <!-- Sample Comment Structure -->
+                                    <div class="d-flex gap-3 mb-4">
                                         <div class="flex-shrink-0">
-                                            <div class="rounded-circle bg-secondary" style="width: 40px; height: 40px;"></div>
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" 
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center gap-2 mb-1">
@@ -330,110 +390,86 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="logs-tab">
+                            </div>
+                            
+                            <div class="tab-pane fade" id="logs-tab">
+                                <div id="logs-list">
                                     <p class="text-muted small">Activity logs will appear here...</p>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Right Column: Details Sidebar -->
-                        <div class="col-md-4 p-4 bg-light">
-                            <!-- Details Section -->
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Details</h6>
-                                    <i class="fas fa-chevron-up"></i>
-                                </div>
-                                
-                                <!-- Country -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Country</label>
-                                    <select class="form-select form-select-sm" id="update-country">
-                                        <option>Viet Nam</option>
-                                    </select>
-                                </div>
-                                
-                                <!-- Assigned Team -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Assigned Team</label>
-                                    <select class="form-select form-select-sm" id="update-assigned-team">
-                                        <option value="">Select Team</option>
-                                    </select>
-                                </div>
-                                
-                                <!-- Assigned to -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Assigned to</label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <select class="form-select form-select-sm" id="update-assigned-to" style="flex: 1;">
-                                            <option value="">Select User</option>
-                                        </select>
-                                        <a href="#" class="text-primary small ms-2" style="white-space: nowrap;">Assign to me</a>
-                                    </div>
-                                </div>
-                                
-                                <!-- Observer -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Observer</label>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <select class="form-select form-select-sm" id="update-observer">
-                                            <option value="">Select Observer</option>
-                                        </select>
-                                        <a href="#" class="text-primary small ms-2" style="white-space: nowrap;">Assign to me</a>
-                                    </div>
-                                </div>
-                                
-                                <!-- Priority -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Priority</label>
-                                    <select class="form-select form-select-sm" id="update-priority">
-                                        <option value="Low">Low</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="High">High</option>
-                                        <option value="Critical">Critical</option>
-                                    </select>
-                                </div>
-                                
-                                <!-- Status -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Status</label>
-                                    <div class="text-muted">—</div>
-                                </div>
-                                
-                                <!-- Opening date -->
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted mb-1">Opening date</label>
-                                    <div class="small" id="update-opening-date">2025-12-25 15:38:50</div>
-                                </div>
+                    </div>
+                    
+                    <!-- Right Sidebar: Additional Details -->
+                    <div class="col-md-3 p-4 bg-light border-start">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0 fw-bold">Details</h6>
+                                <i class="fas fa-chevron-up text-muted"></i>
                             </div>
                             
-                            <!-- Private Notes Section -->
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Private Notes</h6>
-                                    <i class="fas fa-chevron-up"></i>
+                            <!-- Priority -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Priority</label>
+                                <select class="form-select form-select-sm" id="update-priority">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Critical">Critical</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Status</label>
+                                <div class="text-muted small" id="update-status-display">—</div>
+                            </div>
+                            
+                            <!-- Opening date -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Opening date</label>
+                                <div class="small" id="update-opening-date">—</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Private Notes Section -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0 fw-bold">Private Notes</h6>
+                                <i class="fas fa-chevron-up text-muted"></i>
+                            </div>
+                            
+                            <button class="btn btn-sm btn-outline-secondary w-100 mb-3" id="btn-add-note">
+                                <i class="fas fa-plus"></i> Add note
+                            </button>
+                            
+                            <div id="private-notes-list">
+                                <!-- Notes will be displayed here -->
+                                <div class="alert alert-light small mb-2 p-2 position-relative" style="padding-right: 30px !important;">
+                                    <button type="button" class="btn-close position-absolute top-0 end-0 mt-1 me-1" 
+                                            style="font-size: 0.7rem;" aria-label="Close"></button>
+                                    See related task/ticket for details.
                                 </div>
-                                
-                                <button class="btn btn-sm btn-outline-secondary w-100 mb-3">
-                                    <i class="fas fa-plus"></i> Add note
-                                </button>
-                                
-                                <div class="small text-muted mb-2">See related task/ticket for details.</div>
-                                <div class="small text-muted">This change is within the defined scope.</div>
+                                <div class="alert alert-light small mb-2 p-2 position-relative" style="padding-right: 30px !important;">
+                                    <button type="button" class="btn-close position-absolute top-0 end-0 mt-1 me-1" 
+                                            style="font-size: 0.7rem;" aria-label="Close"></button>
+                                    This change is within the defined scope.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="btn-update-ticket">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                </div>
+            </div>
+            
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info text-white" id="btn-update-ticket">
+                    <i class="fas fa-save"></i> Update Ticket
+                </button>
             </div>
         </div>
     </div>
-
+</div>
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -452,6 +488,6 @@
     <script src="<?= base_url('assets/it_ticket/js/validation.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/user_ticket.js') ?>"></script>
     <script src="<?= base_url('assets/it_ticket/js/ticket_list.js') ?>"></script>
-    <script src="<?= base_url('assets/it_ticket/js/assigned_tickets.js') ?>"></script>
+    <script src="<?= base_url('assets/it_ticket/js/team_tickets.js') ?>"></script>
 </body>
 </html>
