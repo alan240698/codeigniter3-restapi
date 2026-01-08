@@ -386,43 +386,492 @@ class TicketController extends CI_Controller
         }
     }
 
-    /**
-     * GET /api/tickets/{id}
-     * Get single ticket with full details
-     */
-    public function show($id)
-    {
-        try {
-            $ticket = $this->TicketModel->get_ticket($id);
-
-            if (!$ticket) {
-                $this->_response(['success' => false, 'message' => 'Ticket not found'], 404);
-                return;
-            }
-
-            // Get related data
-            $history = $this->TicketModel->get_ticket_history($id);
-            $comments = [];
-            // $comments = $this->TicketModel->get_ticket_comments($id);
-            $attachments = [];
-            // $attachments = $this->TicketModel->get_ticket_attachments($id);
-            $approvals = $this->db->get_where('it_ticket_approvals', ['ticket_id' => $id])->result();
-
-            $this->_response([
-                'success' => true,
-                'data' => [
-                    'ticket' => $ticket,
-                    'history' => $history,
-                    'comments' => $comments,
-                    'attachments' => $attachments,
-                    'approvals' => $approvals
-                ]
-            ]);
-
-        } catch (Exception $e) {
-            $this->_response(['success' => false, 'message' => $e->getMessage()], 500);
+/**
+ * Get ticket details for modal display
+ */
+public function show($id)
+{
+    $this->load->model('it_ticket/TicketModel');
+    $this->load->model('it_ticket/ServiceModel');
+    $this->load->model('it_ticket/WorkflowModel');
+    $this->load->model('it_ticket/RulesModel');
+    
+    try {
+        // ========================================
+        // 1. GET TICKET DATA WITH ALL FIELDS
+        // ========================================
+        $ticket = $this->db
+            ->select('*')
+            ->from('it_ticket_tickets')
+            ->where('id', $id)
+            ->get()
+            ->row();
+        
+        if (!$ticket) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'success' => false,
+                    'message' => 'Ticket not found'
+                ]));
+            return;
         }
+        
+        // ========================================
+        // 2. GET SERVICE INFORMATION
+        // ========================================
+        $serviceGroup = $this->ServiceModel->get_group_by_id($ticket->service_group_id);
+        $itService = $this->ServiceModel->get_it_service_by_id($ticket->it_service_id);
+        
+        // Check if it's a sub-service
+        $parentService = null;
+        if ($itService && is_array($itService)) {
+            $itService = (object) $itService;
+        }
+        
+        if ($itService && $itService->parent_id) {
+            $parentService = $this->ServiceModel->get_it_service_by_id($itService->parent_id);
+            if (is_array($parentService)) {
+                $parentService = (object) $parentService;
+            }
+        }
+        
+        // Build service breadcrumb for title
+        $serviceTitle = '';
+        if ($serviceGroup && is_array($serviceGroup)) {
+            $serviceGroup = (object) $serviceGroup;
+        }
+        if ($parentService) {
+            $serviceTitle = ($serviceGroup ? $serviceGroup->name : '') . ' > ' . $parentService->name . ' > ' . $itService->name;
+        } else {
+            $serviceTitle = ($serviceGroup ? $serviceGroup->name : '') . ' > ' . ($itService ? $itService->name : '');
+        }
+        
+        // ========================================
+        // 3. GET REQUESTER INFORMATION
+        // ========================================
+        $requester = $this->_get_employee_info($ticket->requester_id);
+        
+        // ========================================
+        // 4. GET ASSIGNED USER INFORMATION
+        // ========================================
+        $assignedUser = null;
+        if ($ticket->assigned_to) {
+            $assignedUser = $this->_get_employee_info($ticket->assigned_to);
+        }
+        
+        // ========================================
+        // 5. GET ASSIGNED TEAM INFORMATION
+        // ========================================
+        $assignedTeam = null;
+        if ($ticket->assigned_team_id) {
+            $assignedTeam = $this->db
+                ->select('id, name, code')
+                ->from('it_ticket_support_teams')
+                ->where('id', $ticket->assigned_team_id)
+                ->get()
+                ->row();
+        }
+        
+        // ========================================
+        // 6. GET ALL TEAMS FOR DROPDOWN
+        // ========================================
+        $allTeams = $this->db
+            ->select('id, name, code, support_level')
+            ->from('it_ticket_support_teams')
+            ->where('status', 'active')
+            ->order_by('name', 'ASC')
+            ->get()
+            ->result();
+        
+        // ========================================
+        // 7. GET WORKFLOW STATES
+        // ========================================
+        $workflowStates = [];
+        if ($ticket->workflow_id) {
+            $workflowStates = $this->WorkflowModel->get_workflow_states($ticket->workflow_id);
+        }
+        
+        // ========================================
+        // 8. GET TICKET HISTORY (LOGS)
+        // ========================================
+        $history = $this->db
+            ->select('*')
+            ->from('it_ticket_history')
+            ->where('ticket_id', $id)
+            ->order_by('created_at', 'DESC')
+            ->get()
+            ->result();
+        
+        // Format history with user names
+        if ($history) {
+            foreach ($history as &$log) {
+                if (is_array($log)) {
+                    $log = (object) $log;
+                }
+                
+                if ($log->employee_id) {
+                    $employeeInfo = $this->_get_employee_info($log->employee_id);
+                    $log->employee_name = $employeeInfo ? $employeeInfo->employee_name : 'Unknown';
+                }
+            }
+        }
+        
+        // ========================================
+        // 9. GET TICKET COMMENTS
+        // ========================================
+        $comments = $this->db
+            ->select('tc.*')
+            ->from('it_ticket_comments tc')
+            ->where('tc.ticket_id', $id)
+            ->where('tc.is_internal', 0) // Only public comments
+            ->order_by('tc.created_at', 'ASC')
+            ->get()
+            ->result();
+        
+        // Add employee info to comments
+        if ($comments) {
+            foreach ($comments as &$comment) {
+                if (is_array($comment)) {
+                    $comment = (object) $comment;
+                }
+                $employeeInfo = $this->_get_employee_info($comment->employee_id);
+                $comment->employee_name = $employeeInfo ? $employeeInfo->employee_name : 'Unknown';
+                $comment->employee_email = $employeeInfo ? $employeeInfo->employee_email : '';
+                $comment->employee_firstname = $employeeInfo ? $employeeInfo->employee_firstname : '';
+            }
+        }
+        
+        // ========================================
+        // 10. GET TICKET ATTACHMENTS
+        // ========================================
+        $attachments = $this->db
+            ->select('*')
+            ->from('it_ticket_attachments')
+            ->where('ticket_id', $id)
+            ->order_by('created_at', 'ASC')
+            ->get()
+            ->result();
+        
+        // Format file sizes and add uploader info
+        if ($attachments) {
+            foreach ($attachments as &$file) {
+                if (is_array($file)) {
+                    $file = (object) $file;
+                }
+                $file->formatted_size = $this->_format_file_size($file->file_size);
+                
+                if ($file->employee_id) {
+                    $uploaderInfo = $this->_get_employee_info($file->employee_id);
+                    $file->uploader_name = $uploaderInfo ? $uploaderInfo->employee_name : 'Unknown';
+                }
+            }
+        }
+        
+        // ========================================
+        // 11. GET PRIVATE NOTES
+        // ========================================
+        $privateNotes = $this->db
+            ->select('tc.*')
+            ->from('it_ticket_comments tc')
+            ->where('tc.ticket_id', $id)
+            ->where('tc.is_internal', 1) // Only internal notes
+            ->order_by('tc.created_at', 'DESC')
+            ->get()
+            ->result();
+        
+        // Add employee info to notes
+        if ($privateNotes) {
+            foreach ($privateNotes as &$note) {
+                if (is_array($note)) {
+                    $note = (object) $note;
+                }
+                $employeeInfo = $this->_get_employee_info($note->employee_id);
+                $note->employee_name = $employeeInfo ? $employeeInfo->employee_name : 'Unknown';
+            }
+        }
+        
+        // ========================================
+        // 12. GET APPROVAL INFORMATION
+        // ========================================
+        $approvals = [];
+        if ($ticket->requires_approval) {
+            $approvalsRaw = $this->db
+                ->select('ta.*, ar.rule_name')
+                ->from('it_ticket_approvals ta')
+                ->join('it_ticket_approval_rules ar', 'ta.approval_rule_id = ar.id', 'left')
+                ->where('ta.ticket_id', $id)
+                ->order_by('ta.requested_at', 'ASC')
+                ->get()
+                ->result();
+            
+            // Add employee info to approvals
+            if ($approvalsRaw) {
+                foreach ($approvalsRaw as $approval) {
+                    if (is_array($approval)) {
+                        $approval = (object) $approval;
+                    }
+                    $approverInfo = $this->_get_employee_info($approval->approver_id);
+                    $approval->approver_name = $approverInfo ? $approverInfo->employee_name : 'Unknown';
+                    $approvals[] = $approval;
+                }
+            }
+        }
+        
+        // ========================================
+        // 13. GET OBSERVERS (from notifications or custom table if exists)
+        // ========================================
+        // Note: Schema không có bảng it_ticket_observers, có thể thêm sau
+        $observers = [];
+        
+        // ========================================
+        // 14. GET LEVEL RULES FOR ESCALATION
+        // ========================================
+        $levelRules = $this->RulesModel->get_level_rules_v1($ticket->it_service_id);
+        
+        // ========================================
+        // 15. GET SOLUTION INFORMATION
+        // ========================================
+        $solution = null;
+        if ($ticket->active_solution_id) {
+            $solution = $this->db
+                ->select('s.*')
+                ->from('it_ticket_solutions s')
+                ->where('s.id', $ticket->active_solution_id)
+                ->get()
+                ->row();
+            
+            if ($solution) {
+                if (is_array($solution)) {
+                    $solution = (object) $solution;
+                }
+                $providerInfo = $this->_get_employee_info($solution->provided_by);
+                $solution->provided_by_name = $providerInfo ? $providerInfo->employee_name : 'Unknown';
+            }
+        }
+        
+        // Get all solutions for this ticket (history)
+        $allSolutions = $this->db
+            ->select('s.*')
+            ->from('it_ticket_solutions s')
+            ->where('s.ticket_id', $id)
+            ->order_by('s.version', 'DESC')
+            ->get()
+            ->result();
+        
+        if ($allSolutions) {
+            foreach ($allSolutions as &$sol) {
+                if (is_array($sol)) {
+                    $sol = (object) $sol;
+                }
+                $providerInfo = $this->_get_employee_info($sol->provided_by);
+                $sol->provided_by_name = $providerInfo ? $providerInfo->employee_name : 'Unknown';
+            }
+        }
+        
+        // ========================================
+        // 16. GET PRIORITY BADGE
+        // ========================================
+        $priorityBadge = [
+            'low' => ['label' => 'Bronze', 'class' => 'badge-bronze'],
+            'medium' => ['label' => 'Silver', 'class' => 'badge-silver'],
+            'high' => ['label' => 'Gold', 'class' => 'badge-gold'],
+            'critical' => ['label' => 'Platinum', 'class' => 'badge-platinum']
+        ];
+        
+        $badge = $priorityBadge[$ticket->priority] ?? $priorityBadge['medium'];
+        
+        // ========================================
+        // 17. CALCULATE SLA INFORMATION
+        // ========================================
+        $slaInfo = [
+            'due_date' => $ticket->sla_due_date,
+            'status' => $ticket->sla_status,
+            'is_overdue' => $ticket->sla_status === 'overdue',
+            'time_remaining' => null
+        ];
+        
+        if ($ticket->sla_due_date && $ticket->status !== 'closed' && $ticket->status !== 'resolved') {
+            $now = new DateTime();
+            $dueDate = new DateTime($ticket->sla_due_date);
+            $interval = $now->diff($dueDate);
+            
+            if ($dueDate > $now) {
+                $slaInfo['time_remaining'] = $interval->format('%d days %h hours');
+            } else {
+                $slaInfo['time_remaining'] = 'Overdue by ' . $interval->format('%d days %h hours');
+            }
+        }
+        
+        // ========================================
+        // 18. GET ESCALATION HISTORY
+        // ========================================
+        $escalations = $this->db
+            ->select('e.*, st.name as to_team_name')
+            ->from('it_ticket_escalations e')
+            ->join('it_ticket_support_teams st', 'e.to_team_id = st.id', 'left')
+            ->where('e.ticket_id', $id)
+            ->order_by('e.escalated_at', 'DESC')
+            ->get()
+            ->result();
+        
+        if ($escalations) {
+            foreach ($escalations as &$esc) {
+                if (is_array($esc)) {
+                    $esc = (object) $esc;
+                }
+                $fromInfo = $this->_get_employee_info($esc->from_employee_id);
+                $esc->from_employee_name = $fromInfo ? $fromInfo->employee_name : 'Unknown';
+                
+                if ($esc->to_employee_id) {
+                    $toInfo = $this->_get_employee_info($esc->to_employee_id);
+                    $esc->to_employee_name = $toInfo ? $toInfo->employee_name : 'Unknown';
+                }
+                
+                if ($esc->responded_by) {
+                    $responderInfo = $this->_get_employee_info($esc->responded_by);
+                    $esc->responder_name = $responderInfo ? $responderInfo->employee_name : 'Unknown';
+                }
+            }
+        }
+        
+        // ========================================
+        // 19. PREPARE RESPONSE DATA
+        // ========================================
+        $responseData = [
+            'success' => true,
+            'data' => [
+                // Basic ticket info
+                'ticket' => [
+                    'id' => $ticket->id,
+                    'ticket_number' => $ticket->ticket_number,
+                    'subject' => $ticket->subject,
+                    'description' => $ticket->description,
+                    'priority' => $ticket->priority,
+                    'status' => $ticket->status,
+                    'created_at' => $ticket->created_at,
+                    'updated_at' => $ticket->updated_at,
+                    'resolved_at' => $ticket->resolved_at,
+                    'closed_at' => $ticket->closed_at,
+                    'custom_fields_data' => $ticket->custom_fields_data ? json_decode($ticket->custom_fields_data, true) : null,
+                    'requires_approval' => $ticket->requires_approval,
+                    'approval_status' => $ticket->approval_status,
+                    'requires_solution' => $ticket->requires_solution,
+                    'current_level' => $ticket->current_level,
+                    'max_level' => $ticket->max_level,
+                    'first_response_at' => $ticket->first_response_at,
+                    'first_response_by' => $ticket->first_response_by,
+                    'solution_provided_at' => $ticket->solution_provided_at,
+                    'solution_provided_by' => $ticket->solution_provided_by,
+                    'resolved_by' => $ticket->resolved_by,
+                    'closed_by' => $ticket->closed_by,
+                    'cancelled_at' => $ticket->cancelled_at,
+                    'cancelled_by' => $ticket->cancelled_by,
+                    'cancel_reason' => $ticket->cancel_reason
+                ],
+                
+                // Display info
+                'display' => [
+                    'service_title' => $serviceTitle,
+                    'priority_badge' => $badge,
+                    'service_group_name' => $serviceGroup ? $serviceGroup->name : null,
+                    'service_name' => $itService ? $itService->name : null
+                ],
+                
+                // People
+                'requester' => $requester,
+                'assigned_user' => $assignedUser,
+                'assigned_team' => $assignedTeam,
+                'observers' => $observers,
+                
+                // Lists for dropdowns
+                'teams' => $allTeams,
+                'workflow_states' => $workflowStates,
+                
+                // Activity
+                'history' => $history ?: [],
+                'comments' => $comments ?: [],
+                'attachments' => $attachments ?: [],
+                'private_notes' => $privateNotes ?: [],
+                'escalations' => $escalations ?: [],
+                
+                // Business logic
+                'approvals' => $approvals,
+                'level_rules' => $levelRules,
+                'solution' => $solution,
+                'all_solutions' => $allSolutions ?: [],
+                'sla_info' => $slaInfo
+            ]
+        ];
+        
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($responseData));
+            
+    } catch (Exception $e) {
+        log_message('error', 'Ticket show error: ' . $e->getMessage());
+        
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'success' => false,
+                'message' => 'Failed to load ticket: ' . $e->getMessage()
+            ]));
     }
+}
+
+/**
+ * Get employee information from HR tables
+ */
+private function _get_employee_info($employee_id)
+{
+    if (!$employee_id) {
+        return null;
+    }
+    
+    $employee = $this->db
+        ->select("
+            htm.ide AS employee_id,
+            CONCAT(htm.fname, ' ', htm.lname) AS employee_name,
+            htm.fname AS employee_firstname,
+            htm.lname AS employee_lastname,
+            htm.arche_email AS employee_email,
+            htm.phonework AS employee_phone,
+            htm.country AS employee_country,
+            hmd.code AS employee_department,
+            hmof.offices AS employee_office,
+            CONCAT(mgr.fname, ' ', mgr.lname) AS employee_manager_name,
+            mgr.arche_email AS employee_manager_email
+        ", false)
+        ->from('hr_table_main AS htm')
+        ->join('hr_table_contract AS htc', 'htm.ide = htc.id_e AND CURDATE() BETWEEN htc.cfrom AND htc.cto AND htc.tdate IS NULL', 'left')
+        ->join('hr_menu_job_title AS hmjt', 'htm.job_title_id = hmjt.idjt', 'left')
+        ->join('hr_menu_department AS hmd', 'hmjt.dept = hmd.id', 'left')
+        ->join('hr_menu_offices AS hmof', 'htm.working_location = hmof.idf', 'left')
+        ->join('hr_table_direct_manager AS htdm', 'htm.ide = htdm.id_e AND htdm.is_main = 1', 'left')
+        ->join('hr_table_main AS mgr', 'htdm.id_m = mgr.ide', 'left')
+        ->where('htm.ide', $employee_id)
+        ->get()
+        ->row();
+    
+    return $employee;
+}
+
+/**
+ * Helper function to format file size
+ */
+private function _format_file_size($bytes)
+{
+    if ($bytes >= 1073741824) {
+        return number_format($bytes / 1073741824, 2) . ' GB';
+    } elseif ($bytes >= 1048576) {
+        return number_format($bytes / 1048576, 2) . ' MB';
+    } elseif ($bytes >= 1024) {
+        return number_format($bytes / 1024, 2) . ' KB';
+    } else {
+        return $bytes . ' bytes';
+    }
+}
 
         /**
      * GET /api/tickets/team-unassigned
