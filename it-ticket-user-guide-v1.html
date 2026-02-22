@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Ticket System - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f8f9fa;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 48px 60px;
+            border-bottom: 4px solid #1e40af;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 60px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 32px 0 16px 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+
+        p {
+            margin: 12px 0;
+            color: #374151;
+        }
+
+        .toc {
+            background: #f9fafb;
+            padding: 32px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 40px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: #1e3a8a;
+            font-size: 1.3em;
+        }
+
+        .toc a {
+            color: #3b82f6;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            transition: color 0.2s;
+        }
+
+        .toc a:last-child {
+            border-bottom: none;
+        }
+
+        .toc a:hover {
+            color: #1e40af;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.95em;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #d1d5db;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            border: 1px solid #334155;
+        }
+
+        .code-block pre {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .json-output {
+            background: #f9fafb;
+            color: #1e293b;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            border: 1px solid #e5e7eb;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4 {
+            color: #1e40af;
+            margin-top: 0;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .success-box h4 {
+            color: #15803d;
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #b45309;
+            margin-top: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-amber {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .badge-gray {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        ul,
+        ol {
+            margin: 16px 0;
+            padding-left: 32px;
+        }
+
+        li {
+            margin: 8px 0;
+            color: #374151;
+        }
+
+        .flow-diagram {
+            background: #f9fafb;
+            padding: 24px;
+            border-radius: 6px;
+            margin: 24px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step;
+            margin: 20px 0;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .step-list li:before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            background: #f3f4f6;
+            padding: 32px 60px;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            .header {
+                background: #1e3a8a;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 32px 24px;
+            }
+
+            .header {
+                padding: 32px 24px;
+            }
+
+            .footer {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>IT Ticket System</h1>
+            <p style="color: white;">Enterprise Service Management Platform - Documentation & Implementation Guide</p>
+        </div>
+
+        <div class="content">
+            <div class="toc">
+                <h3>Table of Contents</h3>
+                <a href="#overview">1. System Overview</a>
+                <a href="#architecture">2. System Architecture</a>
+                <a href="#setup">3. Implementation Workflow</a>
+                <a href="#service-structure">4. Service Structure Configuration</a>
+                <a href="#teams">5. Support Teams Management</a>
+                <a href="#resolve-action">6. Resolve Action</a>
+                <a href="#impacts">7. Impacts</a>
+                <a href="#severity">8. Severity</a>
+                <a href="#complexity">9. Complexity</a>
+                <a href="#urgency">10. Urgency</a>
+                <a href="#priority">11. Priority</a>
+                <a href="#application-service-categories">12. Application Service Categories</a>
+                <a href="#rules">13. Business Rules Engine</a>
+            </div>
+
+            <div class="section" id="overview">
+                <h2>1. System Overview</h2>
+                <p>The IT Ticket System is an enterprise-grade service management platform that automates ticket
+                    classification, routing, and resolution workflows. Built on a powerful business rules engine, the
+                    system eliminates manual processes and ensures consistent service delivery across your organization.
+                </p>
+
+                <h3>Core Capabilities</h3>
+                <ul>
+                    <li>Automated ticket classification and categorization</li>
+                    <li>Intelligent routing to appropriate teams and agents</li>
+                </ul>
+            </div>
+
+            <div class="section" id="architecture">
+                <h2>2. System Architecture</h2>
+
+                <div class="flow-diagram">
+                    User Submission
+                    ↓
+                    ┌─────────────────────────────────────┐
+                    │ Classification Engine               │
+                    │ • Service Group Detection           │
+                    │ • Ticket Type Identification        │
+                    │ • IT Services                       │
+                    └─────────────────────────────────────┘
+                    ↓
+                    ┌─────────────────────────────────────┐
+                    │ Business Rules Engine               │
+                    │ • Routing Rules                     │
+                    │ • Approval Rules                    │
+                    └─────────────────────────────────────┘
+                </div>
+            </div>
+
+            <div class="section" id="setup">
+                <h2>3. Implementation Workflow</h2>
+                <ol class="step-list">
+                    <li><strong>Service Structure Configuration</strong> - Define service groups, ticket types, and
+                        it services</li>
+                    <li><strong>Team Structure Setup</strong> - Create support teams with appropriate levels and assign
+                        members</li>
+                    <li><strong>Business Rules Definition</strong> - Configure routing, approval</li>
+                </ol>
+            </div>
+
+            <div class="section" id="service-structure">
+                <h2>4. Service Structure Configuration</h2>
+
+                <h3>4.1. Service Groups</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Group</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network</td>
+                            <td><span class="badge badge-blue">NETWORK</span></td>
+                        </tr>
+                        <tr>
+                            <td>User computer</td>
+                            <td><span class="badge badge-blue">USER_COMPUTER</span></td>
+                        </tr>
+                        <tr>
+                            <td>Group applications</td>
+                            <td><span class="badge badge-blue">GROUP_APPLICATIONS</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cyber Security</td>
+                            <td><span class="badge badge-blue">CYBER_SECURITY</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.2. IT Services</h3>
+                <h4>IT Services of the Network Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Unable to be connected</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_BE_CONNECTED</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>Unable to access some websites</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_SOME_WEBSITES</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>Unable to access Internet</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_INTERNET</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>VPN access from home</td>
+                            <td><span class="badge badge-amber">VPN_ACCESS_FROM_HOME</span></td>
+                            <td>Network</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Network</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>IT Services of the User computer Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hardware: computer, peripheral</td>
+                            <td><span class="badge badge-amber">HARDWARE_COMPUTER_PERIPHERAL</span></td>
+                            <td>User-computer</td>
+                        </tr>
+                        <tr>
+                            <td>Software: Edge, Acrobat, 7zip…</td>
+                            <td><span class="badge badge-amber">SOFTWARE_EDGE_ACROBAT_7ZIP</span></td>
+                            <td>User-computer</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>User-computer</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>IT Services of the Cyber Security Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Scam</td>
+                            <td><span class="badge badge-amber">SCAM</span></td>
+                            <td>Cyber Security</td>
+                        </tr>
+                        <tr>
+                            <td>Virus</td>
+                            <td><span class="badge badge-amber">VIRUS</span></td>
+                            <td>Cyber Security</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Cyber Security</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>IT Services of the Group Application Service Group</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Sub IT Service</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group website</td>
+                            <td>Accessible</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_ACCESSIBLE</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Group website</td>
+                            <td>Bug, error, permission</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_BUG_ERROR_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">INTRANET_LOGON</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Permission</td>
+                            <td><span class="badge badge-amber">INTRANET_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Bug, error</td>
+                            <td><span class="badge badge-amber">INTRANET_BUG_ERROR</span></td>
+                            <td>Group Application</td>
+                        </tr>
+
+                        <tr>
+                            <td>M365</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">M365_LOGON</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>M365</td>
+                            <td>Email delegation</td>
+                            <td><span class="badge badge-amber">M365_EMAIL_DELEGATION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>M365</td>
+                            <td>License assignment</td>
+                            <td><span class="badge badge-amber">M365_LICENSE_ASSIGNMENT</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>SharePoint</td>
+                            <td>Creation / Permission</td>
+                            <td><span class="badge badge-amber">SHAREPOINT_CREATION_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>User permission</td>
+                            <td><span class="badge badge-amber">NAVISION_USER_PERMISSION</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Bug / error</td>
+                            <td><span class="badge badge-amber">NAVISION_BUG_ERROR</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Group Application</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.3. Ticket Type</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket Type</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       <tr>
+                            <td>Incident & Service Request</td>
+                            <td><span class="badge badge-amber">INCIDENT_SERVICE_REQUEST</span></td>
+                        </tr>
+                        <tr>
+                            <td>Problem</td>
+                            <td><span class="badge badge-amber">PROBLEM</span></td>
+                        </tr>
+                        <tr>
+                            <td>Change</td>
+                            <td><span class="badge badge-amber">CHANGE</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="teams">
+                <h2>5. Group Teams Management</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Group Name</th>
+                            <th>Members</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group IS</td>
+                            <td><span class="badge badge-green">hien.ntt@archetype-group.com<br/>thong.dh@archetype-group.com<br/>anh.lv@archetype-group.com<br/>luong.lt@archetype-group.com<br>nhi.nny@archetype-group.com<br/></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>Group IT</td>
+                            <td><span class="badge badge-amber">hien.ntt@archetype-group.com<br/>minh.td@archetype-group.com<br/>nam.bg@archetype-group.com</span></td>
+                        </tr>
+                        <tr>
+                            <td>Local IT - Country</td>
+                            <td>
+                                <span class="badge badge-red">IT-VN</span>
+                                <span class="badge badge-red">hien.ntt@archetype-group.com, minh.td@archetype-group.com, phong.lh@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-amber">IT-CAM</span>
+                                <span class="badge badge-amber">hien.ntt@archetype-group.com, sengkhoun.chhai@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-green">IT-THA</span>
+                                <span class="badge badge-green">hien.ntt@archetype-group.com, it.th.outsource@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-amber">IT-IND</span>
+                                <span class="badge badge-amber">hien.ntt@archetype-group.com, Gopi.manoharan@archetype-group.com, lokesh.sankar@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-green">IT-IDN</span>
+                                <span class="badge badge-green">hien.ntt@archetype-group.com, gilbert.allegro@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-red">IT – MGL</span>
+                                <span class="badge badge-red">hien.ntt@archetype-group.com, gan-erdene.m@archetype-group.com</span>
+                                <br/><br/>
+                                <span class="badge badge-amber">IT – CHN</span>
+                                <span class="badge badge-amber">hien.ntt@archetype-group.com, clark.zhang@archetype-group.com</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="resolve-action">
+                <h2>6. Resolve Action</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Solution Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Self-service</td>
+                        </tr>
+                        <tr>
+                            <td>Standard solution</td>
+                        </tr>
+                        <tr>
+                            <td>No issue</td>
+                        </tr>
+                        <tr>
+                            <td>Duplicated</td>
+                        </tr>
+                        <tr>
+                            <td>New solution</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="impacts">
+                <h2>7. Impacts</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Impact Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Individual</td>
+                        </tr>
+                        <tr>
+                            <td>Several users</td>
+                        </tr>
+                        <tr>
+                            <td>Majority</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="section" id="severity">
+                <h2>8. Severity</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Severity Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Blocking</td>
+                        </tr>
+                        <tr>
+                            <td>Acceptable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="complexity">
+                <h2>9. Complexity</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Complexity Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Simple</td>
+                        </tr>
+                        <tr>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>Complex</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="urgency">
+                <h2>10. Urgency</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Urgency Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>High</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="section" id="priority">
+                <h2>11. Priority</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Priority level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="application-service-categories">
+                <h2>12. Application Service Categories</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Plastic</td>
+                        </tr>
+                        <tr>
+                            <td>Bronze</td>
+                        </tr>
+                        <tr>
+                            <td>Silver</td>
+                        </tr>
+                        <tr>
+                            <td>Golden</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" id="rules">
+                <h2>13. Business Rules Engine</h2>
+
+                <h3>13.1. Routing Rules</h3>
+                <p>Routing Rules automatically assign tickets to appropriate teams based on issue classification and
+                    business logic.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Unable to be connected</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_BE_CONNECTED</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Unable to access some websites</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_SOME_WEBSITES</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Group IT</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Unable to access Internet</td>
+                            <td><span class="badge badge-amber">UNABLE_TO_ACCESS_INTERNET</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>VPN access from home</td>
+                            <td><span class="badge badge-amber">VPN_ACCESS_FROM_HOME</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Group IT</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hardware: computer, peripheral</td>
+                            <td><span class="badge badge-amber">HARDWARE_COMPUTER_PERIPHERAL</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Software: Edge, Acrobat, 7zip…</td>
+                            <td><span class="badge badge-amber">SOFTWARE_EDGE_ACROBAT_7ZIP</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Scam</td>
+                            <td><span class="badge badge-amber">SCAM</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Virus</td>
+                            <td><span class="badge badge-amber">VIRUS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IT Service</th>
+                            <th>Sub IT Service</th>
+                            <th>Code</th>
+                            <th>Assign L1</th>
+                            <th>Assign L2</th>
+                            <th>Assign L3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group website</td>
+                            <td>Accessible</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_ACCESSIBLE</span></td>
+                            <td>Group IT </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Group website</td>
+                            <td>Bug, error, permission</td>
+                            <td><span class="badge badge-amber">GROUP_WEBSITE_BUG_ERROR_PERMISSION</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">INTRANET_LOGON</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Permission</td>
+                            <td><span class="badge badge-amber">INTRANET_PERMISSION</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Intranet</td>
+                            <td>Bug, error</td>
+                            <td><span class="badge badge-amber">INTRANET_BUG_ERROR</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+
+                        <tr>
+                            <td>M365</td>
+                            <td>Logon</td>
+                            <td><span class="badge badge-amber">M365_LOGON</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Group IT</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>M365</td>
+                            <td>Email delegation</td>
+                            <td><span class="badge badge-amber">M365_EMAIL_DELEGATION</span></td>
+                            <td>Group IT </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>M365</td>
+                            <td>License assignment</td>
+                            <td><span class="badge badge-amber">M365_LICENSE_ASSIGNMENT</span></td>
+                            <td>Local IT - Country</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>SharePoint</td>
+                            <td>Creation / Permission</td>
+                            <td><span class="badge badge-amber">SHAREPOINT_CREATION_PERMISSION</span></td>
+                            <td>Group IT </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>User permission</td>
+                            <td><span class="badge badge-amber">NAVISION_USER_PERMISSION</span></td>
+                            <td>Local IT - Country</td>
+                            <td>Finance</td>
+                            <td>Group IS</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Bug / error</td>
+                            <td><span class="badge badge-amber">NAVISION_BUG_ERROR</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Navision</td>
+                            <td>Others</td>
+                            <td><span class="badge badge-amber">OTHERS</span></td>
+                            <td>Group IS </td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>13.2. Approval Rules</h3>
+                <p>
+                Approval Rules determine whether approval is required before ticket processing, depending on whether the ticket is assigned to the local IT country or another country.
+                </p>
+
+<div class="info-box">
+    <h4>Approval Rules Example: Ticket Assignment</h4>
+    <div class="flow-diagram">
+        Ticket Created
+            → Assigned to Local IT Country?
+                Yes → No Approval Required
+                No → Approval Required
+    </div>
+</div>
+        </div>
+
+    </div>
+</body>
+
+</html>

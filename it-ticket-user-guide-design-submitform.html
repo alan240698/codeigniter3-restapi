@@ -1,0 +1,2521 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Ticket System - UI Design & Email Integration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f8f9fa;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+            color: white;
+            padding: 48px 60px;
+            border-bottom: 4px solid #6d28d9;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 60px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            color: #7c3aed;
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 32px 0 16px 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+
+        p {
+            margin: 12px 0;
+            color: #374151;
+        }
+
+        .ui-mockup {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .ui-header {
+            background: #7c3aed;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px 6px 0 0;
+            font-weight: 600;
+            margin: -24px -24px 16px -24px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95em;
+            background: white;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95em;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .email-template {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .email-header {
+            background: #7c3aed;
+            color: white;
+            padding: 20px;
+            border-radius: 6px 6px 0 0;
+            margin: -24px -24px 20px -24px;
+        }
+
+        .email-body {
+            padding: 20px 0;
+        }
+
+        .email-footer {
+            background: #f9fafb;
+            padding: 16px;
+            margin: 20px -24px -24px -24px;
+            border-radius: 0 0 6px 6px;
+            font-size: 0.85em;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            border: 1px solid #334155;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.95em;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #d1d5db;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-amber {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        ul,
+        ol {
+            margin: 16px 0;
+            padding-left: 32px;
+        }
+
+        li {
+            margin: 8px 0;
+            color: #374151;
+        }
+
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step;
+            margin: 20px 0;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .step-list li:before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: #7c3aed;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .feature-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .feature-card h4 {
+            color: #7c3aed;
+            margin-top: 0;
+        }
+
+        .screen-section {
+            background: #f9fafb;
+            padding: 24px;
+            border-radius: 8px;
+            margin: 24px 0;
+            border: 2px dashed #d1d5db;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 32px 24px;
+            }
+
+            .header {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>User Interface Design & Email Integration</h1>
+            <p>Complete Guide for Frontend Development Team</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>📋 Mục Lục</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Part 1: User Interface</h4>
+                        <ul style="padding-left: 20px; margin: 8px 0;">
+                            <li>Ticket Submission Form</li>
+                            <li>Ticket Detail View</li>
+                            <li>My Tickets Dashboard</li>
+                            <li>Approval Interface</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Part 2: Email System</h4>
+                        <ul style="padding-left: 20px; margin: 8px 0;">
+                            <li>Email Templates</li>
+                            <li>Email Triggers</li>
+                            <li>Email Queue Management</li>
+                            <li>Notification Settings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Part 3: Technical Implementation Checklist</h2>
+
+                <h3>3.1. Frontend Development Tasks</h3>
+                <ol class="step-list">
+                    <li><strong>Setup Base UI Framework</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Choose frontend framework (React/Vue/Angular)</li>
+                            <li>Setup Tailwind CSS hoặc UI component library</li>
+                            <li>Configure routing và state management</li>
+                        </ul>
+                    </li>
+                    <li><strong>Implement Ticket Submission Form</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Build cascading dropdowns (Service Group → Ticket Type → Issue Type)</li>
+                            <li>Implement dynamic custom fields loading</li>
+                            <li>Add form validation (client-side và server-side)</li>
+                            <li>Handle file uploads cho attachments</li>
+                        </ul>
+                    </li>
+                    <li><strong>Build Ticket Detail Page</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Display ticket information và status</li>
+                            <li>Show activity timeline</li>
+                            <li>Add comment/reply functionality</li>
+                            <li>Implement real-time updates (WebSocket/Polling)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Create My Tickets Dashboard</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Build ticket list với pagination</li>
+                            <li>Add filtering và search functionality</li>
+                            <li>Implement sorting options</li>
+                            <li>Create statistics cards</li>
+                        </ul>
+                    </li>
+                    <li><strong>Develop Approval Interface</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Build approval queue view</li>
+                            <li>Add approve/reject actions</li>
+                            <li>Implement comment functionality</li>
+                            <li>Show approval history</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mobile Optimization</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Test all screens trên mobile devices</li>
+                            <li>Optimize touch targets và spacing</li>
+                            <li>Implement responsive tables</li>
+                            <li>Add mobile-specific features (swipe actions)</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>3.2. Backend Development Tasks</h3>
+                <ol class="step-list">
+                    <li><strong>API Integration</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Integrate với Ticket System API</li>
+                            <li>Handle API responses và error handling</li>
+                            <li>Implement caching cho dropdown data</li>
+                        </ul>
+                    </li>
+                    <li><strong>Database Schema</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Create tickets table</li>
+                            <li>Create approvals table</li>
+                            <li>Create email_logs table</li>
+                            <li>Create user_preferences table</li>
+                        </ul>
+                    </li>
+                    <li><strong>Email System Setup</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Configure email service (SMTP/API)</li>
+                            <li>Setup email queue (Redis/Database)</li>
+                            <li>Create email templates</li>
+                            <li>Implement email job classes</li>
+                        </ul>
+                    </li>
+                    <li><strong>Background Jobs</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>SLA monitoring job (runs every 5 minutes)</li>
+                            <li>Auto-escalation job (runs every 10 minutes)</li>
+                            <li>Email retry job (runs hourly)</li>
+                            <li>Ticket status sync job</li>
+                        </ul>
+                    </li>
+                    <li><strong>Notification System</strong>
+                        <ul style="margin-top: 8px;">
+                            <li>Setup notification channels (Email, In-app, SMS optional)</li>
+                            <li>Implement notification preferences</li>
+                            <li>Create notification queue</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>3.3. Testing Checklist</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test Category</th>
+                            <th>Test Cases</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Ticket Creation</strong></td>
+                            <td>
+                                ✓ Form validation works correctly<br>
+                                ✓ Dynamic fields load based on selection<br>
+                                ✓ File upload works<br>
+                                ✓ API returns correct routing data
+                            </td>
+                            <td><span class="badge badge-amber">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email Notifications</strong></td>
+                            <td>
+                                ✓ Ticket created email sent<br>
+                                ✓ Approval email sent to approvers<br>
+                                ✓ SLA warning email sent<br>
+                                ✓ Templates render correctly
+                            </td>
+                            <td><span class="badge badge-amber">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Approval Flow</strong></td>
+                            <td>
+                                ✓ Approvers receive notifications<br>
+                                ✓ Approve action updates ticket<br>
+                                ✓ Reject action works correctly<br>
+                                ✓ Multi-level approval chain works
+                            </td>
+                            <td><span class="badge badge-amber">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SLA Monitoring</strong></td>
+                            <td>
+                                ✓ Warning sent at 75% threshold<br>
+                                ✓ Breach alert sent when overdue<br>
+                                ✓ Calculations are accurate<br>
+                                ✓ Business hours respected
+                            </td>
+                            <td><span class="badge badge-amber">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mobile Responsive</strong></td>
+                            <td>
+                                ✓ All pages work on mobile<br>
+                                ✓ Touch targets are adequate<br>
+                                ✓ Tables scroll horizontally<br>
+                                ✓ Forms are easy to fill
+                            </td>
+                            <td><span class="badge badge-amber">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>Part 4: Database Schema Requirements</h2>
+
+                <h3>4.1. Core Tables</h3>
+                <div class="code-block">
+                    <pre>-- Tickets Table
+CREATE TABLE tickets (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id VARCHAR(50) UNIQUE NOT NULL,
+    user_id BIGINT NOT NULL,
+    service_group_id INT NOT NULL,
+    ticket_type_id INT NOT NULL,
+    issue_type_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(50) NOT NULL,
+    priority VARCHAR(20) NOT NULL,
+    assigned_team_id INT,
+    assigned_agent_id INT,
+    custom_fields JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user_id (user_id),
+    INDEX idx_status (status),
+    INDEX idx_assigned_team (assigned_team_id)
+);
+
+-- SLA Table
+CREATE TABLE ticket_slas (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id BIGINT NOT NULL,
+    sla_policy_id INT NOT NULL,
+    first_response_deadline TIMESTAMP,
+    first_response_completed_at TIMESTAMP NULL,
+    resolution_deadline TIMESTAMP,
+    resolved_at TIMESTAMP NULL,
+    warning_sent BOOLEAN DEFAULT FALSE,
+    breach_sent BOOLEAN DEFAULT FALSE,
+    is_breached BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id),
+    INDEX idx_first_response (first_response_deadline),
+    INDEX idx_resolution (resolution_deadline)
+);
+
+-- Approvals Table
+CREATE TABLE ticket_approvals (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id BIGINT NOT NULL,
+    approver_id BIGINT NOT NULL,
+    level INT NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    comment TEXT,
+    approved_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id),
+    INDEX idx_approver (approver_id),
+    INDEX idx_status (status)
+);
+
+-- Email Logs Table
+CREATE TABLE email_logs (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id BIGINT,
+    email_type VARCHAR(50) NOT NULL,
+    recipients JSON NOT NULL,
+    subject VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'sent',
+    retry_count INT DEFAULT 0,
+    error_message TEXT,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_ticket (ticket_id),
+    INDEX idx_status (status),
+    INDEX idx_sent_at (sent_at)
+);
+
+-- User Notification Preferences
+CREATE TABLE user_notification_preferences (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL UNIQUE,
+    ticket_created BOOLEAN DEFAULT TRUE,
+    status_changed BOOLEAN DEFAULT TRUE,
+    new_comments BOOLEAN DEFAULT TRUE,
+    ticket_resolved BOOLEAN DEFAULT TRUE,
+    approval_requests BOOLEAN DEFAULT TRUE,
+    sla_warnings BOOLEAN DEFAULT FALSE,
+    email_digest VARCHAR(20) DEFAULT 'immediate',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Activity Logs
+CREATE TABLE ticket_activities (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id BIGINT NOT NULL,
+    user_id BIGINT,
+    action VARCHAR(50) NOT NULL,
+    old_value TEXT,
+    new_value TEXT,
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id),
+    INDEX idx_ticket (ticket_id),
+    INDEX idx_created_at (created_at)
+);</pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Part 5: API Endpoints Summary</h2>
+
+                <h3>5.1. User-Facing Endpoints</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Endpoint</th>
+                            <th>Method</th>
+                            <th>Description</th>
+                            <th>Auth</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>/api/service-groups</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get all service groups</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/ticket-types</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get ticket types by service group</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/issue-types</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get issue types by ticket type</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/custom-fields</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get custom fields by issue type</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/tickets</td>
+                            <td><span class="badge badge-green">POST</span></td>
+                            <td>Create new ticket</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/tickets</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get user's tickets with filters</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/tickets/{id}</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get ticket details</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/tickets/{id}/comments</td>
+                            <td><span class="badge badge-green">POST</span></td>
+                            <td>Add comment to ticket</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/approvals/pending</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get pending approvals for user</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/approvals/{id}/approve</td>
+                            <td><span class="badge badge-green">POST</span></td>
+                            <td>Approve a ticket</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/approvals/{id}/reject</td>
+                            <td><span class="badge badge-green">POST</span></td>
+                            <td>Reject a ticket</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/notifications/preferences</td>
+                            <td><span class="badge badge-blue">GET</span></td>
+                            <td>Get user notification preferences</td>
+                            <td>Required</td>
+                        </tr>
+                        <tr>
+                            <td>/api/notifications/preferences</td>
+                            <td><span class="badge badge-amber">PUT</span></td>
+                            <td>Update notification preferences</td>
+                            <td>Required</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>Part 6: Cronjob & Background Jobs</h2>
+
+                <h3>6.1. Cronjob Schedule Overview</h3>
+                <p>Hệ thống cần chạy các background jobs định kỳ để monitor SLA, escalate tickets, và xử lý các
+                    automated tasks.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Name</th>
+                            <th>Frequency</th>
+                            <th>Priority</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SLA Monitor</strong></td>
+                            <td><span class="badge badge-red">Every 5 minutes</span></td>
+                            <td><span class="badge badge-red">Critical</span></td>
+                            <td>Check SLA deadlines, send warnings</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Auto Escalation</strong></td>
+                            <td><span class="badge badge-amber">Every 10 minutes</span></td>
+                            <td><span class="badge badge-red">Critical</span></td>
+                            <td>Escalate tickets exceeding time limits</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email Queue Processor</strong></td>
+                            <td><span class="badge badge-blue">Every 1 minute</span></td>
+                            <td><span class="badge badge-amber">High</span></td>
+                            <td>Process pending emails from queue</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Failed Email Retry</strong></td>
+                            <td><span class="badge badge-blue">Every 1 hour</span></td>
+                            <td><span class="badge badge-amber">High</span></td>
+                            <td>Retry failed email deliveries</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stale Ticket Auto-Close</strong></td>
+                            <td><span class="badge badge-blue">Daily at 2:00 AM</span></td>
+                            <td><span class="badge badge-blue">Medium</span></td>
+                            <td>Auto-close tickets no response for 7 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SLA Report Generation</strong></td>
+                            <td><span class="badge badge-blue">Daily at 8:00 AM</span></td>
+                            <td><span class="badge badge-blue">Medium</span></td>
+                            <td>Generate daily SLA performance reports</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cleanup Old Logs</strong></td>
+                            <td><span class="badge badge-blue">Weekly (Sunday 3:00 AM)</span></td>
+                            <td><span class="badge badge-blue">Low</span></td>
+                            <td>Archive/delete logs older than 90 days</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.2. Laravel Scheduler Configuration</h3>
+                <div class="code-block">
+                    <pre>// app/Console/Kernel.php
+
+protected function schedule(Schedule $schedule)
+{
+    // ============================================
+    // CRITICAL JOBS - High Frequency
+    // ============================================
+    
+    // SLA Monitoring - Every 5 minutes
+    $schedule->command('tickets:check-sla')
+             ->everyFiveMinutes()
+             ->withoutOverlapping()
+             ->runInBackground()
+             ->onOneServer();
+    
+    // Auto Escalation - Every 10 minutes
+    $schedule->command('tickets:auto-escalate')
+             ->everyTenMinutes()
+             ->withoutOverlapping()
+             ->runInBackground()
+             ->onOneServer();
+    
+    // Email Queue Processor - Every minute
+    $schedule->command('queue:work --queue=emails --tries=3 --timeout=60 --stop-when-empty')
+             ->everyMinute()
+             ->withoutOverlapping()
+             ->runInBackground();
+    
+    // ============================================
+    // HIGH PRIORITY JOBS - Hourly
+    // ============================================
+    
+    // Failed Email Retry - Every hour
+    $schedule->command('emails:retry-failed')
+             ->hourly()
+             ->withoutOverlapping()
+             ->onOneServer();
+    
+    // Ticket Status Sync - Every hour
+    $schedule->command('tickets:sync-status')
+             ->hourly()
+             ->withoutOverlapping()
+             ->onOneServer();
+    
+    // ============================================
+    // DAILY JOBS
+    // ============================================
+    
+    // Auto-close stale tickets - Daily at 2:00 AM
+    $schedule->command('tickets:auto-close-stale')
+             ->dailyAt('02:00')
+             ->onOneServer()
+             ->emailOutputOnFailure('admin@company.com');
+    
+    // Generate SLA Reports - Daily at 8:00 AM
+    $schedule->command('reports:generate-sla-daily')
+             ->dailyAt('08:00')
+             ->onOneServer()
+             ->emailOutputOnFailure('admin@company.com');
+    
+    // Send Daily Digest Emails - Daily at 9:00 AM
+    $schedule->command('emails:send-daily-digest')
+             ->dailyAt('09:00')
+             ->onOneServer();
+    
+    // Cleanup email logs older than 30 days - Daily at 3:00 AM
+    $schedule->command('logs:cleanup-old-emails')
+             ->dailyAt('03:00')
+             ->onOneServer();
+    
+    // ============================================
+    // WEEKLY JOBS
+    // ============================================
+    
+    // Send Weekly Digest - Monday at 9:00 AM
+    $schedule->command('emails:send-weekly-digest')
+             ->weeklyOn(1, '09:00')
+             ->onOneServer();
+    
+    // Generate Weekly Performance Report - Monday at 8:00 AM
+    $schedule->command('reports:generate-weekly-performance')
+             ->weeklyOn(1, '08:00')
+             ->onOneServer()
+             ->emailOutputOnFailure('admin@company.com');
+    
+    // Archive old tickets - Sunday at 3:00 AM
+    $schedule->command('tickets:archive-old')
+             ->weeklyOn(0, '03:00')
+             ->onOneServer();
+    
+    // Cleanup activity logs older than 90 days - Sunday at 4:00 AM
+    $schedule->command('logs:cleanup-activities')
+             ->weeklyOn(0, '04:00')
+             ->onOneServer();
+    
+    // ============================================
+    // MONTHLY JOBS
+    // ============================================
+    
+    // Generate Monthly Reports - 1st of month at 8:00 AM
+    $schedule->command('reports:generate-monthly')
+             ->monthlyOn(1, '08:00')
+             ->onOneServer()
+             ->emailOutputOnFailure('admin@company.com');
+    
+    // Database optimization - 1st of month at 2:00 AM
+    $schedule->command('db:optimize')
+             ->monthlyOn(1, '02:00')
+             ->onOneServer();
+}</pre>
+                </div>
+
+                <h3>6.3. Detailed Job Implementations</h3>
+
+                <h4>Job 1: SLA Monitor (Every 5 minutes)</h4>
+                <div class="code-block">
+                    <pre>// app/Console/Commands/CheckSLA.php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\Models\Ticket;
+use App\Jobs\SendTicketEmail;
+use Carbon\Carbon;
+
+class CheckSLA extends Command
+{
+    protected $signature = 'tickets:check-sla';
+    protected $description = 'Monitor SLA deadlines and send warnings';
+
+    public function handle()
+    {
+        $this->info('Starting SLA check...');
+        
+        // Get all open tickets with SLA
+        $tickets = Ticket::whereIn('status', ['new', 'in_progress', 'pending_approval'])
+                        ->with(['sla', 'assignedAgent', 'assignedTeam'])
+                        ->get();
+        
+        $warningCount = 0;
+        $breachCount = 0;
+        
+        foreach ($tickets as $ticket) {
+            // Check First Response SLA
+            if (!$ticket->sla->first_response_completed_at) {
+                $this->checkFirstResponseSLA($ticket, $warningCount, $breachCount);
+            }
+            
+            // Check Resolution SLA
+            if (!$ticket->sla->resolved_at) {
+                $this->checkResolutionSLA($ticket, $warningCount, $breachCount);
+            }
+        }
+        
+        $this->info("SLA check completed. Warnings: {$warningCount}, Breaches: {$breachCount}");
+    }
+    
+    private function checkFirstResponseSLA($ticket, &$warningCount, &$breachCount)
+    {
+        $now = Carbon::now();
+        $deadline = Carbon::parse($ticket->sla->first_response_deadline);
+        $totalMinutes = $ticket->sla->first_response_target_minutes;
+        $remainingMinutes = $now->diffInMinutes($deadline, false);
+        
+        // Calculate percentage used
+        $percentUsed = (($totalMinutes - $remainingMinutes) / $totalMinutes) * 100;
+        
+        // Send warning at 75%
+        if ($percentUsed >= 75 && $percentUsed < 100 && !$ticket->sla->first_response_warning_sent) {
+            $this->sendSLAWarning($ticket, 'first_response', $remainingMinutes);
+            $ticket->sla->update(['first_response_warning_sent' => true]);
+            $warningCount++;
+        }
+        
+        // Send breach alert at 100%
+        if ($remainingMinutes <= 0 && !$ticket->sla->first_response_breached) {
+            $this->sendSLABreach($ticket, 'first_response');
+            $ticket->sla->update([
+                'first_response_breached' => true,
+                'is_breached' => true
+            ]);
+            $breachCount++;
+        }
+    }
+    
+    private function checkResolutionSLA($ticket, &$warningCount, &$breachCount)
+    {
+        $now = Carbon::now();
+        $deadline = Carbon::parse($ticket->sla->resolution_deadline);
+        $totalMinutes = $ticket->sla->resolution_target_minutes;
+        $remainingMinutes = $now->diffInMinutes($deadline, false);
+        
+        $percentUsed = (($totalMinutes - $remainingMinutes) / $totalMinutes) * 100;
+        
+        // Send warning at 75%
+        if ($percentUsed >= 75 && $percentUsed < 100 && !$ticket->sla->resolution_warning_sent) {
+            $this->sendSLAWarning($ticket, 'resolution', $remainingMinutes);
+            $ticket->sla->update(['resolution_warning_sent' => true]);
+            $warningCount++;
+        }
+        
+        // Send breach alert at 100%
+        if ($remainingMinutes <= 0 && !$ticket->sla->resolution_breached) {
+            $this->sendSLABreach($ticket, 'resolution');
+            $ticket->sla->update([
+                'resolution_breached' => true,
+                'is_breached' => true
+            ]);
+            $breachCount++;
+        }
+    }
+    
+    private function sendSLAWarning($ticket, $type, $remainingMinutes)
+    {
+        $recipients = [
+            ['email' => $ticket->assignedAgent->email, 'name' => $ticket->assignedAgent->name],
+            ['email' => $ticket->assignedTeam->lead->email, 'name' => $ticket->assignedTeam->lead->name]
+        ];
+        
+        SendTicketEmail::dispatch($ticket, 'sla_warning', $recipients, [
+            'sla_type' => $type,
+            'time_remaining' => $this->formatMinutes($remainingMinutes)
+        ]);
+        
+        $this->info("SLA Warning sent for ticket {$ticket->ticket_id}");
+    }
+    
+    private function sendSLABreach($ticket, $type)
+    {
+        // Get management chain
+        $managementChain = $this->getManagementChain($ticket->assignedTeam);
+        
+        SendTicketEmail::dispatch($ticket, 'sla_breach', $managementChain, [
+            'sla_type' => $type
+        ]);
+        
+        // Log breach incident
+        \Log::critical("SLA BREACH: Ticket {$ticket->ticket_id} - {$type} SLA breached");
+        
+        $this->error("SLA BREACH for ticket {$ticket->ticket_id}");
+    }
+    
+    private function formatMinutes($minutes)
+    {
+        if ($minutes < 60) {
+            return "{$minutes} minutes";
+        } else if ($minutes < 1440) {
+            $hours = round($minutes / 60, 1);
+            return "{$hours} hours";
+        } else {
+            $days = round($minutes / 1440, 1);
+            return "{$days} days";
+        }
+    }
+    
+    private function getManagementChain($team)
+    {
+        return [
+            ['email' => $team->lead->email, 'name' => $team->lead->name],
+            ['email' => $team->manager->email, 'name' => $team->manager->name],
+            ['email' => config('tickets.director_email'), 'name' => 'Director']
+        ];
+    }
+}</pre>
+                </div>
+
+                <h4>Job 2: Auto Escalation (Every 10 minutes)</h4>
+                <div class="code-block">
+                    <pre>// app/Console/Commands/AutoEscalate.php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\Models\Ticket;
+use App\Jobs\SendTicketEmail;
+use Carbon\Carbon;
+
+class AutoEscalate extends Command
+{
+    protected $signature = 'tickets:auto-escalate';
+    protected $description = 'Auto-escalate tickets exceeding time limits';
+
+    public function handle()
+    {
+        $this->info('Checking for tickets to escalate...');
+        
+        $tickets = Ticket::whereIn('status', ['in_progress', 'pending_approval'])
+                        ->with(['escalation', 'assignedTeam', 'assignedAgent'])
+                        ->get();
+        
+        $escalatedCount = 0;
+        
+        foreach ($tickets as $ticket) {
+            if ($this->shouldEscalate($ticket)) {
+                $this->escalateTicket($ticket);
+                $escalatedCount++;
+            }
+        }
+        
+        $this->info("Escalation check completed. Escalated: {$escalatedCount} tickets");
+    }
+    
+    private function shouldEscalate($ticket)
+    {
+        if (!$ticket->escalation || !$ticket->escalation->enabled) {
+            return false;
+        }
+        
+        $currentLevel = $ticket->current_level;
+        $lastLevelChange = Carbon::parse($ticket->last_level_change);
+        $timeInLevel = $lastLevelChange->diffInHours(now());
+        
+        $escalationRule = $ticket->escalation->levels
+            ->where('level', $currentLevel)
+            ->first();
+        
+        if (!$escalationRule) {
+            return false;
+        }
+        
+        return $timeInLevel >= $escalationRule->time_limit_hours;
+    }
+    
+    private function escalateTicket($ticket)
+    {
+        $currentLevel = $ticket->current_level;
+        $nextLevel = $currentLevel + 1;
+        
+        $nextLevelRule = $ticket->escalation->levels
+            ->where('level', $nextLevel)
+            ->first();
+        
+        if (!$nextLevelRule) {
+            $this->warn("No next level found for ticket {$ticket->ticket_id}");
+            return;
+        }
+        
+        $oldTeam = $ticket->assignedTeam;
+        $newTeam = \App\Models\Team::find($nextLevelRule->team_id);
+        
+        // Update ticket
+        $ticket->update([
+            'assigned_team_id' => $newTeam->id,
+            'assigned_agent_id' => null, // Unassign from specific agent
+            'current_level' => $nextLevel,
+            'last_level_change' => now(),
+            'escalated_at' => now(),
+            'escalation_count' => $ticket->escalation_count + 1
+        ]);
+        
+        // Log activity
+        $ticket->activities()->create([
+            'action' => 'escalated',
+            'old_value' => json_encode(['team' => $oldTeam->name, 'level' => $currentLevel]),
+            'new_value' => json_encode(['team' => $newTeam->name, 'level' => $nextLevel]),
+            'comment' => "Auto-escalated due to time limit exceeded"
+        ]);
+        
+        // Send notifications
+        $this->sendEscalationEmails($ticket, $oldTeam, $newTeam);
+        
+        $this->info("Escalated ticket {$ticket->ticket_id} from L{$currentLevel} to L{$nextLevel}");
+        
+        // Log critical escalation
+        \Log::warning("ESCALATION: Ticket {$ticket->ticket_id} escalated to Level {$nextLevel}");
+    }
+    
+    private function sendEscalationEmails($ticket, $oldTeam, $newTeam)
+    {
+        // Notify old team
+        SendTicketEmail::dispatch($ticket, 'ticket_escalated', [
+            ['email' => $oldTeam->lead->email, 'name' => $oldTeam->lead->name]
+        ], [
+            'escalation_reason' => 'Time limit exceeded',
+            'old_team' => $oldTeam->name,
+            'new_team' => $newTeam->name
+        ]);
+        
+        // Notify new team
+        SendTicketEmail::dispatch($ticket, 'ticket_assigned', 
+            $newTeam->members->map(fn($m) => ['email' => $m->email, 'name' => $m->name])->toArray(),
+            ['escalated' => true]
+        );
+        
+        // Notify management
+        SendTicketEmail::dispatch($ticket, 'ticket_escalated', [
+            ['email' => $newTeam->manager->email, 'name' => $newTeam->manager->name]
+        ], [
+            'escalation_reason' => 'Time limit exceeded',
+            'escalation_level' => $ticket->current_level
+        ]);
+    }
+}</pre>
+                </div>
+
+                <h4>Job 3: Auto-close Stale Tickets (Daily)</h4>
+                <div class="code-block">
+                    <pre>// app/Console/Commands/AutoCloseStale.php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\Models\Ticket;
+use App\Jobs\SendTicketEmail;
+use Carbon\Carbon;
+
+class AutoCloseStale extends Command
+{
+    protected $signature = 'tickets:auto-close-stale';
+    protected $description = 'Auto-close tickets with no response for 7 days';
+
+    public function handle()
+    {
+        $this->info('Checking for stale tickets...');
+        
+        $sevenDaysAgo = Carbon::now()->subDays(7);
+        
+        // Find tickets in "On Hold" or "Resolved" status with no activity for 7 days
+        $staleTickets = Ticket::where(function($query) {
+                $query->where('status', 'on_hold')
+                      ->orWhere('status', 'resolved');
+            })
+            ->where('updated_at', '<', $sevenDaysAgo)
+            ->with('user')
+            ->get();
+        
+        $closedCount = 0;
+        
+        foreach ($staleTickets as $ticket) {
+            // Check if there's any recent activity
+            $lastActivity = $ticket->activities()
+                                  ->latest()
+                                  ->first();
+            
+            if ($lastActivity && Carbon::parse($lastActivity->created_at)->gt($sevenDaysAgo)) {
+                continue; // Skip if there's recent activity
+            }
+            
+            // Auto-close ticket
+            $ticket->update([
+                'status' => 'closed',
+                'closed_at' => now(),
+                'closed_by' => 'system',
+                'close_reason' => 'Auto-closed due to inactivity'
+            ]);
+            
+            // Log activity
+            $ticket->activities()->create([
+                'action' => 'auto_closed',
+                'comment' => 'Ticket auto-closed after 7 days of inactivity'
+            ]);
+            
+            // Send notification to user
+            SendTicketEmail::dispatch($ticket, 'ticket_closed', [
+                ['email' => $ticket->user->email, 'name' => $ticket->user->name]
+            ], [
+                'close_reason' => 'Auto-closed due to inactivity',
+                'auto_closed' => true
+            ]);
+            
+            $closedCount++;
+            $this->info("Auto-closed ticket {$ticket->ticket_id}");
+        }
+        
+        $this->info("Auto-close completed. Closed {$closedCount} stale tickets");
+    }
+}</pre>
+                </div>
+
+                <h4>Job 4: Failed Email Retry (Hourly)</h4>
+                <div class="code-block">
+                    <pre>// app/Console/Commands/RetryFailedEmails.php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\Models\EmailLog;
+use App\Models\Ticket;
+use App\Jobs\SendTicketEmail;
+
+class RetryFailedEmails extends Command
+{
+    protected $signature = 'emails:retry-failed';
+    protected $description = 'Retry sending failed emails';
+
+    public function handle()
+    {
+        $this->info('Checking for failed emails...');
+        
+        // Get failed emails with retry count < 3
+        $failedEmails = EmailLog::where('status', 'failed')
+                               ->where('retry_count', '<', 3)
+                               ->where('created_at', '>', now()->subDays(3)) // Only retry within 3 days
+                               ->get();
+        
+        $retriedCount = 0;
+        
+        foreach ($failedEmails as $log) {
+            try {
+                $ticket = Ticket::find($log->ticket_id);
+                
+                if (!$ticket) {
+                    $this->warn("Ticket not found for email log {$log->id}");
+                    $log->update(['status' => 'cancelled']);
+                    continue;
+                }
+                
+                $recipients = json_decode($log->recipients, true);
+                $metadata = json_decode($log->metadata, true);
+                
+                // Retry sending
+                SendTicketEmail::dispatch($ticket, $log->email_type, $recipients, $metadata);
+                
+                // Update retry count
+                $log->increment('retry_count');
+                $log->update([
+                    'last_retry_at' => now()
+                ]);
+                
+                $retriedCount++;
+                $this->info("Retried email log {$log->id} (attempt {$log->retry_count})");
+                
+            } catch (\Exception $e) {
+                $this->error("Failed to retry email log {$log->id}: {$e->getMessage()}");
+                
+                $log->update([
+                    'error_message' => $e->getMessage(),
+                    'last_retry_at' => now()
+                ]);
+                
+                // If max retries reached, mark as permanently failed
+                if ($log->retry_count >= 2) {
+                    $log->update(['status' => 'permanently_failed']);
+                    \Log::error("Email permanently failed after 3 attempts: {$log->id}");
+                }
+            }
+        }
+        
+        $this->info("Retry completed. Retried {$retriedCount} emails");
+    }
+}</pre>
+                </div>
+
+                <h3>6.4. Server Cronjob Setup</h3>
+                <div class="warning-box">
+                    <h4>⚠️ CRITICAL: Server Configuration Required</h4>
+                    <p>Team tech phải add duy nhất 1 cron entry vào server để trigger Laravel Scheduler:</p>
+                </div>
+
+                <div class="code-block">
+                    <pre># Edit crontab
+crontab -e
+
+# Add this single line (chạy mỗi phút)
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+
+# Example với full path
+* * * * * cd /var/www/html/ticket-system && php artisan schedule:run >> /dev/null 2>&1
+
+# If using Laravel Forge or similar
+* * * * * php /home/forge/ticket-system/artisan schedule:run >> /dev/null 2>&1</pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>📝 Setup Instructions</h4>
+                    <ol style="margin: 12px 0 0 0;">
+                        <li>SSH vào production server</li>
+                        <li>Chạy <code>crontab -e</code> với user chạy web application (thường là <code>www-data</code>
+                            hoặc <code>forge</code>)</li>
+                        <li>Add cron entry như bên trên</li>
+                        <li>Save và exit</li>
+                        <li>Verify: <code>crontab -l</code> để xem danh sách cronjobs</li>
+                        <li>Monitor logs: <code>tail -f storage/logs/laravel.log</code></li>
+                    </ol>
+                </div>
+
+                <h3>6.5. Monitoring & Logging</h3>
+                <div class="code-block">
+                    <pre>// Add to app/Console/Kernel.php
+
+protected function schedule(Schedule $schedule)
+{
+    // ... all scheduled tasks ...
+    
+    // Email job output to admin on failures
+    $schedule->onFailure(function () {
+        \Log::critical('Scheduled job failed!');
+        
+        // Send alert email
+        Mail::to('admin@company.com')->send(
+            new \App\Mail\SchedulerFailureAlert()
+        );
+    });
+    
+    // Log successful runs
+    $schedule->onSuccess(function () {
+        \Log::info('All scheduled jobs completed successfully');
+    });
+}
+
+// Monitor job execution times
+protected function commands()
+{
+    $this->load(__DIR__.'/Commands');
+
+    require base_path('routes/console.php');
+    
+    // Add before/after callbacks for all commands
+    Event::listen(CommandStarting::class, function ($event) {
+        \Log::info("Command started: {$event->command}");
+    });
+    
+    Event::listen(CommandFinished::class, function ($event) {
+        \Log::info("Command finished: {$event->command} - Exit code: {$event->exitCode}");
+    });
+}</pre>
+                </div>
+
+                <h3>6.6. Performance Optimization Tips</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Issue</th>
+                            <th>Solution</th>
+                            <th>Implementation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Job Overlapping</td>
+                            <td>Use <code>withoutOverlapping()</code></td>
+                            <td>Prevents same job running concurrently</td>
+                        </tr>
+                        <tr>
+                            <td>Multiple Servers</td>
+                            <td>Use <code>onOneServer()</code></td>
+                            <td>Ensures job runs on only one server</td>
+                        </tr>
+                        <tr>
+                            <td>Long Running Jobs</td>
+                            <td>Use <code>runInBackground()</code></td>
+                            <td>Doesn't block other scheduled tasks</td>
+                        </tr>
+                        <tr>
+                            <td>Memory Issues</td>
+                            <td>Chunk large datasets</td>
+                            <td><code>Ticket::chunk(100, function($tickets) {...})</code></td>
+                        </tr>
+                        <tr>
+                            <td>Database Locking</td>
+                            <td>Use transactions carefully</td>
+                            <td>Keep transaction scope minimal</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.7. Testing Scheduled Jobs</h3>
+                <div class="code-block">
+                    <pre>// Test individual commands manually
+php artisan tickets:check-sla
+php artisan tickets:auto-escalate
+php artisan emails:retry-failed
+
+// Test with dry-run option
+php artisan tickets:auto-close-stale --dry-run
+
+// Run scheduler manually (executes all due jobs)
+php artisan schedule:run
+
+// List all scheduled tasks
+php artisan schedule:list
+
+// Test scheduler in real-time
+php artisan schedule:work</pre>
+                </div>
+
+                <div class="success-box">
+                    <h4>✅ Cronjob Checklist</h4>
+                    <ul style="margin: 12px 0 0 0;">
+                        <li>☐ All scheduled commands are registered in <code>Kernel.php</code></li>
+                        <li>☐ Server cronjob is configured to run <code>schedule:run</code> every minute</li>
+                        <li>☐ Email notifications are setup for failed jobs</li>
+                        <li>☐ Logging is properly configured</li>
+                        <li>☐ Critical jobs use <code>withoutOverlapping()</code></li>
+                        <li>☐ Jobs in clustered environment use <code>onOneServer()</code></li>
+                        <li>☐ Long running jobs use <code>runInBackground()</code></li>
+                        <li>☐ All jobs have been tested manually</li>
+                        <li>☐ Monitoring dashboard shows job execution status</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Summary & Next Steps</h2>
+
+                <div class="success-box">
+                    <h4>✅ Deliverables for Team Tech</h4>
+                    <p><strong>Frontend Team:</strong></p>
+                    <ul style="margin: 8px 0 16px 0;">
+                        <li>Ticket submission form với dynamic fields</li>
+                        <li>Ticket detail view với activity timeline</li>
+                        <li>My Tickets dashboard với filtering</li>
+                        <li>Approval interface cho approvers</li>
+                        <li>Email notification preferences page</li>
+                        <li>Mobile-responsive design cho tất cả pages</li>
+                    </ul>
+
+                    <p><strong>Backend Team:</strong></p>
+                    <ul style="margin: 8px 0 0 0;">
+                        <li>API integration với Ticket System</li>
+                        <li>Email notification system với queue</li>
+                        <li>Background jobs cho SLA monitoring và escalation</li>
+                        <li>Database schema implementation</li>
+                        <li>Email templates cho 12 notification types</li>
+                        <li>Email logging và retry mechanism</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>📋 Implementation Timeline</h4>
+                    <p><strong>Week 1-2:</strong> UI Design & Frontend Development</p>
+                    <p><strong>Week 2-3:</strong> Backend API & Database Setup</p>
+                    <p><strong>Week 3-4:</strong> Email System Implementation</p>
+                    <p><strong>Week 4-5:</strong> Testing & Bug Fixes</p>
+                    <p><strong>Week 5-6:</strong> User Acceptance Testing & Deployment</p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Critical Considerations</h4>
+                    <ul style="margin: 8px 0 0 0;">
+                        <li><strong>Email Deliverability:</strong> Use reputable email service để avoid spam filters
+                        </li>
+                        <li><strong>Performance:</strong> Implement caching cho dropdown data</li>
+                        <li><strong>Security:</strong> Validate tất cả user inputs và implement CSRF protection</li>
+                        <li><strong>Error Handling:</strong> Graceful handling cho API failures và network issues</li>
+                        <li><strong>Monitoring:</strong> Setup logging và monitoring cho production</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="background: #f3f4f6; padding: 32px 60px; text-align: center; color: #6b7280; border-top: 1px solid #e5e7eb;">
+            <p><strong>IT Ticket System - UI & Email Integration Guide</strong></p>
+            <p>Comprehensive documentation for development teams</p>
+            <p style="margin-top: 12px; font-size: 0.9em;">© 2024 - For Internal Use Only</p>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<!-- PART 1: USER INTERFACE -->
+<div class="section">
+    <h2>Part 1: User Interface Design</h2>
+
+    <h3>1.1. Ticket Submission Form</h3>
+    <p>Đây là giao diện chính để user tạo ticket mới. Form này sẽ tự động thay đổi based on user's selections.</p>
+
+    <div class="ui-mockup">
+        <div class="ui-header">🎫 Tạo Ticket Mới</div>
+
+        <div class="form-field">
+            <label class="form-label">Service Group *</label>
+            <select class="form-select">
+                <option>-- Chọn loại dịch vụ --</option>
+                <option>IT Infrastructure</option>
+                <option>Software & Applications</option>
+                <option>Human Resources</option>
+                <option>Facilities Management</option>
+            </select>
+            <small style="color: #6b7280; display: block; margin-top: 4px;">Chọn nhóm dịch vụ phù hợp với yêu cầu của
+                bạn</small>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Ticket Type *</label>
+            <select class="form-select">
+                <option>-- Chọn loại yêu cầu --</option>
+                <option>Access Request</option>
+                <option>Hardware Issue</option>
+                <option>Network Problem</option>
+                <option>Software Installation</option>
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Issue Type *</label>
+            <select class="form-select">
+                <option>-- Chọn vấn đề cụ thể --</option>
+                <option>├─ VPN Access</option>
+                <option>│ ├─ New VPN Account</option>
+                <option>│ ├─ VPN Connection Issue</option>
+                <option>│ └─ VPN Account Termination</option>
+                <option>├─ Email Access</option>
+                <option>└─ System Access</option>
+            </select>
+        </div>
+
+        <div class="warning-box" style="margin: 20px 0;">
+            <strong>⚠️ Dynamic Custom Fields Appear Here</strong>
+            <p style="margin: 8px 0 0 0;">Based on selected Issue Type, system will display relevant custom fields (VPN
+                Username, Department, etc.)</p>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">VPN Username * <span style="color: #ef4444;">(Dynamic Field)</span></label>
+            <input type="text" class="form-input" placeholder="Enter your VPN username">
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Department *</label>
+            <select class="form-select">
+                <option>-- Select Department --</option>
+                <option>Engineering</option>
+                <option>Marketing</option>
+                <option>Sales</option>
+                <option>Finance</option>
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Business Justification *</label>
+            <textarea class="form-input" rows="4" placeholder="Explain why you need this access..."></textarea>
+            <small style="color: #6b7280; display: block; margin-top: 4px;">Minimum 20 characters</small>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Title *</label>
+            <input type="text" class="form-input" placeholder="Brief description of your request">
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Description *</label>
+            <textarea class="form-input" rows="6"
+                placeholder="Provide detailed information about your request..."></textarea>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Attachments</label>
+            <input type="file" class="form-input" multiple>
+            <small style="color: #6b7280; display: block; margin-top: 4px;">Max 5 files, 10MB each. Supported: PDF, JPG,
+                PNG, DOC, XLS</small>
+        </div>
+
+        <div style="margin-top: 24px; display: flex; gap: 12px;">
+            <button class="btn-primary">Submit Ticket</button>
+            <button class="btn-secondary">Save as Draft</button>
+        </div>
+    </div>
+
+    <h4>Frontend Implementation Notes:</h4>
+    <div class="code-block">
+        <pre>// JavaScript Implementation
+async function handleServiceGroupChange(serviceGroupId) {
+    // Load ticket types for selected service group
+    const ticketTypes = await api.get(`/ticket-types?service_group=${serviceGroupId}`);
+    populateDropdown('ticket-type-select', ticketTypes);
+}
+
+async function handleTicketTypeChange(ticketTypeId) {
+    // Load issue types for selected ticket type
+    const issueTypes = await api.get(`/issue-types?ticket_type=${ticketTypeId}`);
+    populateDropdown('issue-type-select', issueTypes, true); // hierarchical
+}
+
+async function handleIssueTypeChange(issueTypeId) {
+    // Load custom fields for selected issue type
+    const customFields = await api.get(`/custom-fields?issue_type=${issueTypeId}`);
+    renderCustomFields(customFields);
+}
+
+async function submitTicket(formData) {
+    const response = await api.post('/api/tickets/submit', formData);
+    
+    // Response contains full routing, SLA, approval info
+    console.log('Ticket created:', response.ticket_id);
+    console.log('Assigned to:', response.routing.assigned_to.name);
+    console.log('SLA deadline:', response.sla.resolution.deadline);
+    
+    // Redirect to ticket detail page
+    window.location.href = `/tickets/${response.ticket_id}`;
+}</pre>
+    </div>
+
+    <h3>1.2. Ticket Detail View (User Side)</h3>
+    <p>Sau khi submit, user được redirect đến trang detail để theo dõi ticket của mình.</p>
+
+    <div class="screen-section">
+        <h4 style="margin-top: 0; color: #7c3aed;">📄 Ticket Detail Screen</h4>
+
+        <div style="background: white; padding: 20px; border-radius: 6px; margin: 16px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                <div>
+                    <h3 style="margin: 0 0 8px 0; color: #1f2937;">TKT-2024-001234</h3>
+                    <p style="margin: 0; color: #6b7280;">New VPN Account Request</p>
+                </div>
+                <span class="badge badge-amber" style="font-size: 1em; padding: 8px 16px;">Pending Approval</span>
+            </div>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: #f9fafb; padding: 16px; border-radius: 6px; margin-bottom: 20px;">
+                <div>
+                    <strong style="color: #6b7280; font-size: 0.85em;">ASSIGNED TO</strong>
+                    <p style="margin: 4px 0 0 0; color: #1f2937;">L1 IT Support</p>
+                </div>
+                <div>
+                    <strong style="color: #6b7280; font-size: 0.85em;">PRIORITY</strong>
+                    <p style="margin: 4px 0 0 0;"><span class="badge badge-amber">High</span></p>
+                </div>
+                <div>
+                    <strong style="color: #6b7280; font-size: 0.85em;">CREATED</strong>
+                    <p style="margin: 4px 0 0 0; color: #1f2937;">Dec 14, 2024 10:30 AM</p>
+                </div>
+                <div>
+                    <strong style="color: #6b7280; font-size: 0.85em;">SLA DEADLINE</strong>
+                    <p style="margin: 4px 0 0 0; color: #ef4444; font-weight: 600;">Dec 14, 2024 06:30 PM</p>
+                </div>
+            </div>
+
+            <div class="info-box" style="margin: 20px 0;">
+                <h4 style="margin: 0 0 8px 0;">⏳ Awaiting Approval</h4>
+                <p style="margin: 0;">Your ticket is pending approval from <strong>Sarah Johnson (IT Manager)</strong>.
+                    You will receive an email notification once approved.</p>
+            </div>
+
+            <div style="background: #f9fafb; padding: 16px; border-radius: 6px; margin: 20px 0;">
+                <h4 style="margin: 0 0 12px 0; color: #374151;">Description</h4>
+                <p style="margin: 0; color: #4b5563;">Required for remote work access to development servers. Need to
+                    access company VPN for project deployment and code review activities.</p>
+            </div>
+
+            <div style="background: #f9fafb; padding: 16px; border-radius: 6px;">
+                <h4 style="margin: 0 0 12px 0; color: #374151;">Custom Fields</h4>
+                <div style="display: grid; gap: 12px;">
+                    <div><strong>VPN Username:</strong> john.doe</div>
+                    <div><strong>Department:</strong> Engineering</div>
+                    <div><strong>Business Justification:</strong> Required for remote work access to development servers
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 6px; margin: 16px 0;">
+            <h4 style="margin: 0 0 16px 0; color: #374151;">Activity Timeline</h4>
+            <div style="border-left: 2px solid #e5e7eb; padding-left: 20px; margin-left: 10px;">
+                <div style="position: relative; margin-bottom: 20px;">
+                    <div
+                        style="position: absolute; left: -27px; width: 12px; height: 12px; background: #22c55e; border-radius: 50%; border: 2px solid white;">
+                    </div>
+                    <div style="font-size: 0.85em; color: #6b7280; margin-bottom: 4px;">Dec 14, 2024 10:30 AM</div>
+                    <div style="font-weight: 600; color: #1f2937;">Ticket Created</div>
+                    <div style="color: #6b7280; font-size: 0.9em;">Created by John Doe</div>
+                </div>
+                <div style="position: relative; margin-bottom: 20px;">
+                    <div
+                        style="position: absolute; left: -27px; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%; border: 2px solid white;">
+                    </div>
+                    <div style="font-size: 0.85em; color: #6b7280; margin-bottom: 4px;">Dec 14, 2024 10:31 AM</div>
+                    <div style="font-weight: 600; color: #1f2937;">Auto-assigned to Team</div>
+                    <div style="color: #6b7280; font-size: 0.9em;">Assigned to L1 IT Support (High Priority)</div>
+                </div>
+                <div style="position: relative;">
+                    <div
+                        style="position: absolute; left: -27px; width: 12px; height: 12px; background: #f59e0b; border-radius: 50%; border: 2px solid white;">
+                    </div>
+                    <div style="font-size: 0.85em; color: #6b7280; margin-bottom: 4px;">Dec 14, 2024 10:31 AM</div>
+                    <div style="font-weight: 600; color: #1f2937;">Pending Approval</div>
+                    <div style="color: #6b7280; font-size: 0.9em;">Awaiting approval from Sarah Johnson (IT Manager)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>1.3. My Tickets Dashboard</h3>
+    <p>User có thể xem tất cả tickets của mình với filtering và search.</p>
+
+    <div class="screen-section">
+        <h4 style="margin-top: 0; color: #7c3aed;">📊 My Tickets Dashboard</h4>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 16px 0;">
+            <div
+                style="background: white; padding: 20px; border-radius: 6px; text-align: center; border: 2px solid #e5e7eb;">
+                <div style="font-size: 2em; font-weight: 700; color: #3b82f6;">12</div>
+                <div style="color: #6b7280; margin-top: 4px;">Total Tickets</div>
+            </div>
+            <div
+                style="background: white; padding: 20px; border-radius: 6px; text-align: center; border: 2px solid #fef3c7;">
+                <div style="font-size: 2em; font-weight: 700; color: #f59e0b;">5</div>
+                <div style="color: #6b7280; margin-top: 4px;">In Progress</div>
+            </div>
+            <div
+                style="background: white; padding: 20px; border-radius: 6px; text-align: center; border: 2px solid #dcfce7;">
+                <div style="font-size: 2em; font-weight: 700; color: #22c55e;">6</div>
+                <div style="color: #6b7280; margin-top: 4px;">Resolved</div>
+            </div>
+            <div
+                style="background: white; padding: 20px; border-radius: 6px; text-align: center; border: 2px solid #fee2e2;">
+                <div style="font-size: 2em; font-weight: 700; color: #ef4444;">1</div>
+                <div style="color: #6b7280; margin-top: 4px;">Overdue</div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 6px; margin: 16px 0;">
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                <input type="text" placeholder="Search tickets..."
+                    style="flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <select style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    <option>All Status</option>
+                    <option>Open</option>
+                    <option>In Progress</option>
+                    <option>Pending Approval</option>
+                    <option>Resolved</option>
+                </select>
+                <button class="btn-primary">+ New Ticket</button>
+            </div>
+
+            <table style="margin: 0;">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TKT-001234</strong></td>
+                        <td>New VPN Account Request</td>
+                        <td><span class="badge badge-amber">Pending Approval</span></td>
+                        <td><span class="badge badge-amber">High</span></td>
+                        <td>Dec 14, 10:30 AM</td>
+                        <td><a href="#" style="color: #7c3aed;">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TKT-001228</strong></td>
+                        <td>Laptop keyboard not working</td>
+                        <td><span class="badge badge-blue">In Progress</span></td>
+                        <td><span class="badge badge-red">Critical</span></td>
+                        <td>Dec 13, 02:15 PM</td>
+                        <td><a href="#" style="color: #7c3aed;">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TKT-001220</strong></td>
+                        <td>MS Office installation</td>
+                        <td><span class="badge badge-green">Resolved</span></td>
+                        <td><span class="badge badge-blue">Medium</span></td>
+                        <td>Dec 12, 09:00 AM</td>
+                        <td><a href="#" style="color: #7c3aed;">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3>1.4. Approval Interface (For Approvers)</h3>
+    <p>Khi user là approver, họ sẽ nhận được notifications và có interface riêng để approve/reject tickets.</p>
+
+    <div class="screen-section">
+        <h4 style="margin-top: 0; color: #7c3aed;">✅ Pending Approvals</h4>
+
+        <div
+            style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 4px; margin: 16px 0;">
+            <strong>⚠️ You have 3 tickets pending your approval</strong>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 6px; margin: 16px 0; border: 1px solid #e5e7eb;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                <div>
+                    <h4 style="margin: 0 0 4px 0;">TKT-2024-001234 - New VPN Account Request</h4>
+                    <p style="margin: 0; color: #6b7280; font-size: 0.9em;">Requested by: <strong>John Doe</strong>
+                        (Engineering)</p>
+                </div>
+                <span class="badge badge-amber">High Priority</span>
+            </div>
+
+            <div style="background: #f9fafb; padding: 16px; border-radius: 6px; margin: 16px 0;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <div>
+                        <strong style="color: #6b7280; font-size: 0.85em;">VPN Username</strong>
+                        <p style="margin: 4px 0 0 0;">john.doe</p>
+                    </div>
+                    <div>
+                        <strong style="color: #6b7280; font-size: 0.85em;">Department</strong>
+                        <p style="margin: 4px 0 0 0;">Engineering</p>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <strong style="color: #6b7280; font-size: 0.85em;">Business Justification</strong>
+                        <p style="margin: 4px 0 0 0;">Required for remote work access to development servers</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Approval Comment</label>
+                <textarea style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;" rows="3"
+                    placeholder="Add your comment (optional)..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn-primary" style="background: #22c55e;">✓ Approve</button>
+                <button class="btn-primary" style="background: #ef4444;">✗ Reject</button>
+                <button class="btn-secondary">View Full Details</button>
+            </div>
+        </div>
+    </div>
+
+    <h3>1.5. Mobile Responsive Design</h3>
+    <div class="info-box">
+        <h4>📱 Mobile-First Approach</h4>
+        <p>Tất cả UI components phải responsive và hoạt động tốt trên mobile devices:</p>
+        <ul style="margin: 12px 0 0 0;">
+            <li>Form inputs phải đủ lớn cho mobile touch (minimum 44px height)</li>
+            <li>Tables nên có horizontal scroll trên mobile</li>
+            <li>Buttons phải có spacing phù hợp cho tap targets</li>
+            <li>Use bottom sheets cho mobile actions thay vì modals</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PART 2: EMAIL SYSTEM -->
+<div class="section">
+    <h2>Part 2: Email Integration System</h2>
+
+    <h3>2.1. Email System Overview</h3>
+    <p>Email notifications là một phần quan trọng của hệ thống ticket. Team tech cần implement các email notifications
+        tự động based on ticket lifecycle events.</p>
+
+    <div class="info-box">
+        <h4>📧 Email System Architecture</h4>
+        <p><strong>Flow:</strong> Ticket Event → Email Queue → Email Service → User Inbox</p>
+        <ul style="margin: 12px 0 0 0;">
+            <li>Use email queue để avoid blocking main application</li>
+            <li>Implement retry logic cho failed emails</li>
+            <li>Log tất cả email activities</li>
+            <li>Support HTML templates với dynamic variables</li>
+        </ul>
+    </div>
+
+    <h3>2.2. Email Triggers & Events</h3>
+    <p>Danh sách các events cần gửi email notification:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Recipients</th>
+                <th>Template</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Ticket Created</td>
+                <td>Ticket creator, Assigned team</td>
+                <td>ticket_created</td>
+                <td><span class="badge badge-blue">Normal</span></td>
+            </tr>
+            <tr>
+                <td>Approval Required</td>
+                <td>Approver(s)</td>
+                <td>approval_required</td>
+                <td><span class="badge badge-amber">High</span></td>
+            </tr>
+            <tr>
+                <td>Ticket Approved</td>
+                <td>Ticket creator, Assigned team</td>
+                <td>ticket_approved</td>
+                <td><span class="badge badge-green">Normal</span></td>
+            </tr>
+            <tr>
+                <td>Ticket Rejected</td>
+                <td>Ticket creator</td>
+                <td>ticket_rejected</td>
+                <td><span class="badge badge-red">High</span></td>
+            </tr>
+            <tr>
+                <td>Ticket Assigned</td>
+                <td>Assigned agent</td>
+                <td>ticket_assigned</td>
+                <td><span class="badge badge-blue">Normal</span></td>
+            </tr>
+            <tr>
+                <td>Status Changed</td>
+                <td>Ticket creator</td>
+                <td>status_changed</td>
+                <td><span class="badge badge-blue">Normal</span></td>
+            </tr>
+            <tr>
+                <td>Ticket Escalated</td>
+                <td>Previous team, New team, Managers</td>
+                <td>ticket_escalated</td>
+                <td><span class="badge badge-red">Critical</span></td>
+            </tr>
+            <tr>
+                <td>SLA Warning</td>
+                <td>Assigned agent, Team lead</td>
+                <td>sla_warning</td>
+                <td><span class="badge badge-amber">High</span></td>
+            </tr>
+            <tr>
+                <td>SLA Breached</td>
+                <td>Agent, Managers, Directors</td>
+                <td>sla_breach</td>
+                <td><span class="badge badge-red">Critical</span></td>
+            </tr>
+            <tr>
+                <td>Ticket Resolved</td>
+                <td>Ticket creator</td>
+                <td>ticket_resolved</td>
+                <td><span class="badge badge-green">Normal</span></td>
+            </tr>
+            <tr>
+                <td>Ticket Closed</td>
+                <td>Ticket creator, Assigned team</td>
+                <td>ticket_closed</td>
+                <td><span class="badge badge-blue">Low</span></td>
+            </tr>
+            <tr>
+                <td>Comment Added</td>
+                <td>Ticket creator, Watchers</td>
+                <td>comment_added</td>
+                <td><span class="badge badge-blue">Normal</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2.3. Email Template Examples</h3>
+
+    <h4>Template 1: Ticket Created</h4>
+    <div class="email-template">
+        <div class="email-header">
+            <h2 style="margin: 0; font-size: 1.5em;">Ticket Created Successfully</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.9;">Your support request has been received</p>
+        </div>
+        <div class="email-body">
+            <p>Hi <strong>{{user_name}}</strong>,</p>
+            <p>Your ticket has been created successfully and assigned to our support team.</p>
+
+            <div style="background: #f9fafb; padding: 16px; border-radius: 6px; margin: 20px 0;">
+                <table style="width: 100%; border: none;">
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Ticket ID:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{ticket_id}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Title:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{ticket_title}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Priority:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{priority}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Assigned To:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{assigned_team}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>SLA Deadline:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{sla_deadline}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <p>We aim to respond within <strong>{{first_response_time}}</strong> and resolve your issue within
+                <strong>{{resolution_time}}</strong>.
+            </p>
+
+            <div style="text-align: center; margin: 24px 0;">
+                <a href="{{ticket_url}}"
+                    style="background: #7c3aed; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600;">View
+                    Ticket Details</a>
+            </div>
+
+            <p style="color: #6b7280; font-size: 0.9em;">You will receive email notifications when there are updates to
+                your ticket.</p>
+        </div>
+        <div class="email-footer">
+            <p>This is an automated message from IT Ticket System</p>
+            <p>© 2024 Your Company. All rights reserved.</p>
+        </div>
+    </div>
+
+    <h4>Template 2: Approval Required</h4>
+    <div class="email-template">
+        <div class="email-header" style="background: #f59e0b;">
+            <h2 style="margin: 0; font-size: 1.5em;">⚠️ Approval Required</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.9;">A ticket is awaiting your approval</p>
+        </div>
+        <div class="email-body">
+            <p>Hi <strong>{{approver_name}}</strong>,</p>
+            <p>You have a new ticket that requires your approval:</p>
+
+            <div
+                style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 4px; margin: 20px 0;">
+                <table style="width: 100%; border: none;">
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Ticket ID:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{ticket_id}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Requested By:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{requester_name}} ({{requester_dept}})</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Request Type:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{issue_type}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Priority:</strong></td>
+                        <td style="padding: 8px 0; border: none;"><strong style="color: #f59e0b;">{{priority}}</strong>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="background: #f9fafb; padding: 16px; border-radius: 6px; margin: 20px 0;">
+                <strong>Business Justification:</strong>
+                <p style="margin: 8px 0 0 0;">{{business_justification}}</p>
+            </div>
+
+            <p><strong>Please review and approve/reject this request.</strong></p>
+
+            <div style="text-align: center; margin: 24px 0;">
+                <a href="{{approval_url}}"
+                    style="background: #22c55e; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600; margin-right: 8px;">✓
+                    Approve</a>
+                <a href="{{approval_url}}"
+                    style="background: #ef4444; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600;">✗
+                    Reject</a>
+            </div>
+        </div>
+        <div class="email-footer">
+            <p>This is an automated message from IT Ticket System</p>
+        </div>
+    </div>
+
+    <h4>Template 3: SLA Warning</h4>
+    <div class="email-template">
+        <div class="email-header" style="background: #ef4444;">
+            <h2 style="margin: 0; font-size: 1.5em;">🚨 SLA Warning Alert</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.9;">Ticket approaching SLA deadline</p>
+        </div>
+        <div class="email-body">
+            <p>Hi <strong>{{agent_name}}</strong>,</p>
+            <p><strong style="color: #ef4444;">URGENT:</strong> The following ticket is approaching its SLA deadline:
+            </p>
+
+            <div
+                style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; border-radius: 4px; margin: 20px 0;">
+                <table style="width: 100%; border: none;">
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Ticket ID:</strong></td>
+                        <td style="padding: 8px 0; border: none;">{{ticket_id}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Priority:</strong></td>
+                        <td style="padding: 8px 0; border: none;"><strong style="color: #ef4444;">{{priority}}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>SLA Deadline:</strong></td>
+                        <td style="padding: 8px 0; border: none;"><strong
+                                style="color: #ef4444;">{{sla_deadline}}</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; border: none;"><strong>Time Remaining:</strong></td>
+                        <td style="padding: 8px 0; border: none;"><strong
+                                style="color: #ef4444;">{{time_remaining}}</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <p>This ticket has used <strong>75%</strong> of its allocated SLA time. Please take immediate action to
+                resolve or escalate.</p>
+
+            <div style="text-align: center; margin: 24px 0;">
+                <a href="{{ticket_url}}"
+                    style="background: #ef4444; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600;">View
+                    & Take Action</a>
+            </div>
+        </div>
+        <div class="email-footer">
+            <p>This is an automated message from IT Ticket System</p>
+        </div>
+    </div>
+
+    <h3>2.4. Email Queue Implementation</h3>
+    <div class="code-block">
+        <pre>// Laravel Queue Job Example
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class SendTicketEmail implements ShouldQueue
+{
+    use InteractsWithQueue, Queueable, SerializesModels;
+
+    public $ticket;
+    public $emailType;
+    public $recipients;
+
+    public function __construct($ticket, $emailType, $recipients)
+    {
+        $this->ticket = $ticket;
+        $this->emailType = $emailType;
+        $this->recipients = $recipients;
+    }
+
+    public function handle()
+    {
+        $template = $this->getTemplate($this->emailType);
+        $data = $this->prepareEmailData($this->ticket);
+
+        foreach ($this->recipients as $recipient) {
+            Mail::to($recipient['email'])->send(
+                new TicketNotification($template, $data, $recipient)
+            );
+        }
+
+        // Log email activity
+        EmailLog::create([
+            'ticket_id' => $this->ticket->id,
+            'email_type' => $this->emailType,
+            'recipients' => json_encode($this->recipients),
+            'sent_at' => now()
+        ]);
+    }
+
+    private function getTemplate($emailType)
+    {
+        $templates = [
+            'ticket_created' => 'emails.ticket_created',
+            'approval_required' => 'emails.approval_required',
+            'ticket_approved' => 'emails.ticket_approved',
+            'ticket_rejected' => 'emails.ticket_rejected',
+            'ticket_assigned' => 'emails.ticket_assigned',
+            'status_changed' => 'emails.status_changed',
+            'ticket_escalated' => 'emails.ticket_escalated',
+            'sla_warning' => 'emails.sla_warning',
+            'sla_breach' => 'emails.sla_breach',
+            'ticket_resolved' => 'emails.ticket_resolved',
+            'ticket_closed' => 'emails.ticket_closed',
+            'comment_added' => 'emails.comment_added',
+        ];
+
+        return $templates[$emailType];
+    }
+
+    private function prepareEmailData($ticket)
+    {
+        return [
+            'ticket_id' => $ticket->ticket_id,
+            'ticket_title' => $ticket->title,
+            'ticket_url' => url("/tickets/{$ticket->id}"),
+            'user_name' => $ticket->user->name,
+            'priority' => $ticket->priority,
+            'assigned_team' => $ticket->assignedTeam->name,
+            'sla_deadline' => $ticket->sla->resolution_deadline->format('M d, Y h:i A'),
+            'first_response_time' => $ticket->sla->first_response_target,
+            'resolution_time' => $ticket->sla->resolution_target,
+            // Add more fields as needed
+        ];
+    }
+}</pre>
+    </div>
+
+    <h3>2.5. Email Trigger Implementation</h3>
+    <div class="code-block">
+        <pre>// Example: Trigger emails when ticket is created
+public function createTicket($request)
+{
+    // Submit to ticket system API
+    $response = Http::post('api/tickets/submit', $request->all());
+    $ticketData = $response->json();
+    
+    // Save ticket to database
+    $ticket = Ticket::create([
+        'ticket_id' => $ticketData['ticket_id'],
+        'user_id' => auth()->id(),
+        'status' => $ticketData['status'],
+        // ... other fields
+    ]);
+    
+    // Trigger emails
+    $this->sendTicketCreatedEmails($ticket, $ticketData);
+    
+    if ($ticketData['approval']['required']) {
+        $this->sendApprovalEmails($ticket, $ticketData);
+    }
+    
+    return $ticket;
+}
+
+private function sendTicketCreatedEmails($ticket, $ticketData)
+{
+    // Email to ticket creator
+    SendTicketEmail::dispatch(
+        $ticket,
+        'ticket_created',
+        [['email' => $ticket->user->email, 'name' => $ticket->user->name]]
+    );
+    
+    // Email to assigned team
+    $teamMembers = Team::find($ticketData['routing']['assigned_to']['id'])
+                      ->members;
+    
+    $recipients = $teamMembers->map(function($member) {
+        return ['email' => $member->email, 'name' => $member->name];
+    })->toArray();
+    
+    SendTicketEmail::dispatch($ticket, 'ticket_assigned', $recipients);
+}
+
+private function sendApprovalEmails($ticket, $ticketData)
+{
+    foreach ($ticketData['approval']['approvers'] as $approver) {
+        SendTicketEmail::dispatch(
+            $ticket,
+            'approval_required',
+            [['email' => $approver['email'], 'name' => $approver['name']]]
+        );
+    }
+}
+
+// Example: SLA Warning Check (Run by Scheduler)
+public function checkSLAWarnings()
+{
+    $tickets = Ticket::where('status', '!=', 'closed')
+                    ->with(['sla', 'assignedAgent'])
+                    ->get();
+    
+    foreach ($tickets as $ticket) {
+        $timeRemaining = now()->diffInMinutes($ticket->sla->resolution_deadline);
+        $totalTime = $ticket->sla->resolution_target_minutes;
+        $percentUsed = (($totalTime - $timeRemaining) / $totalTime) * 100;
+        
+        // Send warning at 75% threshold
+        if ($percentUsed >= 75 && $percentUsed < 90 && !$ticket->warning_sent) {
+            SendTicketEmail::dispatch(
+                $ticket,
+                'sla_warning',
+                [
+                    ['email' => $ticket->assignedAgent->email, 'name' => $ticket->assignedAgent->name],
+                    ['email' => $ticket->assignedAgent->team_lead->email, 'name' => $ticket->assignedAgent->team_lead->name]
+                ]
+            );
+            
+            $ticket->update(['warning_sent' => true]);
+        }
+        
+        // Send breach alert at 100%
+        if ($timeRemaining <= 0 && !$ticket->breach_sent) {
+            $managers = $this->getManagementChain($ticket->assignedTeam);
+            SendTicketEmail::dispatch($ticket, 'sla_breach', $managers);
+            
+            $ticket->update(['breach_sent' => true]);
+        }
+    }
+}</pre>
+    </div>
+
+    <h3>2.6. User Email Preferences</h3>
+    <p>Cho phép users customize email notification preferences của họ.</p>
+
+    <div class="screen-section">
+        <h4 style="margin-top: 0; color: #7c3aed;">⚙️ Email Notification Settings</h4>
+
+        <div style="background: white; padding: 20px; border-radius: 6px;">
+            <h4 style="margin: 0 0 16px 0;">Choose which notifications you want to receive:</h4>
+
+            <div style="display: grid; gap: 12px;">
+                <label
+                    style="display: flex; align-items: center; padding: 12px; background: #f9fafb; border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" checked style="margin-right: 12px; width: 18px; height: 18px;">
+                    <div>
+                        <strong>Ticket Status Changes</strong>
+                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.9em;">Get notified when your ticket
+                            status changes</p>
+                    </div>
+                </label>
+
+                <label
+                    style="display: flex; align-items: center; padding: 12px; background: #f9fafb; border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" checked style="margin-right: 12px; width: 18px; height: 18px;">
+                    <div>
+                        <strong>New Comments</strong>
+                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.9em;">Get notified when someone
+                            comments on your ticket</p>
+                    </div>
+                </label>
+
+                <label
+                    style="display: flex; align-items: center; padding: 12px; background: #f9fafb; border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" checked style="margin-right: 12px; width: 18px; height: 18px;">
+                    <div>
+                        <strong>Ticket Resolved</strong>
+                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.9em;">Get notified when your ticket is
+                            resolved</p>
+                    </div>
+                </label>
+
+                <label
+                    style="display: flex; align-items: center; padding: 12px; background: #f9fafb; border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" style="margin-right: 12px; width: 18px; height: 18px;">
+                    <div>
+                        <strong>Approval Requests</strong>
+                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.9em;">Get notified when you need to
+                            approve a ticket (For approvers only)</p>
+                    </div>
+                </label>
+
+                <label
+                    style="display: flex; align-items: center; padding: 12px; background: #f9fafb; border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" style="margin-right: 12px; width: 18px; height: 18px;">
+                    <div>
+                        <strong>SLA Warnings</strong>
+                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.9em;">Get notified when your ticket is
+                            approaching deadline (For agents only)</p>
+                    </div>
+                </label>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h4>Email Digest Options</h4>
+                <select style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    <option>Send emails immediately</option>
+                    <option>Daily digest (once per day)</option>
+                    <option>Weekly digest (every Monday)</option>
+                </select>
+            </div>
+
+            <button class="btn-primary" style="margin-top: 20px;">Save Preferences</button>
+        </div>
+    </div>
+
+    <h3>2.7. Email Testing & Monitoring</h3>
+    <div class="warning-box">
+        <h4>⚠️ Important for Team Tech</h4>
+        <ul style="margin: 12px 0 0 0;">
+            <li><strong>Test all email templates</strong> before production deployment</li>
+            <li><strong>Monitor email queue</strong> to ensure no emails are stuck</li>
+            <li><strong>Implement retry logic</strong> for failed emails (max 3 retries)</li>
+            <li><strong>Log all email activities</strong> cho troubleshooting purposes</li>
+            <li><strong>Setup email rate limiting</strong> to avoid spam filters</li>
+            <li><strong>Use transactional email service</strong> (SendGrid, AWS SES, Mailgun) cho better deliverability
+            </li>
+        </ul>
+    </div>
+
+    <h4>Email Monitoring Dashboard Implementation</h4>
+    <div class="code-block">
+        <pre>// Email Statistics Dashboard
+public function getEmailStats()
+{
+    return [
+        'sent_today' => EmailLog::whereDate('sent_at', today())->count(),
+        'failed_today' => EmailLog::whereDate('sent_at', today())
+                                 ->where('status', 'failed')->count(),
+        'queue_size' => Queue::size('emails'),
+        'avg_delivery_time' => EmailLog::whereDate('sent_at', today())
+                                      ->avg('delivery_time_seconds'),
+        'by_type' => EmailLog::whereDate('sent_at', today())
+                            ->groupBy('email_type')
+                            ->selectRaw('email_type, count(*) as count')
+                            ->get(),
+    ];
+}
+
+// Failed Email Retry
+public function retryFailedEmails()
+{
+    $failedEmails = EmailLog::where('status', 'failed')
+                           ->where('retry_count', '<', 3)
+                           ->get();
+    
+    foreach ($failedEmails as $log) {
+        SendTicketEmail::dispatch(
+            Ticket::find($log->ticket_id),
+            $log->email_type,
+            json_decode($log->recipients, true)
+        );
+        
+        $log->increment('retry_count');
+    }
+}</pre>
+    </div>

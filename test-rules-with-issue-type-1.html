@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Rules API with Issue Type ID = 1</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .test-section { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .test-section h3 { margin-top: 0; color: #333; }
+        button { padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        button:hover { background: #2563eb; }
+        pre { background: #f9fafb; padding: 15px; border-radius: 6px; overflow: auto; max-height: 400px; }
+        .success { color: #10b981; font-weight: bold; }
+        .error { color: #ef4444; font-weight: bold; }
+        .info { color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Rules APIs with Issue Type ID = 1</h1>
+    
+    <div class="test-section">
+        <h3>1. Test Issue Types API</h3>
+        <button onclick="testIssueTypes()">Test: GET /issue-types/all-group-type</button>
+        <div id="result-issue-types"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test Approval Rules API</h3>
+        <button onclick="testApprovalRules()">Test: GET /approval-rules?issue_type_id=1</button>
+        <div id="result-approval"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test Level Rules API</h3>
+        <button onclick="testLevelRules()">Test: GET /level-rules?issue_type_id=1</button>
+        <div id="result-level"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Test Custom Fields API</h3>
+        <button onclick="testCustomFields()">Test: GET /custom-fields?issue_type_id=1</button>
+        <div id="result-custom"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Test Support Teams API</h3>
+        <button onclick="testSupportTeams()">Test: GET /support-teams</button>
+        <div id="result-teams"></div>
+    </div>
+    
+    <script>
+        const baseUrl = 'http://codeigniter3-restapi.test/';
+        
+        async function testAPI(name, endpoint, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = '<p class="info">⏳ Loading...</p>';
+            
+            try {
+                console.log(`Testing: ${baseUrl}${endpoint}`);
+                const response = await fetch(baseUrl + endpoint);
+                const data = await response.json();
+                
+                console.log(`${name} Response:`, data);
+                
+                const recordCount = data.data ? data.data.length : 0;
+                const statusClass = data.success ? 'success' : 'error';
+                const statusIcon = data.success ? '✅' : '❌';
+                
+                resultDiv.innerHTML = `
+                    <p class="${statusClass}">${statusIcon} Status: ${response.status} ${response.statusText}</p>
+                    <p><strong>Success:</strong> ${data.success}</p>
+                    <p><strong>Records:</strong> ${recordCount}</p>
+                    ${data.message ? `<p><strong>Message:</strong> ${data.message}</p>` : ''}
+                    <details>
+                        <summary>View JSON Response</summary>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </details>
+                `;
+            } catch (error) {
+                console.error(`${name} Error:`, error);
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Error: ${error.message}</p>
+                    <pre>${error.stack}</pre>
+                `;
+            }
+        }
+        
+        function testIssueTypes() {
+            testAPI('Issue Types', 'issue-types/all-group-type', 'result-issue-types');
+        }
+        
+        function testApprovalRules() {
+            testAPI('Approval Rules', 'approval-rules?issue_type_id=1', 'result-approval');
+        }
+        
+        function testLevelRules() {
+            testAPI('Level Rules', 'level-rules?issue_type_id=1', 'result-level');
+        }
+        
+        function testCustomFields() {
+            testAPI('Custom Fields', 'custom-fields?issue_type_id=1', 'result-custom');
+        }
+        
+        function testSupportTeams() {
+            testAPI('Support Teams', 'support-teams', 'result-teams');
+        }
+        
+        // Auto-run all tests on load
+        window.onload = () => {
+            console.log('=== Auto-testing all APIs with Issue Type ID = 1 ===');
+            setTimeout(testIssueTypes, 500);
+            setTimeout(testApprovalRules, 1500);
+            setTimeout(testLevelRules, 2500);
+            setTimeout(testCustomFields, 3500);
+            setTimeout(testSupportTeams, 4500);
+        };
+    </script>
+</body>
+</html>

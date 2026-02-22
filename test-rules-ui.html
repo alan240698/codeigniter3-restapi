@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Rules Tab UI</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            overflow: auto;
+        }
+
+        .success {
+            color: #10b981;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Test Rules Tab UI Loading</h1>
+
+    <div class="section">
+        <h3>Step 1: Check if Rules Tab HTML Exists</h3>
+        <button onclick="checkRulesTabHTML()">Check HTML</button>
+        <div id="result-html"></div>
+    </div>
+
+    <div class="section">
+        <h3>Step 2: Check if JavaScript Managers Exist</h3>
+        <button onclick="checkManagers()">Check Managers</button>
+        <div id="result-managers"></div>
+    </div>
+
+    <div class="section">
+        <h3>Step 3: Test Load Issue Types Dropdown</h3>
+        <button onclick="testLoadIssueTypes()">Load Issue Types</button>
+        <div id="result-issue-types"></div>
+    </div>
+
+    <div class="section">
+        <h3>Step 4: Test Load Approval Rules</h3>
+        <button onclick="testLoadApprovalRules()">Load Approval Rules</button>
+        <div id="result-approval"></div>
+    </div>
+
+    <div class="section">
+        <h3>Instructions</h3>
+        <ol>
+            <li>Open Rules tab in main app: <a href="http://codeigniter3-restapi.test/it-ticket?tab=rules"
+                    target="_blank">Open Rules Tab</a></li>
+            <li>Then come back here and click buttons above to test</li>
+            <li>Or open Console (F12) in Rules tab and paste:
+                <pre>console.log('RulesTabManager:', typeof window.RulesTabManager);
+console.log('ApprovalRulesManager:', typeof window.ApprovalRulesManager);
+console.log('Issue Types Dropdown:', document.getElementById('approvalIssueType'));</pre>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        function checkRulesTabHTML() {
+            const result = document.getElementById('result-html');
+
+            // Open Rules tab in new window
+            const rulesWindow = window.open('http://codeigniter3-restapi.test/it-ticket?tab=rules', '_blank');
+
+            result.innerHTML = `
+                <p class="success">✅ Opened Rules tab in new window</p>
+                <p>Check if you see:</p>
+                <ul>
+                    <li>Sub-tabs: Routing Rules, Approval Rules, Level Rules, Custom Fields</li>
+                    <li>Content below sub-tabs (not empty white space)</li>
+                    <li>Tables, buttons, filters</li>
+                </ul>
+                <p><strong>If you see empty white space:</strong> CSS or JavaScript issue</p>
+                <p><strong>If you see content:</strong> UI is working!</p>
+            `;
+        }
+
+        function checkManagers() {
+            const result = document.getElementById('result-managers');
+
+            result.innerHTML = `
+                <p>Open Console (F12) in Rules tab and run:</p>
+                <pre>console.log('RulesTabManager:', typeof window.RulesTabManager);
+console.log('ApprovalRulesManager:', typeof window.ApprovalRulesManager);
+console.log('LevelRulesManager:', typeof window.LevelRulesManager);
+console.log('CustomFieldsManager:', typeof window.CustomFieldsManager);</pre>
+                <p>Expected: All should be "object"</p>
+                <p>If "undefined": JavaScript not loaded or redeclaration error</p>
+            `;
+        }
+
+        function testLoadIssueTypes() {
+            const result = document.getElementById('result-issue-types');
+            result.innerHTML = '<p>Testing...</p>';
+
+            fetch('http://codeigniter3-restapi.test/issue-types/all-group-type')
+                .then(r => r.json())
+                .then(data => {
+                    const count = data.data ? data.data.length : 0;
+                    result.innerHTML = `
+                        <p class="success">✅ API Works! Found ${count} Issue Types</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <p><strong>Next:</strong> Check if dropdown in Rules tab shows these options</p>
+                        <p>Open Rules tab → Click "Add Approval Rule" → Check "Issue Type" dropdown</p>
+                    `;
+                })
+                .catch(err => {
+                    result.innerHTML = `<p class="error">❌ Error: ${err.message}</p>`;
+                });
+        }
+
+        function testLoadApprovalRules() {
+            const result = document.getElementById('result-approval');
+            result.innerHTML = '<p>Testing...</p>';
+
+            fetch('http://codeigniter3-restapi.test/approval-rules')
+                .then(r => r.json())
+                .then(data => {
+                    const count = data.data ? data.data.length : 0;
+                    result.innerHTML = `
+                        <p class="success">✅ API Works! Found ${count} Approval Rules</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <p>If count = 0: Normal, no rules created yet</p>
+                        <p>If count > 0: Should see rules in table</p>
+                    `;
+                })
+                .catch(err => {
+                    result.innerHTML = `<p class="error">❌ Error: ${err.message}</p>`;
+                });
+        }
+    </script>
+</body>
+
+</html>

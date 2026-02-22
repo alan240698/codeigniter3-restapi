@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Ticket System Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 24px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e1e4e8;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+        
+        h4 {
+            color: #586069;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 0 8px 0;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            color: #24292e;
+        }
+        
+        .info-box {
+            background: #f6f8fa;
+            border-left: 3px solid #0366d6;
+            padding: 16px;
+            margin: 20px 0;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0366d6;
+        }
+        
+        .warning-box {
+            background: #fffbdd;
+            border-left: 3px solid #f9c513;
+            padding: 16px;
+            margin: 20px 0;
+        }
+        
+        .warning-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #735c0f;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e1e4e8;
+        }
+        
+        th {
+            background: #f6f8fa;
+            font-weight: 600;
+            color: #24292e;
+        }
+        
+        tr:nth-child(even) {
+            background: #fafbfc;
+        }
+        
+        .flow {
+            background: #f6f8fa;
+            padding: 24px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 2;
+            border: 1px solid #e1e4e8;
+        }
+        
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .step-list li {
+            counter-increment: step-counter;
+            margin: 16px 0;
+            padding-left: 40px;
+            position: relative;
+        }
+        
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #2c3e50;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        code {
+            background: #f6f8fa;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #d73a49;
+            border: 1px solid #e1e4e8;
+        }
+        
+        ul {
+            margin-left: 30px;
+            margin-top: 12px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #0366d6;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 3px;
+        }
+        
+        .tag-amber {
+            background: #f9c513;
+            color: #735c0f;
+        }
+        
+        .tag-green {
+            background: #28a745;
+        }
+        
+        .tag-red {
+            background: #d73a49;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IT Ticket System Documentation</h1>
+            <p style="color: #fafbfc;">Technical Reference Guide for Service Management Implementation</p>
+        </header>
+
+        <div class="section">
+            <h2>1. System Overview</h2>
+            <p>The IT Ticket System is a service management platform designed to automate the classification, routing, and resolution of IT support requests within an organization.</p>
+            
+            <h3>Primary Functions</h3>
+            <ul>
+                <li>Automatic ticket classification based on predefined service categories</li>
+                <li>Intelligent routing to appropriate support teams</li>
+                <li>Priority calculation and SLA management</li>
+                <li>Workflow automation and escalation handling</li>
+            </ul>
+            
+            <div class="info-box">
+                <strong>Example Workflow:</strong>
+                <p>When a user reports a network connectivity issue, the system automatically classifies it as a Network service group ticket, routes it to the Network support team, assigns appropriate priority based on impact and urgency, and applies the relevant SLA policy for response time.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. System Process Flow</h2>
+            <div class="flow">
+User submits ticket
+    ↓
+Classification Engine
+  • Service Group identification
+  • Ticket Type determination
+  • Issue Type mapping
+    ↓
+Business Rules Engine
+  • Team assignment
+  • Priority calculation
+  • SLA policy application
+    ↓
+Workflow Engine
+  • Status tracking
+  • Escalation rules
+  • Notification triggers
+    ↓
+Assignment to Support Team
+    ↓
+Resolution and Closure
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Configuration Components</h2>
+            <p>The system requires configuration of the following components in sequence:</p>
+
+            <ol class="step-list">
+                <li><strong>Service Structure:</strong> Define service groups, ticket types, and issue categories</li>
+                <li><strong>Team Structure:</strong> Configure support teams and assign members</li>
+                <li><strong>Business Rules:</strong> Set up routing, priority, and escalation rules</li>
+                <li><strong>SLA Policies:</strong> Define service level agreements and response targets</li>
+                <li><strong>Workflows:</strong> Configure ticket lifecycle states and transitions</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>4. Service Structure</h2>
+            
+            <h3>4.1 Service Groups</h3>
+            <p>Service groups represent the top-level categorization of IT services:</p>
+            <table>
+                <tr>
+                    <th>Service Group</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Network</td>
+                    <td><code>NETWORK</code></td>
+                    <td>Network connectivity and infrastructure issues</td>
+                </tr>
+                <tr>
+                    <td>User Computer</td>
+                    <td><code>USER_COMPUTER</code></td>
+                    <td>Hardware and software issues on user devices</td>
+                </tr>
+                <tr>
+                    <td>Group Applications</td>
+                    <td><code>GROUP_APPLICATIONS</code></td>
+                    <td>Enterprise applications and business systems</td>
+                </tr>
+                <tr>
+                    <td>Cyber Security</td>
+                    <td><code>CYBER_SECURITY</code></td>
+                    <td>Security threats and incidents</td>
+                </tr>
+            </table>
+
+            <h3>4.2 IT Services by Service Group</h3>
+            
+            <h4>Network Services</h4>
+            <table>
+                <tr>
+                    <th>IT Service</th>
+                    <th>Code</th>
+                </tr>
+                <tr>
+                    <td>Unable to be connected</td>
+                    <td><code>UNABLE_TO_BE_CONNECTED</code></td>
+                </tr>
+                <tr>
+                    <td>Unable to access some websites</td>
+                    <td><code>UNABLE_TO_ACCESS_SOME_WEBSITES</code></td>
+                </tr>
+                <tr>
+                    <td>Unable to access Internet</td>
+                    <td><code>UNABLE_TO_ACCESS_INTERNET</code></td>
+                </tr>
+                <tr>
+                    <td>VPN access from home</td>
+                    <td><code>VPN_ACCESS_FROM_HOME</code></td>
+                </tr>
+                <tr>
+                    <td>Others</td>
+                    <td><code>OTHERS</code></td>
+                </tr>
+            </table>
+
+            <h4>User Computer Services</h4>
+            <table>
+                <tr>
+                    <th>IT Service</th>
+                    <th>Code</th>
+                </tr>
+                <tr>
+                    <td>Hardware: computer, peripheral</td>
+                    <td><code>HARDWARE_COMPUTER_PERIPHERAL</code></td>
+                </tr>
+                <tr>
+                    <td>Software: Edge, Acrobat, 7zip</td>
+                    <td><code>SOFTWARE_EDGE_ACROBAT_7ZIP</code></td>
+                </tr>
+                <tr>
+                    <td>Others</td>
+                    <td><code>OTHERS</code></td>
+                </tr>
+            </table>
+
+            <h4>Cyber Security Services</h4>
+            <table>
+                <tr>
+                    <th>IT Service</th>
+                    <th>Code</th>
+                </tr>
+                <tr>
+                    <td>Scam</td>
+                    <td><code>SCAM</code></td>
+                </tr>
+                <tr>
+                    <td>Virus</td>
+                    <td><code>VIRUS</code></td>
+                </tr>
+                <tr>
+                    <td>Others</td>
+                    <td><code>OTHERS</code></td>
+                </tr>
+            </table>
+
+            <h4>Group Application Services</h4>
+            <table>
+                <tr>
+                    <th>IT Service</th>
+                    <th>Sub Service</th>
+                    <th>Code</th>
+                </tr>
+                <tr>
+                    <td>Group Website</td>
+                    <td>Accessible</td>
+                    <td><code>GROUP_WEBSITE_ACCESSIBLE</code></td>
+                </tr>
+                <tr>
+                    <td>Group Website</td>
+                    <td>Bug, error, permission</td>
+                    <td><code>GROUP_WEBSITE_BUG_ERROR_PERMISSION</code></td>
+                </tr>
+                <tr>
+                    <td>Intranet</td>
+                    <td>Logon</td>
+                    <td><code>INTRANET_LOGON</code></td>
+                </tr>
+                <tr>
+                    <td>Intranet</td>
+                    <td>Permission</td>
+                    <td><code>INTRANET_PERMISSION</code></td>
+                </tr>
+                <tr>
+                    <td>Intranet</td>
+                    <td>Bug, error</td>
+                    <td><code>INTRANET_BUG_ERROR</code></td>
+                </tr>
+                <tr>
+                    <td>M365</td>
+                    <td>Logon</td>
+                    <td><code>M365_LOGON</code></td>
+                </tr>
+                <tr>
+                    <td>M365</td>
+                    <td>Email delegation</td>
+                    <td><code>M365_EMAIL_DELEGATION</code></td>
+                </tr>
+                <tr>
+                    <td>M365</td>
+                    <td>License assignment</td>
+                    <td><code>M365_LICENSE_ASSIGNMENT</code></td>
+                </tr>
+                <tr>
+                    <td>SharePoint</td>
+                    <td>Creation / Permission</td>
+                    <td><code>SHAREPOINT_CREATION_PERMISSION</code></td>
+                </tr>
+                <tr>
+                    <td>Navision</td>
+                    <td>User permission</td>
+                    <td><code>NAVISION_USER_PERMISSION</code></td>
+                </tr>
+                <tr>
+                    <td>Navision</td>
+                    <td>Bug / error</td>
+                    <td><code>NAVISION_BUG_ERROR</code></td>
+                </tr>
+                <tr>
+                    <td>Navision</td>
+                    <td>Others</td>
+                    <td><code>OTHERS</code></td>
+                </tr>
+            </table>
+
+            <h3>4.3 Ticket Types</h3>
+            <table>
+                <tr>
+                    <th>Ticket Type</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Incident & Service Request</td>
+                    <td><code>INCIDENT_SERVICE_REQUEST</code></td>
+                    <td>Unplanned interruptions or standard service requests</td>
+                </tr>
+                <tr>
+                    <td>Problem</td>
+                    <td><code>PROBLEM</code></td>
+                    <td>Root cause investigation of recurring incidents</td>
+                </tr>
+                <tr>
+                    <td>Change</td>
+                    <td><code>CHANGE</code></td>
+                    <td>Planned modifications to IT infrastructure or services</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>5. Support Team Structure</h2>
+            <p>Support teams are organized with multiple support levels for escalation:</p>
+            <table>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Support Levels</th>
+                    <th>Scope</th>
+                </tr>
+                <tr>
+                    <td>Group IS</td>
+                    <td>Level 1, Level 2, Level 3</td>
+                    <td>Information Systems applications and business solutions</td>
+                </tr>
+                <tr>
+                    <td>Group IT</td>
+                    <td>Level 1, Level 2, Level 3</td>
+                    <td>IT infrastructure and technical support</td>
+                </tr>
+                <tr>
+                    <td>Local IT - Country</td>
+                    <td>Level 1, Level 2, Level 3</td>
+                    <td>Regional IT support and local services</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Support Level Definitions:</strong>
+                <p><strong>Level 1:</strong> First-line support, handles common issues and initial triage</p>
+                <p><strong>Level 2:</strong> Technical specialists, handles complex technical problems</p>
+                <p><strong>Level 3:</strong> Expert level, handles critical issues and system-wide problems</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>6. Ticket Attributes</h2>
+            
+            <h3>6.1 Impact</h3>
+            <p>Defines the scope of users affected by the issue:</p>
+            <table>
+                <tr>
+                    <th>Impact Level</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Individual</td>
+                    <td>Single user affected</td>
+                </tr>
+                <tr>
+                    <td>Several users</td>
+                    <td>Multiple users in a department or team</td>
+                </tr>
+                <tr>
+                    <td>Majority</td>
+                    <td>Organization-wide impact</td>
+                </tr>
+            </table>
+
+            <h3>6.2 Urgency</h3>
+            <p>Indicates the time sensitivity of the issue:</p>
+            <table>
+                <tr>
+                    <th>Urgency Level</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Low</td>
+                    <td>Can be addressed within normal timeframes</td>
+                </tr>
+                <tr>
+                    <td>Medium</td>
+                    <td>Requires timely attention</td>
+                </tr>
+                <tr>
+                    <td>High</td>
+                    <td>Requires immediate attention</td>
+                </tr>
+            </table>
+
+            <h3>6.3 Severity</h3>
+            <p>Measures the impact on business operations:</p>
+            <table>
+                <tr>
+                    <th>Severity Level</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Blocking</td>
+                    <td>User cannot perform critical tasks</td>
+                </tr>
+                <tr>
+                    <td>Acceptable</td>
+                    <td>Workaround available or non-critical function affected</td>
+                </tr>
+            </table>
+
+            <h3>6.4 Priority</h3>
+            <p>Calculated based on Impact and Urgency to determine resolution order:</p>
+            <table>
+                <tr>
+                    <th>Priority</th>
+                    <th>Target Response</th>
+                </tr>
+                <tr>
+                    <td>1 (Critical)</td>
+                    <td>Immediate response required</td>
+                </tr>
+                <tr>
+                    <td>2 (High)</td>
+                    <td>Response within 2-4 hours</td>
+                </tr>
+                <tr>
+                    <td>3 (Medium)</td>
+                    <td>Response within 8 hours</td>
+                </tr>
+                <tr>
+                    <td>4 (Low)</td>
+                    <td>Response within 24 hours</td>
+                </tr>
+            </table>
+
+            <h3>6.5 Complexity</h3>
+            <p>Estimates the technical difficulty of resolution:</p>
+            <table>
+                <tr>
+                    <th>Complexity Level</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Simple</td>
+                    <td>Standard procedures, quick resolution</td>
+                </tr>
+                <tr>
+                    <td>Medium</td>
+                    <td>Requires technical analysis or coordination</td>
+                </tr>
+                <tr>
+                    <td>Complex</td>
+                    <td>Requires expert knowledge or multiple teams</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>7. Resolution Categories</h2>
+            <p>Classification of how tickets are resolved:</p>
+            <table>
+                <tr>
+                    <th>Resolution Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Self-service</td>
+                    <td>User resolved issue using knowledge base</td>
+                </tr>
+                <tr>
+                    <td>Standard solution</td>
+                    <td>Resolved using documented procedure</td>
+                </tr>
+                <tr>
+                    <td>New solution</td>
+                    <td>Required unique solution, new documentation created</td>
+                </tr>
+                <tr>
+                    <td>No issue</td>
+                    <td>No actual problem found or user error</td>
+                </tr>
+                <tr>
+                    <td>Duplicated</td>
+                    <td>Duplicate of existing ticket</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>8. Application Service Categories</h2>
+            <p>Classification system for business application criticality:</p>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>SLA Level</th>
+                </tr>
+                <tr>
+                    <td>Plastic</td>
+                    <td>Standard support</td>
+                </tr>
+                <tr>
+                    <td>Bronze</td>
+                    <td>Enhanced support</td>
+                </tr>
+                <tr>
+                    <td>Silver</td>
+                    <td>Priority support</td>
+                </tr>
+                <tr>
+                    <td>Golden</td>
+                    <td>Premium support with fastest response times</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>9. Implementation Checklist</h2>
+            <ol class="step-list">
+                <li>Configure all service groups and IT services in the system</li>
+                <li>Set up support teams and assign team members</li>
+                <li>Define routing rules for each service type</li>
+                <li>Configure SLA policies for each priority level</li>
+                <li>Set up automated notifications and escalations</li>
+                <li>Test system with sample tickets</li>
+                <li>Train support staff on the new system</li>
+                <li>Go live with monitoring and adjustment period</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

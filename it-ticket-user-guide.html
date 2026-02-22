@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Ticket System - Complete User Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .flow-chart {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            border: 2px solid #667eea;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .example-box h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .json-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .checklist li:before {
+            content: "☐ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #0c5460;
+            color: #0c5460;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #155724;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #856404;
+            color: #856404;
+        }
+
+        ul,
+        ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            display: block;
+            padding: 8px 0;
+            transition: all 0.3s;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            padding-left: 10px;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 IT Ticket System</h1>
+            <p>Complete User Guide - Hướng Dẫn Sử Dụng Đầy Đủ</p>
+        </div>
+
+        <div class="content">
+            <!-- TOC -->
+            <div class="toc">
+                <h3>📑 Mục Lục</h3>
+                <a href="#overview">🎯 Tổng Quan Hệ Thống</a>
+                <a href="#setup">📋 Setup Workflow</a>
+                <a href="#service-structure">📦 Service Structure Tab</a>
+                <a href="#teams">👥 Support Teams Tab</a>
+                <a href="#rules">📜 Rules Tab</a>
+                <a href="#workflows">🔄 Workflows Tab</a>
+                <a href="#sla">⏰ SLA Tab</a>
+                <a href="#result">🎉 Kết Quả Cuối Cùng</a>
+                <a href="#dev-usage">💻 Dev Sử Dụng JSON</a>
+            </div>
+
+            <!-- Overview -->
+            <div class="section" id="overview">
+                <h2>🎯 Tổng Quan Hệ Thống</h2>
+                <p><strong>IT Ticket System</strong> là hệ thống quản lý ticket tự động với <strong>Business Rules
+                        Engine</strong>. Sau khi setup xong, hệ thống sẽ tự động:</p>
+                <ul>
+                    <li>✅ Phân loại ticket</li>
+                    <li>✅ Route ticket đến đúng team/người</li>
+                    <li>✅ Apply SLA policies</li>
+                    <li>✅ Enforce approval workflows</li>
+                </ul>
+
+                <div class="alert alert-success">
+                    <strong>🎉 Kết quả cuối cùng:</strong> Khi user submit ticket → Hệ thống trả về <strong>JSON
+                        data</strong> chứa tất cả thông tin để dev xử lý tự động!
+                </div>
+            </div>
+
+            <!-- Setup Workflow -->
+            <div class="section" id="setup">
+                <h2>📋 SETUP WORKFLOW - ĐÚNG THỨ TỰ</h2>
+
+                <h3>Bước 1: Service Structure Tab (Foundation)</h3>
+                <p><strong>Mục đích:</strong> Tạo cấu trúc phân loại ticket</p>
+
+                <div class="flow-chart">
+                    1. Service Groups (Nhóm dịch vụ)
+                    ↓
+                    2. Ticket Types (Loại ticket)
+                    ↓
+                    3. Issue Types (Vấn đề cụ thể)
+                </div>
+            </div>
+
+            <!-- Service Groups -->
+            <div class="section" id="service-structure">
+                <h2>📦 1.1. Service Groups (Nhóm Dịch Vụ)</h2>
+                <p><strong>Mục đích:</strong> Phân loại ticket theo department/lĩnh vực</p>
+
+                <h4>Ví dụ thực tế:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Group</th>
+                            <th>Code</th>
+                            <th>Icon</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>IT Infrastructure</td>
+                            <td><span class="badge badge-info">IT_INFRA</span></td>
+                            <td>💻</td>
+                            <td>Server, network, hardware</td>
+                        </tr>
+                        <tr>
+                            <td>Software & Apps</td>
+                            <td><span class="badge badge-info">SOFTWARE</span></td>
+                            <td>📱</td>
+                            <td>Applications, licenses</td>
+                        </tr>
+                        <tr>
+                            <td>HR Services</td>
+                            <td><span class="badge badge-info">HR</span></td>
+                            <td>👥</td>
+                            <td>Leave, payroll, onboarding</td>
+                        </tr>
+                        <tr>
+                            <td>Facilities</td>
+                            <td><span class="badge badge-info">FACILITIES</span></td>
+                            <td>🏢</td>
+                            <td>Office, equipment, maintenance</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📝 Tạo Service Group:</h4>
+                    <div class="code-block">
+                        <pre>Name: IT Infrastructure
+Code: IT_INFRA
+Icon: 💻
+Description: All IT infrastructure related services
+Status: Active</pre>
+                    </div>
+                </div>
+
+                <h3>🎫 1.2. Ticket Types (Loại Ticket)</h3>
+                <p><strong>Mục đích:</strong> Định nghĩa các loại yêu cầu trong mỗi Service Group</p>
+
+                <h4>Ví dụ cho IT Infrastructure:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket Type</th>
+                            <th>Code</th>
+                            <th>Service Group</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Access Request</td>
+                            <td><span class="badge badge-warning">ACCESS_REQ</span></td>
+                            <td>IT Infrastructure</td>
+                            <td>VPN, system access</td>
+                        </tr>
+                        <tr>
+                            <td>Hardware Issue</td>
+                            <td><span class="badge badge-warning">HW_ISSUE</span></td>
+                            <td>IT Infrastructure</td>
+                            <td>Laptop, printer problems</td>
+                        </tr>
+                        <tr>
+                            <td>Network Problem</td>
+                            <td><span class="badge badge-warning">NET_ISSUE</span></td>
+                            <td>IT Infrastructure</td>
+                            <td>WiFi, internet issues</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🔧 1.3. Issue Types (Vấn Đề Cụ Thể)</h3>
+                <p><strong>Mục đích:</strong> Chi tiết hóa vấn đề, có thể có sub-issues</p>
+
+                <div class="example-box">
+                    <h4>📝 Ví dụ cho Access Request:</h4>
+                    <div class="flow-chart">
+                        Ticket Type: Access Request
+                        ├── VPN Access (VPN_ACCESS)
+                        │ ├── New VPN Account (VPN_NEW)
+                        │ └── VPN Not Working (VPN_ISSUE)
+                        ├── Email Access (EMAIL_ACCESS)
+                        │ ├── New Email Account (EMAIL_NEW)
+                        │ └── Password Reset (EMAIL_RESET)
+                        └── System Access (SYS_ACCESS)
+                        ├── ERP Access (ERP_ACCESS)
+                        └── CRM Access (CRM_ACCESS)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teams -->
+            <div class="section" id="teams">
+                <h2>👥 Bước 2: Support Teams Tab</h2>
+                <p><strong>Mục đích:</strong> Tạo các team xử lý ticket</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Level</th>
+                            <th>Service Group</th>
+                            <th>Members</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L1 IT Support</td>
+                            <td><span class="badge badge-success">1</span></td>
+                            <td>IT Infrastructure</td>
+                            <td>5 agents</td>
+                        </tr>
+                        <tr>
+                            <td>L2 Network Team</td>
+                            <td><span class="badge badge-warning">2</span></td>
+                            <td>IT Infrastructure</td>
+                            <td>3 specialists</td>
+                        </tr>
+                        <tr>
+                            <td>L3 Infrastructure</td>
+                            <td><span class="badge badge-danger">3</span></td>
+                            <td>IT Infrastructure</td>
+                            <td>2 experts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Rules -->
+            <div class="section" id="rules">
+                <h2>📜 Bước 3: Rules Tab (Business Logic)</h2>
+                <p><strong>Mục đích:</strong> Định nghĩa rules tự động route ticket</p>
+
+                <h3>3.1. Routing Rules (Tự động phân công)</h3>
+                <div class="example-box">
+                    <h4>📝 Ví dụ:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rule Name</th>
+                                <th>Issue Type</th>
+                                <th>Assigned To</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>VPN to L1 IT</td>
+                                <td>VPN Access</td>
+                                <td>L1 IT Support</td>
+                                <td><span class="badge badge-danger">High</span></td>
+                            </tr>
+                            <tr>
+                                <td>Network to L2</td>
+                                <td>Network Problem</td>
+                                <td>L2 Network Team</td>
+                                <td><span class="badge badge-danger">Critical</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Kết quả:</strong> Khi user chọn "VPN Access" → Ticket tự động assign cho L1 IT Support!
+                    </p>
+                </div>
+
+                <h3>3.2. Approval Rules (Phê duyệt)</h3>
+                <p><strong>Mục đích:</strong> Định nghĩa ai phải approve ticket trước khi xử lý</p>
+
+                <div class="example-box">
+                    <h4>📝 Ví dụ thực tế:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rule Name</th>
+                                <th>Issue Type</th>
+                                <th>Approver</th>
+                                <th>Condition</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Manager Approval</td>
+                                <td>Leave Request</td>
+                                <td>Direct Manager</td>
+                                <td>Always</td>
+                            </tr>
+                            <tr>
+                                <td>IT Manager Approval</td>
+                                <td>System Access</td>
+                                <td>IT Manager</td>
+                                <td>If > 3 systems</td>
+                            </tr>
+                            <tr>
+                                <td>Director Approval</td>
+                                <td>Budget Request</td>
+                                <td>Director</td>
+                                <td>If amount > $5000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <pre><strong>Tạo Approval Rule:</strong>
+
+Rule Name: Leave Needs Manager Approval
+Issue Type: Leave Request
+Approver Type: Direct Manager
+Required: Yes
+Order: 1
+Status: Active</pre>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>🎯 Kết quả:</strong> Leave request phải được manager approve trước khi L1 HR xử lý!<br>
+                    <strong>Flow:</strong> User submit → Manager approve → HR process → Closed
+                </div>
+
+                <h4>Ví dụ Multi-Level Approval:</h4>
+                <div class="flow-chart">
+                    Budget Request > $10,000:
+                    Step 1: Direct Manager (approve/reject)
+                    ↓ (if approved)
+                    Step 2: Department Head (approve/reject)
+                    ↓ (if approved)
+                    Step 3: Finance Director (approve/reject)
+                    ↓ (if approved)
+                    Step 4: CEO (final approval)
+                    ↓
+                    Approved → Process payment
+                </div>
+
+                <h3>3.3. Level Rules (Escalation)</h3>
+                <p><strong>Mục đích:</strong> Tự động escalate ticket lên level cao hơn nếu không giải quyết kịp thời
+                </p>
+
+                <div class="example-box">
+                    <h4>📝 Ví dụ IT Support Escalation:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Team</th>
+                                <th>Time Limit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-success">L1</span></td>
+                                <td>L1 IT Support</td>
+                                <td>4 hours</td>
+                                <td>First response & basic troubleshooting</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">L2</span></td>
+                                <td>L2 Network Team</td>
+                                <td>8 hours</td>
+                                <td>Advanced troubleshooting</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-danger">L3</span></td>
+                                <td>L3 Infrastructure</td>
+                                <td>24 hours</td>
+                                <td>Expert-level resolution</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <pre><strong>Tạo Level Rule:</strong>
+
+Rule Name: IT Hardware Escalation
+Issue Type: Hardware Issue
+
+Level 1: L1 IT Support
+  - Time Limit: 4 hours
+  - Action: Diagnose and fix common issues
+
+Level 2: L2 Network Team  
+  - Time Limit: 8 hours
+  - Action: Advanced hardware troubleshooting
+
+Level 3: L3 Infrastructure
+  - Time Limit: 24 hours
+  - Action: Replace hardware or vendor escalation
+
+Status: Active</pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Auto-Escalation:</strong><br>
+                    • Nếu L1 không resolve trong 4h → Tự động escalate lên L2<br>
+                    • Nếu L2 không resolve trong 8h → Tự động escalate lên L3<br>
+                    • Email notification gửi cho cả 2 teams (old + new)
+                </div>
+
+                <h4>Ví dụ HR Escalation:</h4>
+                <div class="flow-chart">
+                    Payroll Issue:
+                    L1: HR Team (2 hours)
+                    ↓ (if not resolved)
+                    L2: HR Manager (4 hours)
+                    ↓ (if not resolved)
+                    L3: HR Director (8 hours)
+                    ↓ (if still not resolved)
+                    Critical: Finance Director (immediate)
+                </div>
+
+                <h3>3.4. Custom Fields (Thông tin bổ sung)</h3>
+                <p><strong>Mục đích:</strong> Thu thập thông tin cụ thể cho từng loại ticket</p>
+
+                <div class="example-box">
+                    <h4>📝 Ví dụ Custom Fields cho VPN Access:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Validation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>VPN Username</td>
+                                <td>Text</td>
+                                <td><span class="badge badge-danger">Yes</span></td>
+                                <td>Alphanumeric only</td>
+                            </tr>
+                            <tr>
+                                <td>Department</td>
+                                <td>Dropdown</td>
+                                <td><span class="badge badge-danger">Yes</span></td>
+                                <td>Sales, IT, HR, Finance</td>
+                            </tr>
+                            <tr>
+                                <td>Access Duration</td>
+                                <td>Number</td>
+                                <td><span class="badge badge-success">No</span></td>
+                                <td>1-365 days</td>
+                            </tr>
+                            <tr>
+                                <td>Business Justification</td>
+                                <td>Textarea</td>
+                                <td><span class="badge badge-danger">Yes</span></td>
+                                <td>Min 20 characters</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <pre><strong>Tạo Custom Field:</strong>
+
+Issue Type: VPN Access
+Field Name: VPN Username
+Field Type: Text
+Required: Yes
+Validation: Alphanumeric (a-z, A-Z, 0-9, ., _)
+Placeholder: e.g., john.doe
+Help Text: Enter your desired VPN username
+Status: Active</pre>
+                </div>
+
+                <h4>Ví dụ Custom Fields cho Hardware Issue:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Type</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Asset Tag</td>
+                            <td>Text</td>
+                            <td>Identify specific device</td>
+                        </tr>
+                        <tr>
+                            <td>Device Type</td>
+                            <td>Dropdown</td>
+                            <td>Laptop, Desktop, Printer, Monitor</td>
+                        </tr>
+                        <tr>
+                            <td>Problem Description</td>
+                            <td>Textarea</td>
+                            <td>Detailed issue description</td>
+                        </tr>
+                        <tr>
+                            <td>Error Screenshot</td>
+                            <td>File Upload</td>
+                            <td>Visual proof of issue</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-info">
+                    <strong>💡 Smart Form:</strong> Khi user chọn "VPN Access" → Form tự động hiện các custom fields
+                    này!<br>
+                    <strong>Kết quả:</strong> Data được collect đầy đủ, agent không cần hỏi lại user!
+                </div>
+
+                <h4>Ví dụ Custom Fields cho Leave Request:</h4>
+                <div class="code-block">
+                    <pre>Field 1: Leave Type
+  Type: Dropdown
+  Options: Annual Leave, Sick Leave, Unpaid Leave
+  Required: Yes
+
+Field 2: Start Date
+  Type: Date
+  Required: Yes
+  Validation: Must be future date
+
+Field 3: End Date
+  Type: Date
+  Required: Yes
+  Validation: Must be after Start Date
+
+Field 4: Number of Days
+  Type: Number (Auto-calculated)
+  Formula: End Date - Start Date + 1
+
+Field 5: Reason
+  Type: Textarea
+  Required: Yes
+  Min Length: 10 characters
+
+Field 6: Emergency Contact
+  Type: Text
+  Required: No
+  Format: Phone number</pre>
+                </div>
+
+                <h3>3.5. Kết Hợp Tất Cả Rules</h3>
+            </div>
+
+            <!-- Result -->
+            <div class="section" id="result">
+                <h2>🎉 KẾT QUẢ CUỐI CÙNG</h2>
+
+                <h3>Khi User Submit Ticket</h3>
+                <div class="code-block">
+                    <pre>User chọn:
+  Service Group: IT Infrastructure
+  Ticket Type: Access Request
+  Issue Type: VPN Access → New VPN Account
+  VPN Username: john.doe
+  Reason: Need access for remote work</pre>
+                </div>
+
+                <h3>Hệ Thống Trả Về JSON:</h3>
+                <div class="json-output">
+                    <pre>{
+  "ticket_id": "TKT-2024-001234",
+  "status": "submitted",
+  "user": {
+    "id": 123,
+    "name": "John Doe",
+    "email": "john.doe@company.com"
+  },
+  "classification": {
+    "service_group": {
+      "id": 1,
+      "code": "IT_INFRA",
+      "name": "IT Infrastructure"
+    },
+    "ticket_type": {
+      "id": 5,
+      "code": "ACCESS_REQ",
+      "name": "Access Request"
+    },
+    "issue_type": {
+      "id": 12,
+      "code": "VPN_NEW",
+      "name": "New VPN Account"
+    }
+  },
+  "routing": {
+    "assigned_to": {
+      "type": "team",
+      "id": 3,
+      "name": "L1 IT Support"
+    },
+    "priority": "high"
+  },
+  "sla": {
+    "policy_name": "High SLA",
+    "first_response_deadline": "2024-12-14 15:00:00",
+    "resolution_deadline": "2024-12-14 18:00:00"
+  },
+  "custom_fields": {
+    "vpn_username": "john.doe"
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Dev Usage -->
+            <div class="section" id="dev-usage">
+                <h2>💻 Dev Sử Dụng JSON Như Thế Nào?</h2>
+
+                <h3>1. Auto-Assignment</h3>
+                <div class="code-block">
+                    <pre>$assigned_team_id = $json['routing']['assigned_to']['id'];
+$priority = $json['routing']['priority'];
+
+DB::insert('tickets', [
+    'assigned_team_id' => $assigned_team_id,
+    'priority' => $priority
+]);</pre>
+                </div>
+
+                <h3>2. SLA Tracking</h3>
+                <div class="code-block">
+                    <pre>$deadline = $json['sla']['resolution_deadline'];
+
+SLATimer::create([
+    'ticket_id' => $ticket_id,
+    'resolution_deadline' => $deadline
+]);</pre>
+                </div>
+
+                <h3>3. Auto Escalation</h3>
+                <div class="code-block">
+                    <pre>if (time() > strtotime($json['escalation']['l1_deadline'])) {
+    $l2_team = $json['escalation']['l2_team'];
+    Ticket::escalate($ticket_id, $l2_team, 2);
+}</pre>
+                </div>
+            </div>
+
+            <!-- Flow Chart -->
+            <div class="section">
+                <h2>📊 FLOW CHART TỔNG THỂ</h2>
+                <div class="flow-chart">
+                    User Submit Ticket
+                    ↓
+                    [Classification Engine]
+                    - Service Group
+                    - Ticket Type
+                    - Issue Type
+                    ↓
+                    [Routing Engine]
+                    - Apply Routing Rules
+                    - Assign to Team/Agent
+                    - Set Priority
+                    ↓
+                    [Approval Engine]
+                    - Check Approval Rules
+                    - Route to Approvers
+                    ↓
+                    [SLA Engine]
+                    - Apply SLA Policy
+                    - Set Deadlines
+                    ↓
+                    [Workflow Engine]
+                    - Set Initial State
+                    - Define Transitions
+                    ↓
+                    [Escalation Engine]
+                    - Set Level Rules
+                    - Auto-Escalation
+                    ↓
+                    Return JSON to Dev
+                </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="section">
+                <h2>✅ CHECKLIST SETUP HOÀN CHỈNH</h2>
+
+                <h3>Service Structure</h3>
+                <ul class="checklist">
+                    <li>Tạo Service Groups (ít nhất 2-3)</li>
+                    <li>Tạo Ticket Types cho mỗi Service Group (3-5 types)</li>
+                    <li>Tạo Issue Types cho mỗi Ticket Type (5-10 issues)</li>
+                    <li>Tạo Sub-Issues nếu cần</li>
+                </ul>
+
+                <h3>Teams</h3>
+                <ul class="checklist">
+                    <li>Tạo Support Teams (L1, L2, L3)</li>
+                    <li>Add team members</li>
+                    <li>Assign teams to Service Groups</li>
+                </ul>
+
+                <h3>Rules</h3>
+                <ul class="checklist">
+                    <li>Tạo Routing Rules (1 rule/issue type)</li>
+                    <li>Tạo Approval Rules (cho sensitive requests)</li>
+                    <li>Tạo Level Rules (cho escalation)</li>
+                    <li>Tạo Custom Fields (cho data collection)</li>
+                </ul>
+            </div>
+
+            <!-- Benefits -->
+            <div class="section">
+                <h2>🚀 LỢI ÍCH</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Trước khi có system</th>
+                            <th>Sau khi setup</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>❌ Manual assignment (slow)</td>
+                            <td>✅ Auto-assignment (instant)</td>
+                        </tr>
+                        <tr>
+                            <td>❌ Missed SLA (no tracking)</td>
+                            <td>✅ SLA tracking (real-time)</td>
+                        </tr>
+                        <tr>
+                            <td>❌ Inconsistent process</td>
+                            <td>✅ Consistent workflow</td>
+                        </tr>
+                        <tr>
+                            <td>❌ No escalation</td>
+                            <td>✅ Auto-escalation</td>
+                        </tr>
+                        <tr>
+                            <td>❌ Lost tickets</td>
+                            <td>✅ Full audit trail</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📞 Nếu cần hỗ trợ setup, liên hệ IT Admin!</p>
+            <p><strong>Happy Ticketing!</strong> 🎉</p>
+        </div>
+    </div>
+</body>
+
+</html>

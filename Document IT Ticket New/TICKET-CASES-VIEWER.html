@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Creation - All Cases Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontSize: 16,
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin: 50px 0 25px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin: 30px 0 20px;
+            font-size: 1.5em;
+        }
+
+        h4 {
+            color: #555;
+            margin: 20px 0 15px;
+            font-size: 1.2em;
+        }
+
+        .mermaid {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 3px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e11d48;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .case-number {
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+
+        .note {
+            background: #dbeafe;
+            border-left: 5px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .success {
+            background: #d1fae5;
+            border-left: 5px solid #10b981;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .error {
+            background: #fee2e2;
+            border-left: 5px solid #ef4444;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 15px 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        ul,
+        ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .toc {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #e5e7eb;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎫 Ticket Creation</h1>
+            <p style="font-size: 1.5em;">All Cases Analysis</p>
+            <p style="margin-top: 15px; font-size: 1.2em;">8 Cases | 15+ Flowcharts | Complete Testing Guide</p>
+        </header>
+
+        <button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+        <div class="success">
+            <h3>📋 Tổng Quan</h3>
+            <p style="font-size: 1.1em;">Phân tích chi tiết <strong>TẤT CẢ</strong> các trường hợp (cases) khi người
+                dùng tạo ticket trong hệ thống IT Ticket Management, từ flow đơn giản đến phức tạp, kèm sơ đồ, SQL, code
+                examples và testing checklist.</p>
+        </div>
+
+        <div class="toc">
+            <h3>📑 Table of Contents</h3>
+            <ol style="font-size: 1.1em; line-height: 2;">
+                <li><a href="#case1">Case 1: Normal Ticket Creation</a></li>
+                <li><a href="#case2">Case 2: Auto-Assignment by Business Rules</a></li>
+                <li><a href="#case3">Case 3: Ticket Requires Solution</a></li>
+                <li><a href="#case4">Case 4: SLA Policy Application</a></li>
+                <li><a href="#case5">Case 5: Workflow State Machine</a></li>
+                <li><a href="#case6">Case 6: Multi-Level Escalation</a></li>
+                <li><a href="#case7">Case 7: Notification Triggers</a></li>
+                <li><a href="#case8">Case 8: Edge Cases & Validations</a></li>
+            </ol>
+        </div>
+
+        <hr style="margin: 50px 0; border: none; border-top: 2px solid #e5e7eb;">
+
+        <!-- CASE 1 -->
+        <h2 id="case1"><span class="case-number">Case 1</span>Normal Ticket Creation</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> User tạo ticket cơ bản với đầy đủ thông tin bắt buộc (subject, description,
+            category, issue type, priority).
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([User Opens Create Ticket Form]) --> Fill[User Fills Form<br />Subject, Description<br />Category,
+            Issue Type, Priority]
+            Fill --> Upload{Has<br />Attachments?}
+            Upload -->|Yes| UploadFiles[Upload Files<br />Max 5MB each]
+            Upload -->|No| Validate
+            UploadFiles --> Validate[Validate Form Data]
+
+            Validate --> Valid{Valid?}
+            Valid -->|No| ShowError[Show Validation Errors]
+            ShowError --> Fill
+
+            Valid -->|Yes| Generate[Generate Ticket Number<br />TKT-YYYYMMDD-XXXX]
+            Generate --> GetRequester[Get Requester Info<br />from hr_table_main]
+            GetRequester --> GetIssueType[Get Issue Type Config<br />requires_solution, sla_hours]
+
+            GetIssueType --> CreateTicket[INSERT INTO tickets<br />status = new, support_level = L1]
+            CreateTicket --> CreateHistory[INSERT INTO ticket_history<br />action_type = created]
+            CreateHistory --> SaveAttachments{Has<br />Attachments?}
+
+            SaveAttachments -->|Yes| InsertAttachments[INSERT INTO ticket_attachments]
+            SaveAttachments -->|No| TriggerRules
+            InsertAttachments --> TriggerRules[Trigger Business Rules]
+
+            TriggerRules --> CalcSLA[Calculate SLA Due Date]
+            CalcSLA --> SendNotif[Send Notification to Requester]
+            SendNotif --> End([Ticket Created Successfully])
+
+            style Start fill:#d1fae5
+            style End fill:#d1fae5
+            style ShowError fill:#fee2e2
+            style CreateTicket fill:#dbeafe
+        </div>
+
+        <h3>✅ Success Criteria</h3>
+        <ul>
+            <li>✅ Ticket number generated uniquely</li>
+            <li>✅ Ticket saved to database</li>
+            <li>✅ History logged</li>
+            <li>✅ Attachments uploaded (if any)</li>
+            <li>✅ Requester notified</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 2 -->
+        <h2 id="case2"><span class="case-number">Case 2</span>Auto-Assignment by Business Rules</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Sau khi ticket được tạo, hệ thống tự động assign ticket cho team/tech dựa
+            trên business rules (category, priority, department, etc.).
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Ticket Created<br />status = new]) --> GetRules[Get Active Business Rules<br />rule_type =
+            assignment<br />ORDER BY priority ASC]
+
+            GetRules --> HasRules{Has<br />Rules?}
+            HasRules -->|No| ManualQueue[Add to Manual Queue]
+            HasRules -->|Yes| EvalRules[Evaluate Rules in Priority Order]
+
+            EvalRules --> CheckConditions{Rule<br />Conditions<br />Match?}
+
+            CheckConditions -->|No| NextRule{More<br />Rules?}
+            NextRule -->|Yes| EvalRules
+            NextRule -->|No| ManualQueue
+
+            CheckConditions -->|Yes| GetAction[Get Rule Actions<br />assign_to_team or assign_to_employee]
+
+            GetAction --> UpdateTicket[UPDATE tickets<br />SET assigned_team_id or assigned_to<br />status = assigned]
+
+            UpdateTicket --> LogHistory[INSERT ticket_history<br />action = assigned]
+            LogHistory --> SendNotif[Send Notification<br />to Team/Employee]
+
+            SendNotif --> End([Auto-Assignment Complete])
+            ManualQueue --> End
+
+            style Start fill:#dbeafe
+            style End fill:#d1fae5
+            style ManualQueue fill:#fef3c7
+        </div>
+
+        <h3>📊 Business Rules Examples</h3>
+        <pre><code class="language-json">// Rule 1: Network issues → Network Team
+{
+  "name": "Network Issues to Network Team",
+  "rule_type": "assignment",
+  "priority": 1,
+  "conditions": {
+    "category_code": "NETWORK",
+    "priority": ["high", "critical"]
+  },
+  "actions": {
+    "assign_to_team": 1,
+    "set_support_level": "L1"
+  }
+}</code></pre>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 3 -->
+        <h2 id="case3"><span class="case-number">Case 3</span>Ticket Requires Solution</h2>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Một số issue types yêu cầu tech phải provide solution trước khi close ticket.
+            Trigger và stored procedure sẽ validate điều này.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Ticket Assigned to Tech]) --> TechPick[Tech Picks Ticket<br />status = in_progress]
+            TechPick --> Investigate[Tech Investigates Issue]
+            Investigate --> Resolve{Can<br />Resolve?}
+
+            Resolve -->|No| Escalate[Escalate to L2/L3]
+            Resolve -->|Yes| CheckReqSolution{Issue Type<br />requires_solution<br />= TRUE?}
+
+            CheckReqSolution -->|No| DirectResolve[UPDATE tickets<br />status = resolved]
+            CheckReqSolution -->|Yes| ProvideSolution[Tech Provides Solution<br />INSERT
+            ticket_comments<br />is_solution = TRUE]
+
+            ProvideSolution --> ValidateSolution{Solution<br />Valid?}
+            ValidateSolution -->|No| ShowError[Error: Solution Required]
+            ShowError --> ProvideSolution
+
+            ValidateSolution -->|Yes| CallSP[CALL sp_provide_solution]
+
+            CallSP --> UpdateStatus[UPDATE tickets<br />status = resolved]
+            DirectResolve --> NotifyRequester
+
+            UpdateStatus --> NotifyRequester[Send Notification to Requester]
+            NotifyRequester --> RequesterReview{Requester<br />Satisfied?}
+
+            RequesterReview -->|No| Reopen[Reopen Ticket<br />status = in_progress]
+            RequesterReview -->|Yes| CloseTicket[CALL sp_close_ticket<br />status = closed]
+
+            Reopen --> Investigate
+            CloseTicket --> End([Ticket Closed])
+            Escalate --> End
+
+            style Start fill:#dbeafe
+            style End fill:#d1fae5
+            style ShowError fill:#fee2e2
+            style CloseTicket fill:#d1fae5
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 4 -->
+        <h2 id="case4"><span class="case-number">Case 4</span>SLA Policy Application</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Mỗi ticket có SLA deadline dựa trên priority. Hệ thống track và warning khi
+            gần quá hạn (1-4 hours), overdue khi quá hạn.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Ticket Created]) --> GetSLA[Get SLA Policy<br />based on priority]
+            GetSLA --> CalcDue[Calculate SLA Due Date<br />sla_due_date = NOW + sla_hours]
+            CalcDue --> SetStatus[Set sla_status = on_time]
+            SetStatus --> SaveTicket[Save Ticket]
+
+            SaveTicket --> CronJob[Cron Job Runs<br />Every 15 minutes]
+            CronJob --> CheckAll[Check All Open Tickets]
+
+            CheckAll --> CalcRemaining[Calculate Remaining Time]
+            CalcRemaining --> TimeCheck{Remaining<br />Time?}
+
+            TimeCheck -->|"> 4 hours"| KeepOnTime[sla_status = on_time]
+            TimeCheck -->|"1-4 hours"| SetWarning[sla_status = warning<br />Send Warning Email]
+            TimeCheck -->|"
+            < 0 hours"| SetOverdue[sla_status=overdue<br />Send Overdue Alert]
+
+            SetWarning --> CreateReminder[INSERT ticket_reminders]
+            SetOverdue --> EscalateCheck{Auto<br />Escalate?}
+
+            EscalateCheck -->|Yes| AutoEscalate[Trigger Auto-Escalation]
+            EscalateCheck -->|No| LogOverdue[Log SLA Breach]
+
+            CreateReminder --> End([Continue Monitoring])
+            AutoEscalate --> End
+            LogOverdue --> End
+            KeepOnTime --> End
+
+            style Start fill:#dbeafe
+            style SetWarning fill:#fef3c7
+            style SetOverdue fill:#fee2e2
+        </div>
+
+        <h3>📊 SLA Policies</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Priority</th>
+                    <th>Response Hours</th>
+                    <th>Resolution Hours</th>
+                    <th>Warning Threshold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Critical</strong></td>
+                    <td>1 hour</td>
+                    <td>4 hours</td>
+                    <td>1-4 hours remaining</td>
+                </tr>
+                <tr>
+                    <td><strong>High</strong></td>
+                    <td>2 hours</td>
+                    <td>8 hours</td>
+                    <td>1-4 hours remaining</td>
+                </tr>
+                <tr>
+                    <td><strong>Medium</strong></td>
+                    <td>4 hours</td>
+                    <td>24 hours</td>
+                    <td>1-4 hours remaining</td>
+                </tr>
+                <tr>
+                    <td><strong>Low</strong></td>
+                    <td>8 hours</td>
+                    <td>72 hours</td>
+                    <td>1-4 hours remaining</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 5 -->
+        <h2 id="case5"><span class="case-number">Case 5</span>Workflow State Machine</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Ticket theo workflow với các states và transitions được định nghĩa trước.
+            Mỗi transition có conditions (roles, requirements).
+        </div>
+
+        <h3>🎯 State Diagram</h3>
+        <div class="mermaid">
+            stateDiagram-v2
+            [*] --> New: Ticket Created
+
+            New --> Assigned: Auto-Assignment or Manual
+            New --> Cancelled: User Cancels
+
+            Assigned --> InProgress: Tech Picks Ticket
+            Assigned --> Cancelled: User Cancels
+
+            InProgress --> Pending: Waiting for Info
+            InProgress --> Resolved: Solution Provided
+            InProgress --> Escalated: Escalate to L2/L3
+
+            Pending --> InProgress: Info Received
+            Pending --> Cancelled: User Cancels
+
+            Escalated --> Assigned: Assigned to L2/L3
+
+            Resolved --> Closed: Requester Confirms
+            Resolved --> InProgress: Requester Reopens
+
+            Closed --> [*]: Ticket Complete
+            Cancelled --> [*]: Ticket Cancelled
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 6 -->
+        <h2 id="case6"><span class="case-number">Case 6</span>Multi-Level Escalation</h2>
+
+        <div class="warning">
+            <strong>⚠️ Escalation Path:</strong> L1 → L2 → L3. Mỗi escalation cần reason và được log vào
+            ticket_escalations.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Ticket in L1 Queue]) --> L1Pick[L1 Tech Picks Ticket]
+            L1Pick --> L1Work[L1 Investigates]
+            L1Work --> L1Can{L1 Can<br />Resolve?}
+
+            L1Can -->|Yes| L1Resolve[L1 Provides Solution]
+            L1Can -->|No| L1Escalate[L1 Escalates to L2<br />Provides Reason]
+
+            L1Escalate --> UpdateTicket1[UPDATE tickets<br />support_level = L2<br />assigned_team_id = L2_team]
+
+            UpdateTicket1 --> NotifyL2[Notify L2 Team]
+            NotifyL2 --> L2Queue[Ticket in L2 Queue]
+
+            L2Queue --> L2Pick[L2 Tech Picks Ticket]
+            L2Pick --> L2Work[L2 Investigates]
+            L2Work --> L2Can{L2 Can<br />Resolve?}
+
+            L2Can -->|Yes| L2Resolve[L2 Provides Solution]
+            L2Can -->|No| L2Escalate[L2 Escalates to L3]
+
+            L2Escalate --> UpdateTicket2[UPDATE tickets<br />support_level = L3]
+
+            UpdateTicket2 --> NotifyL3[Notify L3 Team]
+            NotifyL3 --> L3Queue[Ticket in L3 Queue]
+
+            L3Queue --> L3Resolve[L3 Provides Solution]
+
+            L1Resolve --> End([Ticket Resolved])
+            L2Resolve --> End
+            L3Resolve --> End
+
+            style Start fill:#dbeafe
+            style L2Queue fill:#fef3c7
+            style L3Queue fill:#fee2e2
+            style End fill:#d1fae5
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 7 -->
+        <h2 id="case7"><span class="case-number">Case 7</span>Notification Triggers</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tất cả các events trigger notifications cho các stakeholders liên quan
+            (requester, assigned tech, manager, team).
+        </div>
+
+        <h3>📊 Notification Matrix</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Recipient</th>
+                    <th>Notification Type</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Ticket Created</strong></td>
+                    <td>Requester</td>
+                    <td>Confirmation</td>
+                    <td>Normal</td>
+                </tr>
+                <tr>
+                    <td><strong>Ticket Assigned</strong></td>
+                    <td>Assigned Tech</td>
+                    <td>New Assignment</td>
+                    <td>Normal</td>
+                </tr>
+                <tr>
+                    <td><strong>Solution Provided</strong></td>
+                    <td>Requester</td>
+                    <td>Solution Ready</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>SLA Warning</strong></td>
+                    <td>Assigned Tech + Manager</td>
+                    <td>SLA Alert</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>SLA Overdue</strong></td>
+                    <td>Manager + Team Lead</td>
+                    <td>SLA Breach</td>
+                    <td>Critical</td>
+                </tr>
+                <tr>
+                    <td><strong>Escalated</strong></td>
+                    <td>L2/L3 Team + Manager</td>
+                    <td>Escalation Alert</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>Ticket Closed</strong></td>
+                    <td>Requester + Assigned Tech</td>
+                    <td>Closure Confirmation</td>
+                    <td>Normal</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 8 -->
+        <h2 id="case8"><span class="case-number">Case 8</span>Edge Cases & Validations</h2>
+
+        <div class="error">
+            <strong>🚨 Critical Validations:</strong> Các edge cases phải được handle gracefully với user-friendly error
+            messages.
+        </div>
+
+        <h3>📋 Edge Cases List</h3>
+        <ol>
+            <li><strong>Requester Not Active Employee</strong> - Check estatus = 7, valid contract, not external</li>
+            <li><strong>Duplicate Ticket Detection</strong> - Same requester, similar subject, within 24 hours</li>
+            <li><strong>Category/Issue Type Inactive</strong> - Validate status = 'active'</li>
+            <li><strong>File Upload Validation</strong> - Max 5MB, allowed types, malware scan</li>
+            <li><strong>Concurrent Updates</strong> - Optimistic locking with updated_at</li>
+            <li><strong>Ticket Number Collision</strong> - Use transaction + FOR UPDATE lock</li>
+            <li><strong>SLA Calculation Edge Cases</strong> - Skip weekends, holidays, non-business hours</li>
+        </ol>
+
+        <h3>🎯 Validation Flow</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([User Tries to Create Ticket]) --> CheckEmployee[Check hr_table_main]
+            CheckEmployee --> Exists{Employee<br />Exists?}
+            Exists -->|No| Error1[Error: Employee not found]
+            Exists -->|Yes| CheckStatus{estatus<br />= 7?}
+            CheckStatus -->|No| Error2[Error: Employee not active]
+            CheckStatus -->|Yes| CheckContract[Check Valid Contract]
+            CheckContract --> ContractValid{Contract<br />Valid?}
+            ContractValid -->|No| Error3[Error: No valid contract]
+            ContractValid -->|Yes| CheckDept{Not<br />External?}
+            CheckDept -->|No| Error4[Error: External employees cannot create tickets]
+            CheckDept -->|Yes| AllowCreate[Allow Ticket Creation]
+
+            Error1 --> End([Reject])
+            Error2 --> End
+            Error3 --> End
+            Error4 --> End
+            AllowCreate --> Success([Proceed])
+
+            style Error1 fill:#fee2e2
+            style Error2 fill:#fee2e2
+            style Error3 fill:#fee2e2
+            style Error4 fill:#fee2e2
+            style Success fill:#d1fae5
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- TESTING CHECKLIST -->
+        <h2>🎯 Complete Testing Checklist</h2>
+
+        <div class="success">
+            <h3>Case 1: Normal Creation</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Create ticket with all required fields</li>
+                <li><input type="checkbox"> Create ticket with attachments</li>
+                <li><input type="checkbox"> Verify ticket number generation</li>
+                <li><input type="checkbox"> Verify requester notification</li>
+                <li><input type="checkbox"> Verify history logging</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 2: Auto-Assignment</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Test rule matching by category</li>
+                <li><input type="checkbox"> Test rule matching by priority</li>
+                <li><input type="checkbox"> Test rule matching by department</li>
+                <li><input type="checkbox"> Test multiple rules (priority order)</li>
+                <li><input type="checkbox"> Test no matching rules (manual queue)</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 3: Requires Solution</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Try to resolve without solution (should fail)</li>
+                <li><input type="checkbox"> Provide solution and resolve</li>
+                <li><input type="checkbox"> Try to close without solution (should fail)</li>
+                <li><input type="checkbox"> Verify solution in ticket_comments</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 4: SLA Tracking</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Verify SLA due date calculation</li>
+                <li><input type="checkbox"> Test SLA warning (1-4 hours)</li>
+                <li><input type="checkbox"> Test SLA overdue (past deadline)</li>
+                <li><input type="checkbox"> Verify email notifications</li>
+                <li><input type="checkbox"> Test SLA with weekends/holidays</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 5: Workflow</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Test all valid transitions</li>
+                <li><input type="checkbox"> Test invalid transitions (should fail)</li>
+                <li><input type="checkbox"> Test role-based transitions</li>
+                <li><input type="checkbox"> Test condition-based transitions</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 6: Escalation</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Escalate L1 → L2</li>
+                <li><input type="checkbox"> Escalate L2 → L3</li>
+                <li><input type="checkbox"> Verify team reassignment</li>
+                <li><input type="checkbox"> Verify notifications</li>
+                <li><input type="checkbox"> Verify escalation history</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 7: Notifications</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Test all notification types</li>
+                <li><input type="checkbox"> Verify in-app notifications</li>
+                <li><input type="checkbox"> Verify email queue</li>
+                <li><input type="checkbox"> Test notification preferences</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>Case 8: Edge Cases</h3>
+            <ul style="list-style: none;">
+                <li><input type="checkbox"> Inactive employee creates ticket</li>
+                <li><input type="checkbox"> Duplicate ticket detection</li>
+                <li><input type="checkbox"> Inactive category/issue type</li>
+                <li><input type="checkbox"> Invalid file upload</li>
+                <li><input type="checkbox"> Concurrent updates</li>
+                <li><input type="checkbox"> Ticket number collision</li>
+            </ul>
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <div class="note">
+            <h3>📝 Notes</h3>
+            <ul>
+                <li>All cases are interconnected and can occur simultaneously</li>
+                <li>Business rules can trigger multiple actions</li>
+                <li>Notifications are asynchronous (queued)</li>
+                <li>SLA tracking runs independently via cron</li>
+                <li>Workflows enforce state machine logic</li>
+                <li>Edge cases must be handled gracefully with user-friendly errors</li>
+            </ul>
+        </div>
+
+        <p
+            style="text-align: center; margin-top: 50px; color: #999; padding-top: 30px; border-top: 2px solid #eee; font-size: 1.1em;">
+            Created: 2025-12-10 | IT Ticket Management System - Complete Case Analysis
+        </p>
+    </div>
+</body>
+
+</html>

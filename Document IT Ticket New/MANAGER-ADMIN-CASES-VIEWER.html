@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager & Super Admin Cases</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontSize: 14,
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #f59e0b;
+            margin: 50px 0 25px;
+            border-bottom: 4px solid #f59e0b;
+            padding-bottom: 15px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #d97706;
+            margin: 30px 0 20px;
+            font-size: 1.5em;
+        }
+
+        .mermaid {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 3px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        .case-number {
+            background: #f59e0b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+
+        .note {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .manager-section {
+            background: #dbeafe;
+            border-left: 5px solid #3b82f6;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 8px;
+        }
+
+        .admin-section {
+            background: #fce7f3;
+            border-left: 5px solid #ec4899;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 8px;
+        }
+
+        .btn {
+            background: #f59e0b;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 15px 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #d97706;
+        }
+
+        .toc {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #e5e7eb;
+        }
+
+        .toc a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        ul,
+        ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>👔 Manager & 🔧 Super Admin</h1>
+            <p style="font-size: 1.5em;">Complete Workflow Analysis</p>
+            <p style="margin-top: 15px; font-size: 1.2em;">20 Cases | 30+ Flowcharts | Best Practices</p>
+        </header>
+
+        <button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+        <div class="note">
+            <h3>📋 Tổng Quan</h3>
+            <p style="font-size: 1.1em;">Phân tích chi tiết <strong>TẤT CẢ</strong> các trường hợp cho Manager (quản lý
+                team, assignment, monitoring) và Super Admin (system configuration, business rules, analytics).</p>
+        </div>
+
+        <div class="toc">
+            <h3>📑 Table of Contents</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4 style="color: #3b82f6; margin-bottom: 10px;">👔 Manager Cases (10)</h4>
+                    <ol style="font-size: 1em; line-height: 1.8;">
+                        <li><a href="#m1">M1: View Team Dashboard</a></li>
+                        <li><a href="#m2">M2: Manual Assignment</a></li>
+                        <li><a href="#m3">M3: Monitor Workload</a></li>
+                        <li><a href="#m4">M4: Handle SLA Breach</a></li>
+                        <li><a href="#m5">M5: Review Escalations</a></li>
+                        <li><a href="#m6">M6: Manage Team Members</a></li>
+                        <li><a href="#m7">M7: Generate Reports</a></li>
+                        <li><a href="#m8">M8: Handle Critical Tickets</a></li>
+                        <li><a href="#m9">M9: Review Pending Tickets</a></li>
+                        <li><a href="#m10">M10: Training & KB</a></li>
+                    </ol>
+                </div>
+                <div>
+                    <h4 style="color: #ec4899; margin-bottom: 10px;">🔧 Super Admin Cases (10)</h4>
+                    <ol style="font-size: 1em; line-height: 1.8;">
+                        <li><a href="#a1">A1: System Configuration</a></li>
+                        <li><a href="#a2">A2: User & Role Management</a></li>
+                        <li><a href="#a3">A3: Business Rules</a></li>
+                        <li><a href="#a4">A4: Category & Issue Type</a></li>
+                        <li><a href="#a5">A5: SLA Policy</a></li>
+                        <li><a href="#a6">A6: Workflow Management</a></li>
+                        <li><a href="#a7">A7: Email Templates</a></li>
+                        <li><a href="#a8">A8: Support Team Structure</a></li>
+                        <li><a href="#a9">A9: Analytics & Reporting</a></li>
+                        <li><a href="#a10">A10: System Maintenance</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <hr style="margin: 50px 0; border: none; border-top: 3px solid #e5e7eb;">
+
+        <div class="manager-section">
+            <h1 style="color: #3b82f6; text-align: center;">👔 MANAGER CASES</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-top: 10px;">Team Management, Assignment, Monitoring &
+                Reporting</p>
+        </div>
+
+        <!-- MANAGER CASE M1 -->
+        <h2 id="m1"><span class="case-number">M1</span>View Team Dashboard & Metrics</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager xem dashboard tổng quan về team performance, ticket statistics, SLA
+            compliance.
+        </div>
+
+        <h3>🎯 Key Metrics</h3>
+        <ul>
+            <li>✅ Total Tickets (open, closed, pending)</li>
+            <li>✅ SLA Compliance Percentage</li>
+            <li>✅ Average Resolution Time</li>
+            <li>✅ Team Utilization Rate</li>
+            <li>✅ Critical/High Priority Tickets</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M2 -->
+        <h2 id="m2"><span class="case-number">M2</span>Manual Ticket Assignment</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager manually assign ticket cho tech member khi auto-assignment không
+            match hoặc cần prioritize.
+        </div>
+
+        <h3>🎯 Assignment Considerations</h3>
+        <ul>
+            <li>Check tech current workload</li>
+            <li>Consider tech skills/specialization</li>
+            <li>Review SLA warning tickets</li>
+            <li>Balance team workload</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M3 -->
+        <h2 id="m3"><span class="case-number">M3</span>Monitor Team Workload</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager monitor workload của từng tech member để balance công việc.
+        </div>
+
+        <h3>📊 Workload Indicators</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Indicator</th>
+                    <th>Green</th>
+                    <th>Yellow</th>
+                    <th>Red</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Active Tickets</td>
+                    <td>&lt; 5</td>
+                    <td>5-10</td>
+                    <td>&gt; 10</td>
+                </tr>
+                <tr>
+                    <td>SLA Warnings</td>
+                    <td>0</td>
+                    <td>1-2</td>
+                    <td>&gt; 2</td>
+                </tr>
+                <tr>
+                    <td>Pending Tickets</td>
+                    <td>&lt; 3</td>
+                    <td>3-5</td>
+                    <td>&gt; 5</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M4 -->
+        <h2 id="m4"><span class="case-number">M4</span>Handle SLA Breach Alerts</h2>
+
+        <div class="note" style="background: #fee2e2; border-color: #ef4444;">
+            <strong>🚨 CRITICAL:</strong> SLA breach requires immediate action. Contact tech, reassign if needed,
+            escalate urgently.
+        </div>
+
+        <h3>⚡ Immediate Actions</h3>
+        <ol>
+            <li><strong>Contact Tech:</strong> Get status update immediately</li>
+            <li><strong>Assess Impact:</strong> Critical/High/Medium priority</li>
+            <li><strong>Take Action:</strong> Reassign, escalate, or provide resources</li>
+            <li><strong>Document:</strong> Log all actions taken</li>
+            <li><strong>Notify:</strong> Inform stakeholders</li>
+        </ol>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M5 -->
+        <h2 id="m5"><span class="case-number">M5</span>Review & Approve Escalations</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager review escalation requests từ L1 to L2 hoặc L2 to L3.
+        </div>
+
+        <h3>✅ Approval Checklist</h3>
+        <ul>
+            <li>☑️ Escalation reason is valid and detailed</li>
+            <li>☑️ Tech has made sufficient resolution attempts</li>
+            <li>☑️ All troubleshooting steps documented</li>
+            <li>☑️ Target level has capacity</li>
+            <li>☑️ Requester has been kept informed</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M6 -->
+        <h2 id="m6"><span class="case-number">M6</span>Manage Team Members</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager quản lý team members: add/remove, set roles, manage availability.
+        </div>
+
+        <h3>👥 Team Management Actions</h3>
+        <ul>
+            <li><strong>Add Member:</strong> Select employee, set role (L1/L2/L3), set skills</li>
+            <li><strong>Remove Member:</strong> Reassign active tickets first</li>
+            <li><strong>Change Role:</strong> Update member role and permissions</li>
+            <li><strong>Set Availability:</strong> Available, On Leave, Busy, Training</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M7 -->
+        <h2 id="m7"><span class="case-number">M7</span>Generate Performance Reports</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager generate reports về team performance, individual performance,
+            trends.
+        </div>
+
+        <h3>📊 Report Types</h3>
+        <ol>
+            <li><strong>Team Performance:</strong> Overall team metrics and KPIs</li>
+            <li><strong>Individual Performance:</strong> Per-tech statistics</li>
+            <li><strong>SLA Compliance:</strong> SLA met vs breached</li>
+            <li><strong>Trend Analysis:</strong> Volume, category, performance trends</li>
+        </ol>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M8 -->
+        <h2 id="m8"><span class="case-number">M8</span>Handle Critical Tickets</h2>
+
+        <div class="note" style="background: #fee2e2; border-color: #ef4444;">
+            <strong>🚨 CRITICAL:</strong> VIP users, system down, security issues require special handling.
+        </div>
+
+        <h3>🎯 Critical Ticket Types</h3>
+        <ul>
+            <li><strong>VIP User:</strong> Assign to senior tech, frequent updates</li>
+            <li><strong>System Down:</strong> Create major incident, assemble team</li>
+            <li><strong>Security Issue:</strong> Alert security team immediately</li>
+            <li><strong>Business Critical:</strong> Assign to specialist, monitor closely</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M9 -->
+        <h2 id="m9"><span class="case-number">M9</span>Review Pending Tickets</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager review tất cả pending tickets để ensure không bị stuck.
+        </div>
+
+        <h3>⏰ Pending Duration Actions</h3>
+        <ul>
+            <li><strong>&lt; 24h:</strong> Acceptable - Monitor only</li>
+            <li><strong>24-48h:</strong> Normal - Check tech follow-up</li>
+            <li><strong>48-72h:</strong> Urgent - Remind tech or contact requester</li>
+            <li><strong>&gt; 72h:</strong> Critical - Contact requester directly or close</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- MANAGER CASE M10 -->
+        <h2 id="m10"><span class="case-number">M10</span>Team Training & Knowledge Base</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Manager organize training sessions và maintain knowledge base.
+        </div>
+
+        <h3>📚 Training Activities</h3>
+        <ul>
+            <li>Create KB articles for common issues</li>
+            <li>Schedule training sessions (new tools, processes)</li>
+            <li>Review and update existing KB</li>
+            <li>Collect feedback and improve</li>
+        </ul>
+
+        <hr style="margin: 70px 0; border: none; border-top: 5px solid #e5e7eb;">
+
+        <div class="admin-section">
+            <h1 style="color: #ec4899; text-align: center;">🔧 SUPER ADMIN CASES</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-top: 10px;">System Configuration, Rules, Analytics &
+                Maintenance</p>
+        </div>
+
+        <!-- ADMIN CASE A1 -->
+        <h2 id="a1"><span class="case-number" style="background: #ec4899;">A1</span>System Configuration</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin configure system settings: email, notifications, general
+            parameters.
+        </div>
+
+        <h3>⚙️ Configuration Types</h3>
+        <ul>
+            <li><strong>Email Settings:</strong> SMTP host, port, credentials, encryption</li>
+            <li><strong>Notification Settings:</strong> Email, in-app, SMS, frequency limits</li>
+            <li><strong>General Settings:</strong> System name, timezone, date format, language</li>
+            <li><strong>Security Settings:</strong> Password policy, login attempts, session timeout</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A2 -->
+        <h2 id="a2"><span class="case-number" style="background: #ec4899;">A2</span>User & Role Management</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin manage users và roles trong hệ thống.
+        </div>
+
+        <h3>👥 Role Management</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Permissions</th>
+                    <th>Typical Users</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>User</strong></td>
+                    <td>Create tickets, view own tickets</td>
+                    <td>All employees</td>
+                </tr>
+                <tr>
+                    <td><strong>Tech L1</strong></td>
+                    <td>View queue, pick tickets, resolve</td>
+                    <td>Support staff</td>
+                </tr>
+                <tr>
+                    <td><strong>Tech L2/L3</strong></td>
+                    <td>Advanced troubleshooting, escalations</td>
+                    <td>Senior support, specialists</td>
+                </tr>
+                <tr>
+                    <td><strong>Manager</strong></td>
+                    <td>Team management, assignment, reports</td>
+                    <td>Team leads</td>
+                </tr>
+                <tr>
+                    <td><strong>Super Admin</strong></td>
+                    <td>Full system access, configuration</td>
+                    <td>System administrators</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A3 -->
+        <h2 id="a3"><span class="case-number" style="background: #ec4899;">A3</span>Business Rules Management</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin create và manage business rules cho auto-assignment,
+            notifications, workflows.
+        </div>
+
+        <h3>📋 Rule Types</h3>
+        <ol>
+            <li><strong>Assignment Rules:</strong> Auto-assign based on category, priority, department</li>
+            <li><strong>Notification Rules:</strong> Send notifications based on events</li>
+            <li><strong>Escalation Rules:</strong> Auto-escalate based on SLA or conditions</li>
+            <li><strong>Priority Rules:</strong> Auto-adjust priority based on criteria</li>
+        </ol>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A4 -->
+        <h2 id="a4"><span class="case-number" style="background: #ec4899;">A4</span>Category & Issue Type Setup</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin setup categories và issue types với tree structure.
+        </div>
+
+        <h3>🌳 Tree Structure Example</h3>
+        <ul>
+            <li><strong>Hardware</strong>
+                <ul>
+                    <li>Desktop Issues</li>
+                    <li>Laptop Issues</li>
+                    <li>Printer Issues</li>
+                </ul>
+            </li>
+            <li><strong>Software</strong>
+                <ul>
+                    <li>Application Error</li>
+                    <li>Installation</li>
+                    <li>License</li>
+                </ul>
+            </li>
+            <li><strong>Network</strong>
+                <ul>
+                    <li>Internet Connection</li>
+                    <li>VPN Issues</li>
+                    <li>WiFi Problems</li>
+                </ul>
+            </li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A5 -->
+        <h2 id="a5"><span class="case-number" style="background: #ec4899;">A5</span>SLA Policy Configuration</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin configure SLA policies cho different priorities.
+        </div>
+
+        <h3>⏱️ Standard SLA Policies</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Priority</th>
+                    <th>Response Time</th>
+                    <th>Resolution Time</th>
+                    <th>Warning Threshold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Critical</strong></td>
+                    <td>1 hour</td>
+                    <td>4 hours</td>
+                    <td>1 hour before</td>
+                </tr>
+                <tr>
+                    <td><strong>High</strong></td>
+                    <td>2 hours</td>
+                    <td>8 hours</td>
+                    <td>2 hours before</td>
+                </tr>
+                <tr>
+                    <td><strong>Medium</strong></td>
+                    <td>4 hours</td>
+                    <td>24 hours</td>
+                    <td>4 hours before</td>
+                </tr>
+                <tr>
+                    <td><strong>Low</strong></td>
+                    <td>8 hours</td>
+                    <td>72 hours</td>
+                    <td>8 hours before</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A6 -->
+        <h2 id="a6"><span class="case-number" style="background: #ec4899;">A6</span>Workflow Management</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin create và manage workflows với states và transitions.
+        </div>
+
+        <h3>🔄 Workflow Components</h3>
+        <ul>
+            <li><strong>States:</strong> New, Assigned, In Progress, Pending, Resolved, Closed</li>
+            <li><strong>Transitions:</strong> Rules for moving between states</li>
+            <li><strong>Conditions:</strong> Role permissions, required fields, validations</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A7 -->
+        <h2 id="a7"><span class="case-number" style="background: #ec4899;">A7</span>Email Template Configuration</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin create và customize email templates.
+        </div>
+
+        <h3>📧 Email Triggers</h3>
+        <ol>
+            <li>Ticket Created</li>
+            <li>Ticket Assigned</li>
+            <li>Ticket Resolved</li>
+            <li>SLA Warning</li>
+            <li>SLA Overdue</li>
+            <li>Ticket Escalated</li>
+            <li>Ticket Reopened</li>
+            <li>Comment Added</li>
+        </ol>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A8 -->
+        <h2 id="a8"><span class="case-number" style="background: #ec4899;">A8</span>Support Team Structure</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin setup support teams structure (L1, L2, L3).
+        </div>
+
+        <h3>🏢 Team Structure</h3>
+        <ul>
+            <li><strong>L1 Teams:</strong> First line support, basic troubleshooting</li>
+            <li><strong>L2 Teams:</strong> Advanced support, specialized knowledge</li>
+            <li><strong>L3 Teams:</strong> Expert level, complex issues, architecture</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A9 -->
+        <h2 id="a9"><span class="case-number" style="background: #ec4899;">A9</span>Analytics & Reporting</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin access advanced analytics và system-wide reports.
+        </div>
+
+        <h3>📊 Analytics Types</h3>
+        <ul>
+            <li><strong>System Overview:</strong> Total tickets, active users, teams performance</li>
+            <li><strong>Performance Analytics:</strong> Resolution time, response time, satisfaction</li>
+            <li><strong>Trend Analysis:</strong> Volume trends, category trends, predictions</li>
+            <li><strong>Custom Reports:</strong> Build custom reports with dimensions and measures</li>
+        </ul>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- ADMIN CASE A10 -->
+        <h2 id="a10"><span class="case-number" style="background: #ec4899;">A10</span>System Maintenance & Audit</h2>
+
+        <div class="note" style="background: #fce7f3; border-color: #ec4899;">
+            <strong>📝 Description:</strong> Super Admin perform system maintenance và audit activities.
+        </div>
+
+        <h3>🔧 Maintenance Activities</h3>
+        <ul>
+            <li><strong>Audit Logs:</strong> View all system activities and changes</li>
+            <li><strong>Database Maintenance:</strong> Optimize tables, clean old data, rebuild indexes</li>
+            <li><strong>Health Check:</strong> Check database, email, storage, APIs, cron jobs</li>
+            <li><strong>Backup & Restore:</strong> Create backups, restore from backup, schedule auto-backup</li>
+        </ul>
+
+        <hr style="margin: 70px 0; border: none; border-top: 3px solid #e5e7eb;">
+
+        <h2>📊 Summary Comparison</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Primary Focus</th>
+                    <th>Key Responsibilities</th>
+                    <th>Complexity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>User</strong></td>
+                    <td>Create & Track</td>
+                    <td>Submit tickets, provide info, verify resolution</td>
+                    <td>Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Tech</strong></td>
+                    <td>Resolve & Support</td>
+                    <td>Investigate, provide solutions, escalate</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Manager</strong></td>
+                    <td>Monitor & Optimize</td>
+                    <td>Team management, assignment, performance</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>Super Admin</strong></td>
+                    <td>Configure & Maintain</td>
+                    <td>System setup, rules, analytics, maintenance</td>
+                    <td>Very High</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <h2>🎯 Best Practices</h2>
+
+        <div class="manager-section">
+            <h3>For Managers:</h3>
+            <ol>
+                <li><strong>Proactive Monitoring:</strong> Check dashboard daily, don't wait for alerts</li>
+                <li><strong>Fair Assignment:</strong> Balance workload across team members</li>
+                <li><strong>Quick Response:</strong> Handle SLA breaches and critical tickets immediately</li>
+                <li><strong>Team Development:</strong> Regular training and knowledge sharing</li>
+                <li><strong>Data-Driven Decisions:</strong> Use reports and analytics for improvements</li>
+            </ol>
+        </div>
+
+        <div class="admin-section">
+            <h3>For Super Admins:</h3>
+            <ol>
+                <li><strong>Documentation:</strong> Document all configuration changes</li>
+                <li><strong>Testing:</strong> Test business rules and workflows before activation</li>
+                <li><strong>Backup:</strong> Regular system backups and disaster recovery planning</li>
+                <li><strong>Security:</strong> Regular security audits and access reviews</li>
+                <li><strong>Performance:</strong> Monitor system performance and optimize</li>
+                <li><strong>Change Management:</strong> Controlled rollout of system changes</li>
+            </ol>
+        </div>
+
+        <p
+            style="text-align: center; margin-top: 50px; color: #999; padding-top: 30px; border-top: 2px solid #eee; font-size: 1.1em;">
+            Created: 2025-12-10 | IT Ticket Management System - Manager & Super Admin Complete Workflow
+        </p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Support Cases - Complete Workflow</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontSize: 16,
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #10b981;
+            margin: 50px 0 25px;
+            border-bottom: 4px solid #10b981;
+            padding-bottom: 15px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #059669;
+            margin: 30px 0 20px;
+            font-size: 1.5em;
+        }
+
+        .mermaid {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 3px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        .case-number {
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+
+        .note {
+            background: #d1fae5;
+            border-left: 5px solid #10b981;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background: #10b981;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 15px 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #059669;
+        }
+
+        .toc {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #e5e7eb;
+        }
+
+        .toc a {
+            color: #10b981;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        ul,
+        ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ Tech Support Cases</h1>
+            <p style="font-size: 1.5em;">Complete Workflow Analysis</p>
+            <p style="margin-top: 15px; font-size: 1.2em;">10 Cases | 20+ Flowcharts | Best Practices</p>
+        </header>
+
+        <button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+        <div class="note">
+            <h3>👨‍💻 Dành cho Tech Support Member</h3>
+            <p style="font-size: 1.1em;">Phân tích chi tiết <strong>TẤT CẢ</strong> các trường hợp khi Tech Support
+                Member xử lý tickets.</p>
+        </div>
+
+        <div class="toc">
+            <h3>📑 Table of Contents</h3>
+            <ol style="font-size: 1.1em; line-height: 2;">
+                <li><a href="#case1">Case 1: View & Pick Ticket from Queue</a></li>
+                <li><a href="#case2">Case 2: Investigate & Work on Ticket</a></li>
+                <li><a href="#case3">Case 3: Provide Solution & Resolve</a></li>
+                <li><a href="#case4">Case 4: Escalate to L2/L3</a></li>
+                <li><a href="#case5">Case 5: Request Info from Requester</a></li>
+                <li><a href="#case6">Case 6: Collaborate with Team</a></li>
+                <li><a href="#case7">Case 7: Handle SLA Warning</a></li>
+                <li><a href="#case8">Case 8: Manage Pending Tickets</a></li>
+                <li><a href="#case9">Case 9: Handle Reopened Tickets</a></li>
+                <li><a href="#case10">Case 10: Special Scenarios</a></li>
+            </ol>
+        </div>
+
+        <hr style="margin: 50px 0; border: none; border-top: 2px solid #e5e7eb;">
+
+        <!-- CASE 1 -->
+        <h2 id="case1"><span class="case-number">Case 1</span>View & Pick Ticket from Queue</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tech member xem queue của team, apply filters, và pick ticket để xử lý.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Tech Logs In]) --> ViewQueue[View Team Queue]
+            ViewQueue --> ApplyFilters{Apply Filters?}
+
+            ApplyFilters -->|Yes| FilterOptions[Filter by Priority SLA Category]
+            ApplyFilters -->|No| ShowAll[Show All Team Tickets]
+
+            FilterOptions --> DisplayQueue[Display Filtered Queue]
+            ShowAll --> DisplayQueue
+
+            DisplayQueue --> SortQueue[Sort by SLA Priority Age]
+
+            SortQueue --> SelectTicket{Select Ticket?}
+            SelectTicket -->|Yes| ViewDetails[View Ticket Details]
+            SelectTicket -->|No| ViewQueue
+
+            ViewDetails --> CanHandle{Can Handle?}
+            CanHandle -->|No| SelectTicket
+            CanHandle -->|Yes| CheckAssigned{Already Assigned?}
+
+            CheckAssigned -->|To Me| StartWork[Start Working]
+            CheckAssigned -->|To Others| ShowWarning[Warning: Assigned to another tech]
+            CheckAssigned -->|Unassigned| PickTicket[Pick Ticket and Start]
+
+            ShowWarning --> SelectTicket
+            PickTicket --> LogHistory[Log History]
+            LogHistory --> NotifyRequester[Notify Requester]
+            NotifyRequester --> StartWork
+
+            StartWork --> End([Begin Investigation])
+
+            style Start fill:#d1fae5
+            style End fill:#dbeafe
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 2 -->
+        <h2 id="case2"><span class="case-number">Case 2</span>Investigate & Work on Ticket</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tech investigate issue, add notes, upload files, test solution.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Ticket Picked]) --> ReadDetails[Read Full Details]
+            ReadDetails --> StartInvestigation[Start Investigation]
+
+            StartInvestigation --> InvestigateActions{Investigation Actions}
+
+            InvestigateActions -->|Add Internal Note| AddNote[Add Internal Comment]
+            InvestigateActions -->|Upload File| UploadFile[Upload Investigation File]
+            InvestigateActions -->|Update Priority| ChangePriority[Change Priority]
+            InvestigateActions -->|Test Issue| TestIssue[Test and Reproduce]
+
+            AddNote --> InvestigateActions
+            UploadFile --> InvestigateActions
+            ChangePriority --> InvestigateActions
+            TestIssue --> FoundSolution{Found Solution?}
+
+            FoundSolution -->|Yes| ProvideSolution[Go to Case 3]
+            FoundSolution -->|No| NeedHelp{Need Help?}
+
+            NeedHelp -->|Need Info| RequestInfo[Go to Case 5]
+            NeedHelp -->|Need Team| Collaborate[Go to Case 6]
+            NeedHelp -->|Cannot Solve| Escalate[Go to Case 4]
+            NeedHelp -->|Continue| InvestigateActions
+
+            ProvideSolution --> End([Next Case])
+            RequestInfo --> End
+            Collaborate --> End
+            Escalate --> End
+
+            style Start fill:#dbeafe
+            style End fill:#d1fae5
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 3 -->
+        <h2 id="case3"><span class="case-number">Case 3</span>Provide Solution & Resolve</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tech provide solution và resolve ticket. Nếu requires_solution = TRUE thì
+            MUST provide solution.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Solution Found]) --> CheckRequired{Requires Solution?}
+
+            CheckRequired -->|No| QuickResolve[Can Resolve Directly]
+            CheckRequired -->|Yes| MustProvide[MUST Provide Solution]
+
+            MustProvide --> WriteSolution[Write Solution Comment]
+            WriteSolution --> ValidateSolution{Solution Valid?}
+            ValidateSolution -->|No| ShowError[Error: Solution required]
+            ShowError --> WriteSolution
+
+            ValidateSolution -->|Yes| MarkAsSolution[Mark as Solution]
+            MarkAsSolution --> CallSP[Call sp_provide_solution]
+            QuickResolve --> CallSP
+
+            CallSP --> LogHistory[Log History]
+            LogHistory --> NotifyRequester[Notify Requester]
+            NotifyRequester --> UpdateStats[Update Statistics]
+            UpdateStats --> End([Ticket Resolved])
+
+            style Start fill:#dbeafe
+            style End fill:#d1fae5
+            style ShowError fill:#fee2e2
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 4 -->
+        <h2 id="case4"><span class="case-number">Case 4</span>Escalate to L2/L3</h2>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Khi L1 không giải quyết được, escalate lên L2. Nếu L2 không được thì lên L3.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Cannot Resolve]) --> CheckLevel{Current Level?}
+
+            CheckLevel -->|L1| EscalateL2[Escalate to L2]
+            CheckLevel -->|L2| EscalateL3[Escalate to L3]
+            CheckLevel -->|L3| CannotEscalate[Cannot Escalate Further]
+
+            EscalateL2 --> FillForm[Fill Escalation Form]
+            EscalateL3 --> FillForm
+
+            FillForm --> ValidateReason{Reason Valid?}
+            ValidateReason -->|No| ShowError[Error: Detailed reason required]
+            ShowError --> FillForm
+
+            ValidateReason -->|Yes| CreateEscalation[Create Escalation Record]
+            CreateEscalation --> UpdateTicket[Update Ticket Level]
+            UpdateTicket --> LogHistory[Log History]
+            LogHistory --> NotifyTeam[Notify Target Team]
+            NotifyTeam --> End([Escalation Complete])
+
+            CannotEscalate --> End
+
+            style Start fill:#fef3c7
+            style End fill:#d1fae5
+            style ShowError fill:#fee2e2
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 5 -->
+        <h2 id="case5"><span class="case-number">Case 5</span>Request Info from Requester</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tech cần thêm thông tin. Set status = pending, auto-reminder sau
+            24h/48h/72h.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Need More Info]) --> WriteComment[Write Comment Request]
+            WriteComment --> UpdateStatus[Set status = pending]
+            UpdateStatus --> NotifyRequester[Notify Requester]
+            NotifyRequester --> WaitForResponse[Wait for Response]
+
+            WaitForResponse --> CheckResponse{Response?}
+
+            CheckResponse -->|No 24h| SendReminder1[Send 1st Reminder]
+            CheckResponse -->|No 48h| SendReminder2[Send 2nd Reminder]
+            CheckResponse -->|No 72h| AutoClose[Auto-close ticket]
+            CheckResponse -->|Yes| ReviewResponse[Review Response]
+
+            SendReminder1 --> WaitForResponse
+            SendReminder2 --> WaitForResponse
+
+            ReviewResponse --> Sufficient{Info Sufficient?}
+            Sufficient -->|No| WriteComment
+            Sufficient -->|Yes| ResumeWork[Resume Work]
+
+            AutoClose --> End([Ticket Closed])
+            ResumeWork --> End([Continue Investigation])
+
+            style Start fill:#fef3c7
+            style End fill:#d1fae5
+            style AutoClose fill:#fee2e2
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 6 -->
+        <h2 id="case6"><span class="case-number">Case 6</span>Collaborate with Team</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tech cần hỏi ý kiến team. Có thể @mention, assign to lead, hoặc team
+            discussion.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Need Team Help]) --> ChooseMethod{Collaboration Method?}
+
+            ChooseMethod -->|Internal Comment| InternalComment[Add Internal Comment]
+            ChooseMethod -->|Assign to Lead| AssignLead[Assign to Team Lead]
+            ChooseMethod -->|Team Discussion| TeamChat[Team Discussion]
+
+            InternalComment --> NotifyMentioned[Notify mentioned members]
+            AssignLead --> NotifyLead[Notify Team Lead]
+            TeamChat --> DocumentOutcome[Document outcome]
+
+            NotifyMentioned --> WaitResponse[Wait for team response]
+            NotifyLead --> WaitResponse
+            DocumentOutcome --> WaitResponse
+
+            WaitResponse --> GotHelp{Got Help?}
+
+            GotHelp -->|Yes| ApplySuggestion[Apply suggestions]
+            GotHelp -->|No| StillStuck{Still Stuck?}
+
+            StillStuck -->|Yes| Escalate[Escalate to L2 L3]
+            StillStuck -->|No| ChooseMethod
+
+            ApplySuggestion --> Resolved{Resolved?}
+            Resolved -->|Yes| ProvideSolution[Provide Solution]
+            Resolved -->|No| ContinueWork[Continue Investigation]
+
+            Escalate --> End([Next Case])
+            ProvideSolution --> End
+            ContinueWork --> End
+
+            style Start fill:#dbeafe
+            style End fill:#d1fae5
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 7 -->
+        <h2 id="case7"><span class="case-number">Case 7</span>Handle SLA Warning</h2>
+
+        <div class="warning">
+            <strong>⚠️ SLA Warning:</strong> Ticket có 1-4 hours remaining. Cần prioritize và xử lý nhanh.
+        </div>
+
+        <h3>🎯 Flow Diagram</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([SLA Warning 1-4 hours]) --> CheckStatus{Current Status?}
+
+            CheckStatus -->|in_progress| AlreadyWorking[Speed up resolution]
+            CheckStatus -->|assigned| NotStarted[Pick immediately]
+            CheckStatus -->|pending| WaitingInfo[Send urgent reminder]
+
+            NotStarted --> Assess[Can resolve in time?]
+            AlreadyWorking --> Assess
+
+            Assess --> CanResolve{Can Resolve?}
+
+            CanResolve -->|Yes| FocusResolve[Focus on resolution]
+            CanResolve -->|Maybe| GetHelp[Get team help]
+            CanResolve -->|No| EscalateEarly[Escalate early]
+
+            FocusResolve --> QuickSolution[Provide quick solution]
+            GetHelp --> QuickSolution
+
+            QuickSolution --> TestQuick[Quick test]
+            TestQuick --> Works{Works?}
+
+            Works -->|Yes| ResolveTicket[Resolve within SLA]
+            Works -->|No| TimeLeft{Time Left?}
+
+            TimeLeft -->|More than 30min| TryAgain[Try different approach]
+            TimeLeft -->|Less than 30min| EscalateNow[Escalate NOW]
+
+            TryAgain --> TestQuick
+            WaitingInfo --> WaitUrgent[Wait for urgent response]
+
+            ResolveTicket --> End([SLA Met])
+            EscalateEarly --> End
+            EscalateNow --> End
+            WaitUrgent --> End
+
+            style Start fill:#fef3c7
+            style ResolveTicket fill:#d1fae5
+            style EscalateNow fill:#fee2e2
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 8 -->
+        <h2 id="case8"><span class="case-number">Case 8</span>Manage Pending Tickets</h2>
+
+        <div class="note">
+            <strong>📝 Description:</strong> Tech quản lý pending tickets. Send reminders theo schedule.
+        </div>
+
+        <h3>📊 Pending Management Schedule</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Duration</th>
+                    <th>Action</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>&lt; 24 hours</td>
+                    <td>Wait for response</td>
+                    <td>Normal</td>
+                </tr>
+                <tr>
+                    <td>24-48 hours</td>
+                    <td>Send 1st reminder (polite)</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td>48-72 hours</td>
+                    <td>Send 2nd reminder (urgent)</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td>&gt; 72 hours</td>
+                    <td>Auto-close or contact directly</td>
+                    <td>Critical</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 9 -->
+        <h2 id="case9"><span class="case-number">Case 9</span>Handle Reopened Tickets</h2>
+
+        <div class="warning">
+            <strong>⚠️ Reopened:</strong> Requester không hài lòng. Analyze why: solution failed, partial fix, new
+            issue, misunderstanding.
+        </div>
+
+        <h3>🎯 Reopen Handling</h3>
+        <div class="mermaid">
+            flowchart TD
+            Start([Ticket Reopened]) --> ReadReason[Read reopen reason]
+            ReadReason --> ProblemType{Problem Type?}
+
+            ProblemType -->|Solution failed| SolutionFailed[Try different approach]
+            ProblemType -->|Partial fix| PartialFix[Complete the solution]
+            ProblemType -->|New issue| NewIssue[Assess if related]
+            ProblemType -->|Misunderstanding| Misunderstand[Clarify solution steps]
+
+            SolutionFailed --> NewSolution[Provide new solution]
+            PartialFix --> CompleteSolution[Complete fix]
+            NewIssue --> Related{Related?}
+            Misunderstand --> ClarifySteps[Provide detailed guide]
+
+            Related -->|Yes| ExpandSolution[Expand solution]
+            Related -->|No| SuggestNewTicket[Suggest new ticket]
+
+            NewSolution --> TestSolution[Test thoroughly]
+            CompleteSolution --> TestSolution
+            ExpandSolution --> TestSolution
+
+            TestSolution --> Verified{Verified?}
+            Verified -->|Yes| ResolveAgain[Resolve again]
+            Verified -->|No| StillNotFixed{Can fix?}
+
+            StillNotFixed -->|Yes| SolutionFailed
+            StillNotFixed -->|No| EscalateReopened[Escalate]
+
+            ClarifySteps --> FollowUp[Follow up]
+            SuggestNewTicket --> CloseOriginal[Close original]
+
+            ResolveAgain --> End([Resolved])
+            EscalateReopened --> End
+            CloseOriginal --> End
+            FollowUp --> End
+
+            style Start fill:#fef3c7
+            style End fill:#d1fae5
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <!-- CASE 10 -->
+        <h2 id="case10"><span class="case-number">Case 10</span>Special Scenarios</h2>
+
+        <div class="note">
+            <h3>🎯 4 Special Scenarios</h3>
+            <ol>
+                <li><strong>VIP/Critical User Ticket</strong> - Auto-prioritize, notify manager, assign to senior tech
+                </li>
+                <li><strong>Mass Incident</strong> - Multiple similar tickets, create parent incident, fix root cause
+                    once</li>
+                <li><strong>Requires External Vendor</strong> - Contact vendor, log vendor ticket, monitor progress</li>
+                <li><strong>Requires Change Request</strong> - Assess impact, create CR, wait for CAB approval</li>
+            </ol>
+        </div>
+
+        <hr style="margin: 50px 0;">
+
+        <h2>📝 Best Practices for Tech Support</h2>
+
+        <div class="note">
+            <h3>1. Communication</h3>
+            <ul>
+                <li>Always be professional and courteous</li>
+                <li>Provide clear, detailed explanations</li>
+                <li>Set realistic expectations</li>
+                <li>Keep requester updated on progress</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <h3>2. Documentation</h3>
+            <ul>
+                <li>Document all investigation steps</li>
+                <li>Use internal comments for technical details</li>
+                <li>Provide detailed solutions</li>
+                <li>Include prevention tips</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <h3>3. Time Management</h3>
+            <ul>
+                <li>Prioritize by SLA status and priority</li>
+                <li>Don't spend too long on one ticket</li>
+                <li>Escalate early if stuck</li>
+                <li>Batch similar tasks</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <h3>4. Quality</h3>
+            <ul>
+                <li>Test solutions thoroughly before resolving</li>
+                <li>Verify with requester when possible</li>
+                <li>Provide complete solutions, not workarounds</li>
+                <li>Document root cause</li>
+            </ul>
+        </div>
+
+        <p
+            style="text-align: center; margin-top: 50px; color: #999; padding-top: 30px; border-top: 2px solid #eee; font-size: 1.1em;">
+            Created: 2025-12-10 | IT Ticket Management System - Tech Support Complete Workflow
+        </p>
+    </div>
+</body>
+
+</html>
